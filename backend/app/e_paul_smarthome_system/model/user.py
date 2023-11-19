@@ -10,9 +10,9 @@ class User(models.Model):
     vorname = models.CharField(max_length=40)
     nachname = models.CharField(max_length=40)
     email = models.CharField(max_length=50, unique=True)
-    passwort = models.CharField()
+    passwort = models.CharField(max_length=50)
     key = models.CharField(max_length=50, unique=True)
-    geschlecht = models.CharField(choices=Geschlecht.choices)
-    geburtsdatum = models.DateField()
+    geschlecht = models.TextField(choices=Geschlecht.choices)
+    geburtsdatum = models.DateField(max_length=50)
     
     
