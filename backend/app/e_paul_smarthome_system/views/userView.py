@@ -9,5 +9,5 @@ class UserView(APIView):
 
     def get(self, request):
         queryset = User.objects.all()
-        serializer = UserSerializer(queryset)
+        serializer = UserSerializer(queryset, many = True)
         return Response(serializer.data, status = 200)
