@@ -1,13 +1,13 @@
 from django.contrib import admin
-from .model.gruppe import Gruppe
-from .model.funktion import Funktion
-from .model.mikrocontroller import Mikrocontroller
+from .model.group import Group
+from .model.function import Function
+from .model.microcontroller import Microcontroller
 from .model.pin import Pin
 from .model.user import User
 
 # Register your models here.
-admin.site.register(Gruppe)
-admin.site.register(Funktion)
-admin.site.register(Mikrocontroller)
+admin.site.register(Group)
+admin.site.register(Function)
+admin.site.register(Microcontroller)
 admin.site.register(Pin)
 admin.site.register(User)

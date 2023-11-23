@@ -7,12 +7,12 @@ class User(models.Model):
         weiblich = 'weiblich'
         divers = 'divers'
     
-    vorname = models.CharField(max_length=40)
-    nachname = models.CharField(max_length=40)
+    firstname = models.CharField(max_length=40)
+    lastname = models.CharField(max_length=40)
     email = models.CharField(max_length=50, unique=True)
-    passwort = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
     key = models.CharField(max_length=50, unique=True)
-    geschlecht = models.TextField(choices=Geschlecht.choices)
-    geburtsdatum = models.DateField(max_length=50)
+    gender = models.TextField(choices=Geschlecht.choices)
+    birthdate = models.DateField(max_length=50)
     
     
