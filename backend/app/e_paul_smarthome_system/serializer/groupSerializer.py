@@ -6,4 +6,5 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['name', 'description', 'kindOf','user']
+    
     user = UserSerializer(many=True)

@@ -17,7 +17,12 @@ class SingleUserView(APIView):
     queryset = User.objects.all()
 
     def get(self, request, userid):
-        queryset = User.objects.get(pk = userid)
-        serializer = UserSerializer(queryset)
+        user = User.objects.get(pk = userid)
+        serializer = UserSerializer(user)
         return Response(serializer.data, status = 200)
+    
+    def delete(self, request, userid):
+        user = User.objects.get(pk = userid)
+        user.delete()
+        return Response('User erfolgreich gelöscht')
     
