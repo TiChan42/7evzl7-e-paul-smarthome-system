@@ -13,7 +13,7 @@ class User(models.Model):
     email = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
     key = models.CharField(max_length=50, unique=True)
-    gender = models.TextField(choices=Geschlecht.choices)
-    birthdate = models.DateField(max_length=50)
+    gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
+    birthdate = models.DateField(max_length=50, null = True, blank = True)
     
     

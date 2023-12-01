@@ -4,4 +4,4 @@ from rest_framework import serializers
 class PinSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pin
-        fields = ["art","mikrocrontroller","used"]
+        fields = ["art","microcrontroller","inUse"]

@@ -6,5 +6,5 @@ class Pin(models.Model):
         ("Eingang", "Eingang"), ("Ausgang", "Ausgang") # liste muss noch bestimmt werden
         ])
     
-    mikrocontroller = models.ForeignKey("e_paul_smarthome_system.Microcontroller", verbose_name=("Microcontroller"), on_delete=models.CASCADE)
-    used = models.BooleanField(default=False)
+    microcontroller = models.ForeignKey("e_paul_smarthome_system.Microcontroller", verbose_name=("Microcontroller"), on_delete=models.CASCADE)
+    inUse = models.BooleanField(default=False)
