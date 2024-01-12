@@ -1,3 +1,5 @@
+.vscode
+
 # Django #
 *.log
 *.pot
