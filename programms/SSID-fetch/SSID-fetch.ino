@@ -11,7 +11,7 @@ void setup() {
 
   // Netzwerke scannen und SSID-Array erstellen
   int networkCount = WiFi.scanNetworks();
-  int SSIDs[networkCount];
+  String SSIDs[];
 
   if (networkCount == 0) {
 
@@ -24,7 +24,7 @@ void setup() {
 
     for (int i = 0; i < networkCount; ++i) {
 
-      SSIDs[i] = WiFi.SSID(i);
+      SSIDs = {SSIDs, WiFi.SSID(i)};
 
       Serial.print(i+1);
       Serial.print(": ");
