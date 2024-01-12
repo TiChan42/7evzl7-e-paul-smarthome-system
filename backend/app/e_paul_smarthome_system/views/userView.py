@@ -19,8 +19,10 @@ class SingleUserView(APIView):
     def get(self, request, userid):
         user = User.objects.get(pk = userid)
         serializer = UserDetailSerializer(user)
-        return Response(serializer.data, status = 200)
-    
+        #return Response(serializer.data, status = 200)
+        return Response({"type" : serializer.data["microcontroller"]})
+
+
     def delete(self, request, userid):
         user = User.objects.get(pk = userid)
         user.delete()
