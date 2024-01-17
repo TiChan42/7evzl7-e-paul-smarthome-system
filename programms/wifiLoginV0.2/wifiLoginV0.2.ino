@@ -55,7 +55,7 @@ void loop() {
       client.print(": ");
       client.println(WiFi.SSID(i));
       client.print("<br>");
-      client.print("Passwort: ")
+      client.print("Passwort: ");
       client.print("<input type=\"text\">");
       client.print("<br>");
     }
