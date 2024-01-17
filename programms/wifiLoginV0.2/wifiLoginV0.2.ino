@@ -54,15 +54,19 @@ void loop() {
       client.print(i + 1);
       client.print(": ");
       client.println(WiFi.SSID(i));
+      client.print("<br>");
+      client.print("Passwort: ")
+      client.print("<input type=\"text\">");
+      client.print("<br>");
     }
 
     client.println("</body></html>");
   }
 
   // Anfrage zurücksenden
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println("");
+  //client.println("HTTP/1.1 200 OK");
+  //client.println("Content-Type: text/html");
+  //client.println("");
   delay(1);
   Serial.println("Client trennen");
   Serial.println("");
