@@ -7,9 +7,9 @@ class User(models.Model):
         weiblich = 'weiblich'
         divers = 'divers'
     
+    account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
     firstname = models.CharField(max_length=40)
     lastname = models.CharField(max_length=40)
-    group = models.ForeignKey("e_paul_smarthome_system.Group", null = True, blank = True, related_name = "user", verbose_name=("Group"), on_delete=models.CASCADE)
     email = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
     key = models.CharField(max_length=50, unique=True)
