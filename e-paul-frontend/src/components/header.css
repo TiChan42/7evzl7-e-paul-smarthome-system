@@ -1,0 +1,23 @@
+/* Button Farbe */
+.btn-sign-in {
+    background-color: #000;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: #000;
+    border-color: #FFFFFF;
+}
+
+/* Farbe für Hover Effekt */
+.btn-sign-in:hover {
+    background-color: #000;
+    color: #FFFFFF;
+}
+
+.btn-login:hover {
+    background-color: black;
+    color: #FFFFFF;
+}
