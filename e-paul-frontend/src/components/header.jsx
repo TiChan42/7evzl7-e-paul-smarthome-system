@@ -18,7 +18,7 @@ class Header extends Component {
                     <Route path="/about" element={<p>Test</p>}></Route>
                 </Routes>
                 <form className="ms-auto" style={{color: '#00BFFF'}}>
-                    <button className="btn btn-outline-success me-2 btn-sign-in" type="button" >Sign In</button>
+                    <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
                     <button className="btn btn-outline-success me-2 btn-login" type="button">Login</button>
                 </form>
             </div>

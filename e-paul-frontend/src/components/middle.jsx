@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import './middle.css'
 
 class Middle extends Component {
     state = {  } 
     render() { 
         return (
-            <div className="card mb-3" style={{maxWidth: '2000px', margin: 'auto', marginTop: '50px', marginBottom: '50px'}}>
+            <div className="card mb-3 my-card" style={{maxWidth: '2000px', margin: 'auto', marginTop: '50px', marginBottom: '50px'}}>
                 <div className="row g-0">
                     <div className="col-md-4">
                         <img src="assets/img/levels.png" className="img-fluid rounded-start" alt="..."/>
