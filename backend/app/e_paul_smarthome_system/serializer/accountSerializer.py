@@ -5,6 +5,6 @@ from rest_framework import serializers
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ['name', 'description', 'user']
+        fields = ['email', 'firstname','lastname','description', 'user']
     
     user = UserSerializer(many=True)
