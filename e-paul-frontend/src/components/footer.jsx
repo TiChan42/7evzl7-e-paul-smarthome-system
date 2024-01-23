@@ -6,7 +6,7 @@ class Footer extends Component {
     render() { 
         return (
             //navbar-fixed-bottom für höhere Position des Footers
-            <nav className="navbar fixed-bottom" style={{backgroundColor: '#00BFFF'}}> 
+            <nav className="navbar fixed-bottom" style={{backgroundColor: '#218395'}}> 
             <div className="container-fluid">
                 <a className="nav-link active" aria-current="page" href="www.google.com">Impressum</a>
                 <Link className="nav-link active" aria-current="page" to="/about">About us</Link>

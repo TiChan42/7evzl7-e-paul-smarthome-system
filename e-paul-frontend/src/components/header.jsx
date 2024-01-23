@@ -7,7 +7,7 @@ class Header extends Component {
     state = {  } 
     render() { 
         return (
-            <nav className="navbar" style={{backgroundColor: '#00BFFF'}}>
+            <nav className="navbar" style={{backgroundColor: '#218395'}}>
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">
                     <img src="assets/img/clearLogo.png" alt="Logo" width="30" height="30" className="d-inline-block align-text-top"/>
