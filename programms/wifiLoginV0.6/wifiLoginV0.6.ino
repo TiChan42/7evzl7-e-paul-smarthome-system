@@ -49,7 +49,7 @@ void loop() {
   // WLAN-Netzwerke scannen und auf der Webseite anzeigen
   int networkCount = WiFi.scanNetworks();
 
-  String website1 = R"(
+  String website1 = String(R"(
     <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Module-WiFi-Setup</title>
     <style>
     :root {--color: 33,131,149;--timing: 0.3s} 
@@ -92,20 +92,14 @@ void loop() {
     <div class="content"><h1>WiFi-Setup</h1>  
     <span class="dropdown-el">
     <input type="radio"name="sortType"value="none"checked="checked"id="ssid-info-select"><label id="ssid-info-select-label"style="font-weight: bold;"for="ssid-info-select">Select your WiFi:</label>
-    )";
+)");
 
-  for (int i = 0; i < networkCount; i++) {
-    String content = "<input type=\"radio\" name="sortType" value="0" id="ssid-0"><label for="ssid-0">DHBW Student</label>";
-
-  }
-  String website2 = R"(
+String website2 = String(R"(
     <input type="radio" name="sortType" value="0" id="ssid-0"><label for="ssid-0">DHBW Student</label>
     <input type="radio" name="sortType" value="1" id="ssid-1"><label for="ssid-1">DHBW Gast</label>
     <input type="radio" name="sortType" value="2" id="ssid-2"><label for="ssid-2">Gratis Viren</label>
     <input type="radio" name="sortType" value="3" id="ssid-3"><label for="ssid-3">WLAN Nr3</label>
-  )";
 
-  String website3 = R"(
     </span>
 
     <!--Password-->
@@ -144,9 +138,10 @@ void loop() {
     function sendLoadingMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.remove("hidden");};
     function sendHideMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.add("hidden");};
     </script></body></html>
-  )";
+  )");
 
-client.print(website);
+client.print(website1+website2);
+
 delay(1);
   Serial.println("Client trennen" );
   Serial.println("");
