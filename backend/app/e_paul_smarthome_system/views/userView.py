@@ -1,5 +1,5 @@
 from ..model.user import User
-from ..serializer.userSerializer import UserSerializer
+from ..serializer.userSerializer import UserSerializer, UserDetailSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,9 +18,11 @@ class SingleUserView(APIView):
 
     def get(self, request, userid):
         user = User.objects.get(pk = userid)
-        serializer = UserSerializer(user)
+        serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
-    
+        
+ 
+
     def delete(self, request, userid):
         user = User.objects.get(pk = userid)
         user.delete()

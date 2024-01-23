@@ -7,12 +7,10 @@ class User(models.Model):
         weiblich = 'weiblich'
         divers = 'divers'
     
-    firstname = models.CharField(max_length=40)
-    lastname = models.CharField(max_length=40)
-    group = models.ForeignKey("e_paul_smarthome_system.Group", null = True, blank = True, related_name = "user", verbose_name=("Group"), on_delete=models.CASCADE)
-    email = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=50)
-    key = models.CharField(max_length=50, unique=True)
+    username = models.CharField(max_length=50)
+    account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
+    pin = models.IntegerField()
+    key = models.CharField(max_length=50, unique=True, null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
     birthdate = models.DateField(max_length=50, null = True, blank = True)
     
