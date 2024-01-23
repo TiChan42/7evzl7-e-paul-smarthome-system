@@ -51,7 +51,7 @@ void loop() {
 
 
 
-  String website = R"(
+  String website = String(R"(
     <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Module-WiFi-Setup</title>
     <style>
     :root {--color: 33,131,149;--timing: 0.3s} 
@@ -94,7 +94,7 @@ void loop() {
     <div class="content"><h1>WiFi-Setup</h1>  
     <span class="dropdown-el">
     <input type="radio"name="sortType"value="none"checked="checked"id="ssid-info-select"><label id="ssid-info-select-label"style="font-weight: bold;"for="ssid-info-select">Select your WiFi:</label>
-)";
+)");
 
     
 
@@ -110,7 +110,7 @@ for (int i = 0; i < networkCount; ++i) {
       website = website + "<input type=\"radio\" name=\"sortType\" value=\"0\" id=\"ssid-" + String(i) + "\"><label for=\"ssid-" + String(i)+"\">" + SSIDCache + "</label>";
 }
 
-website = website + R"(</span>
+website = website + String(R"(</span>
     <!--Password-->
     <div class="password-container hidden" >
     <input type="password"name="password"id="password"placeholder="Your WiFi Password"><div for="password"class="show-password">
@@ -147,7 +147,7 @@ website = website + R"(</span>
     function sendLoadingMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.remove("hidden");};
     function sendHideMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.add("hidden");};
     </script></body></html>
-  )";
+  )");
 
 
 client.print(website);
