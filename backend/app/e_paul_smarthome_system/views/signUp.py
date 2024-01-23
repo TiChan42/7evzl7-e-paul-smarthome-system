@@ -10,13 +10,14 @@ class SignUp(APIView):
     queryset = Account.objects.all()
 
     def post(self, request):
-        email = request.data[0]["email"]
-        password = request.data[0]["password"]
-        wdhPassword = request.data[0]["wdhPassword"]
-        firstname = request.data[0]["firstname"]
-        lastname = request.data[0]["lastname"]
-        username = request.data[0]["username"]
-        pin = request.data[0]["pin"]
+        data = request.data[0]
+        email = data["email"]
+        password = data["password"]
+        wdhPassword = data["wdhPassword"]
+        firstname = data["firstname"]
+        lastname = data["lastname"]
+        username = data["username"]
+        pin = data["pin"]
 
 
         def accountExists(email):
@@ -28,10 +29,25 @@ class SignUp(APIView):
         if(accountExists(email)==0 and password==wdhPassword):
             password = password.encode("utf-8")
             passwordHash = hashpw(password, salt=gensalt())
-            account = Account(password=passwordHash,email = email, firstname=firstname, lastname = lastname,)
+            password = passwordHash.decode("utf-8")
+            account = Account(password=password,email = email, firstname=firstname, lastname = lastname,)
             user = User(username = username,account = account, pin = pin)
             account.save()
             user.save()
             return Response(status=201)
-
+        else:
+            return Response(status=400)
+        
+"""     
+for testing purposes    
+[{
+"email" : "test",
+"password" : "435",
+"wdhPassword" : "435",
+"firstname" : "Robin",
+"lastname" : "Beetz",
+"username" : "Link",
+"pin": 325
+}]
+"""
 
