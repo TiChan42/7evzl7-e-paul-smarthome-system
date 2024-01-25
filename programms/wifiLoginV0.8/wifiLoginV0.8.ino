@@ -8,17 +8,17 @@ String website;
 
 WiFiServer server(80);
 
-//generiert eine Anzeige für die Empfangsstärke
-//@var stength 
+// Generiert eine Anzeige für die Empfangsstärke
+// @var stength 
 void getConnectionStrengthNumber(int strength, int viewSize = 5, int min = -120, int max = -40 ){
-  //Fange Extremwerte/Fehler ab
+  // Abfangen von Extremwerten/Fehlern
   if(strength < min) strength = min;
   if(strength > max) strength = max;
   
   // Normalisiere den Wert strength auf den Bereich von 0 bis 1
   float normalized_strength = static_cast<float>(strength - min) / (max - min);
 
-  //Teile Wert ein in Kategorien 0-3 (Strenggenommen kann beim Maxwert 4 rauskommen, ist aber egal)
+  // Teile Wert ein in Kategorien 0-3 (Strenggenommen kann beim Maxwert 4 rauskommen, ist aber egal)
   int scaled_strength = static_cast<int>(normalized_strength * static_cast<float>(viewSize));
 
   website = website + "<span class=\"ts\">"; 
@@ -29,13 +29,17 @@ void getConnectionStrengthNumber(int strength, int viewSize = 5, int min = -120,
 }
 
 
-
-
-
-
-
 void setup() {
+
+  // Beginn der seriellen Kommunikation
   Serial.begin(115200);
+
+  Serial.print("\nStartup.");
+  for(int i = 0; i < 10; i++) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println(".");
 
   // Verbindung zum WLAN-Netzwerk aufbauen
   WiFi.mode(WIFI_AP);
@@ -49,27 +53,27 @@ void setup() {
   server.begin();
   Serial.println("Server gestartet");
 
-  // WiFi-Modul initialisieren für WLAN-Scan
-  //WiFi.mode(WIFI_STA);
 }
 
 void loop() {
+
   // Prüfen, ob sich ein Client verbunden hat
   WiFiClient client = server.available();
   if (!client) {
     return;
   }
+
   client.setNoDelay(true);  
 
-  // Warten auf Daten vom Client mit Timeout abbruch
-  Serial.println("new client");
+  // Warten auf Daten vom Client mit Timeout-Bedingung
+  Serial.println("new client connected");
   unsigned long ultimeout = millis()+250;
-  while(!client.available() && (millis()<ultimeout) )
-  {
+
+  while(!client.available() && (millis()<ultimeout)) {
     delay(1);
   }
-  if(millis()>ultimeout) 
-  { 
+
+  if (millis()>ultimeout) { 
     Serial.println("client connection time-out!");
     return; 
   }
@@ -77,35 +81,30 @@ void loop() {
   // Erste Zeile des Requests lesen
   String sRequest = client.readStringUntil('\r');
   client.flush();
-  // falls Request leer -> Client Stoppen
-  if(sRequest=="")
-  {
+  // Request leer -> Client Stoppen
+  if(sRequest=="") {
     Serial.println("empty request! - stopping client");
     client.stop();
     return;
   }
 
-
-  // Rest des Codes für die Verarbeitung des HTTP-Requests
+  // Kürzen der HTTP-Request
   String request = client.readString();
   int endIndex = request.length();
   int startIndex = request.indexOf("\n");
   String passString = request.substring(startIndex, endIndex);
   Serial.println(passString);
 
-
   client.flush();
 
-//Erstellung von
-
   // WLAN-Netzwerke scannen und auf der Webseite anzeigen
-  //sortierte und gefilterte SSIDs
+  // (sortierte und gefilterte SSIDs)
   int networkCount = WiFi.scanNetworks();
-  //init array
+  // init array
   int indices_v1[networkCount];
   for(int i = 0 ; i < networkCount ; ++i) indices_v1[i] = i;
 
-  //sortiere von stärkstem zu schwächstem signal (Bubblesort)
+  // Sortiere nach SIgnalstärke (Bubblesort)
   for (int i = 0; i < networkCount-1; ++i) {
     for (int j = 0; j < networkCount-i-1; ++j) {
       // Tausche die Indizes, wenn der Wert von WiFi.RSSI(j) kleiner als WiFi.RSSI(j+1) ist
@@ -117,13 +116,13 @@ void loop() {
     }
   }
 
-  //Erstellt ein Array ohne Duplikate und zählt die nicht duplizierten Netzwerke
+  // Erstellt ein Array ohne Duplikate und zählt die nicht duplizierten Netzwerke
   int actualNetworkCount = 0;
   int indices_v2[networkCount];
 
   for (int i = 0; i < networkCount; ++i){
 
-    //ist der Wert bisher schon vorgekommen?
+    // ist der Wert bisher schon vorgekommen?
     bool duplicated = false;
     for (int j = 0 ; j < i ; ++j){
         if(WiFi.SSID(indices_v1[i]).equals(WiFi.SSID(indices_v1[j]))){
@@ -131,22 +130,19 @@ void loop() {
           break;
         }
     }
-    //Trage das v2 Array den Wert ein und erhöhe den Counter
+    // Trage das v2 Array den Wert ein und erhöhe den Counter
     if(!duplicated){
       indices_v2[actualNetworkCount] = indices_v1[i];
       ++actualNetworkCount;
     }
   }
 
-  //Erstelle ein Array in der richtigen Größe und übertrage werte
+  // Erstelle ein Array in der richtigen Größe und übertrage werte
   int networkIndices[actualNetworkCount];
   for(int i = 0 ; i < actualNetworkCount ; ++i) networkIndices[i] = indices_v2[i];
 
 
-
-
-
-
+  //HTML-Code für Website
   website = String(R"(
     <!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -199,27 +195,26 @@ void loop() {
     <div class="content"><h1>WiFi-Setup</h1>  
     <span class="dropdown-el">
     <input type="radio"name="sortType"value="none"checked="checked"id="ssid-info-select"><label id="ssid-info-select-label"style="font-weight: bold;"for="ssid-info-select">Select your WiFi:</label>
-)");
+  )");
 
- //   <input type="radio" name="sortType" value="0" id="ssid-0"><label for="ssid-0">DHBW Student</label>
+  // Einbinden der gescannten Netzwerke
+  for (int i = 0; i < actualNetworkCount; ++i) {
+    String SSIDCache = WiFi.SSID(networkIndices[i]);
+    int signalStrength = WiFi.RSSI(networkIndices[i]);
 
-for (int i = 0; i < actualNetworkCount; ++i) {
-      String SSIDCache = WiFi.SSID(networkIndices[i]);
-      int signalStrength = WiFi.RSSI(networkIndices[i]);
+    website = website + "\n<input type=\"radio\" name=\"sortType\" value=\"" + String(networkIndices[i]) + "\" id=\"ssid-" + String(networkIndices[i]) + "\"><label for=\"ssid-" + String(networkIndices[i])+"\">\n";
+    getConnectionStrengthNumber(signalStrength);
+    website = website + "\n" + SSIDCache + "<span class=\"tooltip\">" + SSIDCache + "</span></label>";
+  }
 
-      website = website + "\n<input type=\"radio\" name=\"sortType\" value=\"" + String(networkIndices[i]) + "\" id=\"ssid-" + String(networkIndices[i]) + "\"><label for=\"ssid-" + String(networkIndices[i])+"\">\n";
-      getConnectionStrengthNumber(signalStrength);
-      website = website + "\n" + SSIDCache + "<span class=\"tooltip\">" + SSIDCache + "</span></label>";
-}
-
-website = website + String(R"(</span>
+  website = website + String(R"(
+    </span>
     <!--Password-->
     <div class="password-container hidden" >
     <input type="password"name="password"id="password"placeholder="Your WiFi Password"><div for="password"class="show-password">
     <svg xmlns="http://www.w3.org/2000/svg"width="30px"height="30px"fill="currentColor"class="bi bi-eye"viewBox="0 0 16 16">
     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
     </svg></div></div>
-
     <!--Submit Button-->
     <button class="submit-button hidden" onclick="clickSubmitButton() ">Try to connect</button>
     <div class="error-message hidden">Something went wrong. Please reload Site.</div>
@@ -237,11 +232,12 @@ website = website + String(R"(</span>
         showPasswordLabel.innerHTML=
         "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye-slash\" viewBox=\"0 0 16 16\"> " +
         "<path d=\"M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z\"/>" +
-        "<path d=\"M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829\"/><path d=\"M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z\"/></svg>";} 
-      else {passwordInput.type = "password";showPasswordLabel.innerHTML=
+        "<path d=\"M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829\"/><path d=\"M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z\"/></svg>";
+      } else { passwordInput.type = "password";showPasswordLabel.innerHTML=
         "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye\" viewBox=\"0 0 16 16\">" +
         "<path d=\"M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z\"/>" +
-        "<path d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0\"/></svg>";}});
+        "<path d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0\"/></svg>";
+        }});
     passwordInput.addEventListener("input", function () {if (passwordInput.value.length > 0) {document.querySelector(".submit-button").classList.remove("hidden");} else {document.querySelector(".submit-button").classList.add("hidden");}});
     function clickSubmitButton(){let ssid = document.querySelector("input[name=\"sortType\"]:checked").value;let password = document.querySelector("#password").value;let ssidIndex = document.querySelector("input[name=\"sortType\"]:checked").id.split("-")[1];};
     function sendSuccessMessage(){document.querySelector(".success-message").classList.remove("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.add("hidden");};
@@ -251,11 +247,9 @@ website = website + String(R"(</span>
     </script></body></html>
   )");
 
+  client.print(website);
 
-client.print(website);
-
-delay(10);
-  Serial.println("Client trennen" );
-  Serial.println("");
+  delay(10);
+  Serial.println("Client trennen\n" );
 
 } 
