@@ -5,6 +5,7 @@ import { Routes } from 'react-router-dom';
 
 class Header extends Component {
     state = {  } 
+
     render() { 
         return (
             <nav className="navbar" style={{backgroundColor: '#218395'}}>
@@ -18,8 +19,13 @@ class Header extends Component {
                     <Route path="/about" element={<h2 className='heading-about'>About</h2>}></Route>
                 </Routes>
                 <form style={{color: '#00BFFF'}}>
-                    <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
-                    <button className="btn btn-outline-success me-2 btn-login" type="button">Login</button>
+                    <a href="/signin">
+                        <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
+                    </a>    
+
+                    <a href="/login">
+                        <button className="btn btn-outline-success me-2 btn-login" type="button" >Login</button>    
+                    </a>                    
                 </form>
             </div>
             </nav>    

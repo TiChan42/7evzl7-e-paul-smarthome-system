@@ -17,7 +17,7 @@ class SignIn extends Component {
                     <input type="password" className="form-control" id="exampleInputPassword1" />
                     <label htmlFor="exampleInputPassword1" className="form-label">Passwort wiederholen</label>
                     <input type="password" className="form-control" id="exampleInputPassword2" />
-                    <p><a className="link-opacity-75-hover" href="#">Bereits registriert?</a></p>
+                    <p><a className="link-opacity-75-hover" href='/login'>Bereits registriert?</a></p>
                     </div>
 
                     <div className="mb-3">
