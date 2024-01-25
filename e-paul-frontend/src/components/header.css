@@ -5,6 +5,11 @@
     border-color: rgb(3, 159, 3);
 }
 
+.logotext {
+    color: #FFFFFF;
+    font-weight: bolder;
+}
+
 .btn-login {
     background-color: transparent;
     color: #000;

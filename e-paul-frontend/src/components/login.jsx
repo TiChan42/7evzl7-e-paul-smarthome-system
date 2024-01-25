@@ -16,7 +16,7 @@ class Login extends Component {
                     <div className="mb-3">
                     <label htmlFor="exampleInputPassword1" className="form-label">Passwort</label>
                     <input type="password" className="form-control" id="exampleInputPassword1" />
-                    <p><a className="link-opacity-75-hover" href="#">Passwort vergessen</a></p>
+                    <p><a className="link-opacity-75-hover" href="">Passwort vergessen</a></p>
                     <Link to="/signin"> Jetzt registieren! </Link>
                     </div>
 

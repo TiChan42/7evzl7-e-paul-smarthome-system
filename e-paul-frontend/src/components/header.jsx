@@ -11,8 +11,8 @@ class Header extends Component {
             <nav className="navbar" style={{backgroundColor: '#218395'}}>
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">
-                    <img src="assets/img/clearLogo.png" alt="Logo" width="30" height="30" className="d-inline-block align-text-top"/>
-                    <span className="me-2"> E-Paul 7EVZL7</span>
+                    <img src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" className="d-inline-block align-text-top"/>
+                    <span class='logotext'> E-Paul 7EVZL7</span>
                     
                 </Link>
                 <Routes>
