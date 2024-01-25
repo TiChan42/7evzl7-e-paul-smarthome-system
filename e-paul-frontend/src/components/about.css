@@ -5,6 +5,13 @@
 
 }
 
+.btn-schliessen {
+    background-color: #218395;
+    color: #FFFFFF;
+    border-color: #218395
+
+}
+
 
 .btn-message {
     background-color: #218395;
@@ -18,7 +25,18 @@
     height: 100vh;
     background: url('../../public/assets/img/clearLogo.png') center/cover no-repeat;
     background-size: contain;
-    color: #000; /* Beispieltextfarbe auf Schwarz setzen */
-    padding: 20px; /* Beispiel-Padding hinzufügen */
+    color: #000; 
+    padding: 20px; 
+  }
+
+  .clmn-box{
+    float: left;
+    width: 33.33%;
+  }
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
   }
   

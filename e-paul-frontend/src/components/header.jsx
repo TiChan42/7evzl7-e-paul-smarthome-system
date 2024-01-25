@@ -15,9 +15,9 @@ class Header extends Component {
                     
                 </Link>
                 <Routes>
-                    <Route path="/about" element={<p>Test</p>}></Route>
+                    <Route path="/about" element={<h2 className='heading-about'>About</h2>}></Route>
                 </Routes>
-                <form className="ms-auto" style={{color: '#00BFFF'}}>
+                <form style={{color: '#00BFFF'}}>
                     <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
                     <button className="btn btn-outline-success me-2 btn-login" type="button">Login</button>
                 </form>

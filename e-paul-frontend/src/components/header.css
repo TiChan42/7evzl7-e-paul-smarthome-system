@@ -40,3 +40,13 @@
 .title-text {
     margin-left: 10px;
 }
+
+.heading-about{
+    color: #FFFFFF;
+    display: inline;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+}
