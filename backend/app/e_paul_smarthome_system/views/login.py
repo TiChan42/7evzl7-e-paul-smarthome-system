@@ -1,4 +1,7 @@
 from ..model.account import Account
+
+from ..serializer.loginSerializer import LoginAccountSerializer
+
 from bcrypt import hashpw, gensalt, checkpw
 
 from rest_framework.views import APIView
@@ -14,9 +17,14 @@ class Login(APIView):
         account = Account.objects.filter(email = email)
         if account:
             savedPassword = account[0].password.encode("utf-8")
-            if (checkpw(password, savedPassword) == True):
+            try:
+                samePassword = checkpw(password, savedPassword)
+            except ValueError:
+                return Response(status = 400)
+            if (samePassword == 1):
+                serializer = LoginAccountSerializer(account, many = True)
                 # muss noch zuende implementiert werden
-                return Response(status = 200)
+                return Response(serializer.data, status = 200)
             else:
                 return Response(status = 400)
         else: 
