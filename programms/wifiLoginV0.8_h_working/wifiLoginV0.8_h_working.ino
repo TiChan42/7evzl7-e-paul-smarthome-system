@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 
 
-const char* ssid = "MeinEigenesWLAN";
+const char* ssid = "Wlana del Rey";
 const char* password = "MeinPasswort";
 
 String website;
