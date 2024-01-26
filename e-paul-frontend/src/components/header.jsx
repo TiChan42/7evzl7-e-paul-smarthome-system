@@ -17,6 +17,8 @@ class Header extends Component {
                 </Link>
                 <Routes>
                     <Route path="/about" element={<h2 className='heading-about'>About</h2>}></Route>
+                    <Route path="/signIn" element={<h2 className='heading-about'>Registrieren</h2>}></Route>
+                    <Route path="/login" element={<h2 className='heading-about'>Anmelden</h2>}></Route>
                 </Routes>
                 <div classname="loginButtons">
                     <a href="/signin">

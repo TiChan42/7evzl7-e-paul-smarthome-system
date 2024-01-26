@@ -8,7 +8,6 @@ class Login extends Component {
         return (
             <div className="container">
                 <form>
-                    <h4 className="text-center">Anmelden</h4>
                     <div className="mb-3">
                     <label htmlFor="exampleInputEmail1" className="form-label">Email Adresse</label>
                     <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email eingeben" />

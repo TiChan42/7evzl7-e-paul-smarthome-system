@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './middle.css'
+import './style.css'
 
 class Middle extends Component {
     state = {  } 

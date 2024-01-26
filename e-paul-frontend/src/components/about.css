@@ -1,33 +1,28 @@
+
+
 .btn-email {
-    background-color: #218395;
+    background-color: var(--color);
     color: #FFFFFF;
-    border-color: #218395
+    border-color: var(--color);
 
 }
 
 .btn-schliessen {
-    background-color: #218395;
+    background-color: var(--color);
     color: #FFFFFF;
-    border-color: #218395
+    border-color: var(--color);
 
 }
 
-
 .btn-message {
-    background-color: #218395;
+    background-color: var(--color);
     color: #FFFFFF;
-    border-color: #218395;
+    border-color: var(--color);
     width: auto; 
     height: auto ; 
 }
 
-.background-container {
-    height: 100vh;
-    background: url('../../public/assets/img/clearLogo.png') center/cover no-repeat;
-    background-size: contain;
-    color: #000; 
-    padding: 20px; 
-  }
+
 
   .clmn-box{
     float: left;
