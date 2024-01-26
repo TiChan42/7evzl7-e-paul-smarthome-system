@@ -18,7 +18,7 @@ class Header extends Component {
                 <Routes>
                     <Route path="/about" element={<h2 className='heading-about'>About</h2>}></Route>
                 </Routes>
-                <form style={{color: '#00BFFF'}}>
+                <div classname="loginButtons">
                     <a href="/signin">
                         <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
                     </a>    
@@ -26,7 +26,7 @@ class Header extends Component {
                     <a href="/login">
                         <button className="btn btn-outline-success me-2 btn-login" type="button" >Login</button>    
                     </a>                    
-                </form>
+                </div>
             </div>
             </nav>    
   );
