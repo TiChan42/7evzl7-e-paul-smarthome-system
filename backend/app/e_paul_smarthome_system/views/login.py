@@ -12,7 +12,7 @@ class Login(APIView):
     queryset = Account.objects.all()
 
     def post(self, request):
-        data = request.data[0]
+        data = request.data
         password = data["password"].encode("utf-8")
         email = data["email"]
         account = Account.objects.filter(email = email)
@@ -58,9 +58,9 @@ class LoginUser(APIView):
         
 """
 for testing purposes
-[{
-"accountId" : 2,
-"username" : "Zelda",
-"pin" : "187" 
-}]
+{
+"accountId" : 1,
+"username" : "Link",
+"pin" : "325" 
+}
 """

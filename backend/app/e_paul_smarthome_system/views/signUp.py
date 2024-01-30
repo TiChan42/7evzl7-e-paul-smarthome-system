@@ -10,10 +10,10 @@ class SignUp(APIView):
     queryset = Account.objects.all()
 
     def post(self, request):
-        data = request.data[0]
+        data = request.data
         email = data["email"]
         password = data["password"]
-        wdhPassword = data["wdhPassword"]
+        wdhPassword = data["passwordRepeat"]
         firstname = data["firstname"]
         lastname = data["lastname"]
         username = data["username"]
@@ -42,15 +42,15 @@ class SignUp(APIView):
         
 """     
 for testing purposes    
-[{
+{
 "email" : "test",
 "password" : "435",
-"wdhPassword" : "435",
+"passwordRepeat" : "435",
 "firstname" : "Robin",
 "lastname" : "Beetz",
 "username" : "Link",
 "pin": "325"
-}]
+}
 """
 
 class CreateUser(APIView):
