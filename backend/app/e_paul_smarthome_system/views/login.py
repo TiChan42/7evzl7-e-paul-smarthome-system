@@ -1,6 +1,7 @@
 from ..model.account import Account
+from ..model.user import User
 
-from ..serializer.loginSerializer import LoginAccountSerializer
+from ..serializer.loginSerializer import LoginAccountSerializer, LoginUserSerializer
 
 from bcrypt import hashpw, gensalt, checkpw
 
@@ -29,3 +30,37 @@ class Login(APIView):
                 return Response(status = 400)
         else: 
             return Response(status = 400)
+        
+
+class LoginUser(APIView):
+    queryset = User.objects.all()
+    
+    def post(self, request):
+        data = request.data[0]
+        accountId = data["accountId"]
+        username = data["username"]
+        pin = data["pin"].encode("utf-8")
+        try:
+            user = User.objects.filter(account = accountId, username = username)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        if user:
+            savedpin = user[0].pin.encode("utf-8")
+            try:
+                samePin = checkpw(pin, savedpin)
+            except ValueError:
+                return Response(status = 400)
+            if (samePin == 1):
+                serializer = LoginUserSerializer(user, many = True)
+                return Response(serializer.data, status = 200)
+        else:
+            return Response(status = 400)
+        
+"""
+for testing purposes
+[{
+"accountId" : 2,
+"username" : "Zelda",
+"pin" : "187" 
+}]
+"""
