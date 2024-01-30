@@ -29,7 +29,7 @@ void loop() {
 // Funktion zum Schreiben eines Strings in den EEPROM
 void writeStringToEEPROM(int address, String data) {
   EEPROM.begin(data.length() + 1); // Reserviere Speicherplatz im EEPROM für den String
-  for (unsigned int i = 0; i < data.length(); i++) {
+  for (int i = 0; i < data.length(); i++) {
     EEPROM.write(address + i, data[i]); // Schreibe jedes Zeichen des Strings in den EEPROM
   }
   EEPROM.write(address + data.length(), '\0'); // Nullterminierung hinzufügen
@@ -42,7 +42,7 @@ String readStringFromEEPROM(int address) {
   String characters;
   char character;
   EEPROM.begin(512); // Beginne die Verwendung des EEPROM
-  for (unsigned int i = 0; i < 100; i++) { // Lesen Sie maximal 100 Zeichen aus dem EEPROM
+  for (int i = 0; i < 100; i++) { // Lesen Sie maximal 100 Zeichen aus dem EEPROM
     character = EEPROM.read(address + i);
     if (character == '\0') { // Wenn das Nullterminierungszeichen erreicht ist, brechen Sie ab
       break;
