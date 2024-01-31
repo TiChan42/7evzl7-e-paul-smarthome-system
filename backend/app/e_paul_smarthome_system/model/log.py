@@ -3,9 +3,11 @@ from django.db import models
 class Log(models.Model):
     
     class Status(models.TextChoices):
+        ok = "ok"
         error = "error"
+        clientError = "clientError"
+        serverError = "serverError"
         warning = "warning"
-        notification = "notification"
         meassage = "message"
 
     endpoint = models.CharField(max_length = 100, null = True)
