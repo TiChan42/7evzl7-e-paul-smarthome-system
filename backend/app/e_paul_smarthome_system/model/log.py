@@ -6,8 +6,16 @@ class Log(models.Model):
         error = "error"
         warning = "warning"
         notification = "notification"
+        meassage = "message"
 
-    status = models.TextField(choices=Status.choices)
-    date = models.DateField(auto_now_add = True)
-    message = models.TextField()
-    description = models.CharField(max_length = 100)
+    endpoint = models.CharField(max_length = 100, null = True)
+    responseCode = models.PositiveSmallIntegerField()
+    method = models.CharField(max_length=10, null=True)
+    status = models.TextField(choices=Status.choices, null = True, blank = True)
+    remoteAddress = models.CharField(max_length = 20, null=True)
+    execTime = models.IntegerField(null=True)
+    date = models.DateField(auto_now = True)
+    bodyResponse = models.TextField()
+    bodyRequest = models.TextField()
+    user = models.ForeignKey("e_paul_smarthome_system.User", null = True, blank = True, related_name="Log", verbose_name=("Log"), on_delete=models.CASCADE)
+    
