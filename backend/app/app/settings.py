@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'e_paul_smarthome_system.middleware.requestLog.SaveRequest',
 ]
 
 ROOT_URLCONF = 'app.urls'
