@@ -1,4 +1,7 @@
 from ..model.log import Log
+from ..model.user import User
+
+import math
 
 import time
 
@@ -22,20 +25,45 @@ class SaveRequest():
                 #If the url does not start with on of the prefixes above, then return response and dont save log.
                 if not  list(filter(request.get_full_path().startswith, self.prefixs)):
                         return response
+
+                #Return first digit of the status Code
+                def firstDigit(statusCode):
+                        return statusCode // 10 ** (int(math.log(statusCode, 10)))
+
+                match firstDigit(response.status_code):
+                        case 1:
+                                status = "error"
+                        case 2:
+                                status = "ok"
+                        case 3:
+                                status = "error"
+                        case 4:
+                                status = "clientError"
+                        case 5: 
+                                status = "serverError"
                         
+
                 #Create instance of our model and assign values 
                 requestLog = Log(
                         endpoint = request.get_full_path(),
                         responseCode = response.status_code,
                         method = request.method,
+                        status = status,
                         remoteAddress = self.get_client_ip(request),
                         execTime = _t,
                         bodyResponse = str(response.content),
-                        bodyRequest = str(request.body)
+                        #bodyRequest = str(request.body)
                         )
-                        
-                #if not request.user.is_anonymous:
+                
+                
+                #if User.objects.filter(id = request.data["id"]):
+                #        requestLog.user = request.data["id"]
+                #else:
+                #        request.Log.user = None
+                #if request.user.is_authenticated:
                 #        requestLog.user = request.user
+                #else:
+                #       request.Log.user = None
 
                 requestLog.save()
                 return response

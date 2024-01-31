@@ -57,7 +57,7 @@ class CreateUser(APIView):
     queryset = User.objects.all()
     
     def post(self, request):
-        data = request.data[0]
+        data = request.data
         username = data["username"]
         pin = data["pin"]
         accountId = data["accountId"]
