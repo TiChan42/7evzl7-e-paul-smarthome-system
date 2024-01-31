@@ -1,0 +1,57 @@
+/* Button Farbe */
+.btn-sign-up {
+    background-color: rgb(3, 159, 3);
+    color: #FFFFFF;
+    border-color: rgb(3, 159, 3);
+}
+
+.logotext {
+    color: #FFFFFF;
+    font-weight: bolder;
+}
+
+.btn-login {
+    background-color: transparent;
+    color: #000;
+    border-color: #000
+}
+
+/* Farbe für Hover Effekt */
+.btn-sign-up:hover {
+    background-color: #045512;
+    color: #FFFFFF;
+    border-color: #045512;
+}
+
+.btn-login:hover {
+    background-color: #045512;
+    color: #FFFFFF;
+    border-color: #045512;
+    
+}
+
+.btn-sign-up:active:focus{
+    color: #000;
+    background-color: white;
+    border-color: white
+}
+
+.btn-login:active:focus{
+    color: #000;
+    background-color: white;
+    border-color: white
+}
+
+.title-text {
+    margin-left: 10px;
+}
+
+.heading-about{
+    color: #FFFFFF;
+    display: inline;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+}
