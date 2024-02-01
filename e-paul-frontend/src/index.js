@@ -1,7 +1,13 @@
 import React from "react"
+import { ColorModeScript } from '@chakra-ui/react'
 import ReactDom from "react-dom"
-import "bootstrap/dist/css/bootstrap.min.css"
 import App from "./App";
+import theme from './theme'
 
-
-ReactDom.render(<App/>, document.getElementById('root'));
+const rootElement = document.getElementById('root')
+ReactDom.createRoot(rootElement).render(
+    <>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <App />
+    </>
+)
