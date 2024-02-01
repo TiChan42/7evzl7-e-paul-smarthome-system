@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './about.css'
-import './style.css'
+import '../style.css'
+import { Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverCloseButton, PopoverBody, Portal, Center } from '@chakra-ui/react';
 
 class About extends Component {
   state = {
@@ -39,15 +40,24 @@ class About extends Component {
                 <path d="M307.37 324.687L267.667 405.517L268.268 91.708C270.901 92.6367 273.46 94.5079 275.841 95.9491L381.767 161.304C384.325 162.741 387.367 164.045 389.453 166.131C386.825 172.755 382.845 178.97 379.438 185.228L307.37 324.687Z"/>
             </svg>
         </div>
-        <button className="btn btn-outline-success me-2 btn-message" onClick={this.openPopup}>Nachricht schreiben</button>
 
-        {this.state.isPopupOpen && (
-          <div className="popup">
-            <p>{this.state.message}</p>
-            <button onClick={this.sendEmail} className="btn btn-outline-success me-2 btn-email">Zur E-Mail</button>
-            <button onClick={this.closePopup} className="btn btn-outline-success me-2 btn-schliessen">Schließen</button>
-          </div>
-        )}
+        <Popover>
+          <PopoverTrigger>
+            <Button colorScheme='blue'>Nachricht schreiben</Button>
+          </PopoverTrigger>
+          <Portal>
+            <PopoverContent>
+              <PopoverHeader textAlign={"center"}>Schreiben sie uns ihr Anliegen!</PopoverHeader>
+              <PopoverBody>
+                <Center>
+                  <Button colorScheme='gray'  mr={2}>Schließen</Button>
+                  <Button colorScheme='blue'>Zur E-Mail</Button>
+                </Center>
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
+        </Popover>
+
         <div className='row'>
         <p className='clmn-box'>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
 

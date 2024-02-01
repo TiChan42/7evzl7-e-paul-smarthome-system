@@ -28,14 +28,14 @@ class SignIn extends Component {
             <div className="container">
                 <form className="form" onSubmit={this.handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="exampleInputEmail1" className="form-label">Email Adresse</label>
+                        <label htmlFor="exampleInputEmail1" className="form-label">Email Adresse</label> <br/>
                         <input type="email" className="form-control" id="email1" name="email" aria-describedby="emailHelp" placeholder="Email eingeben" />
                     </div>
 
                     <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label">Passwort</label>
-                        <input type="password" className="form-control" name="password" id="pw1" placeholder="Passwort eingeben" />
-                        <label htmlFor="exampleInputPassword1" className="form-label">Passwort wiederholen</label>
+                        <label htmlFor="exampleInputPassword1" className="form-label">Passwort</label> <br/>
+                        <input type="password" className="form-control" name="password" id="pw1" placeholder="Passwort eingeben" /> <br/>
+                        <label htmlFor="exampleInputPassword1" className="form-label">Passwort wiederholen</label> <br/>
                         <input type="password" className="form-control" name="passwordRepeat" id="pw2" placeholder="Passwort wiederholen" />
                         <p><a className="link-opacity-75-hover" href="/login">Bereits registriert?</a></p>
                     </div>

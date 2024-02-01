@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Flex, Link } from '@chakra-ui/react';
 
 class Footer extends Component {
     state = {  } 
     render() { 
         return (
-            //navbar-fixed-bottom für höhere Position des Footers
-            <nav className="navbar fixed-bottom" style={{backgroundColor: '#218395'}}> 
-            <div className="container-fluid">
-                <a className="nav-link active" aria-current="page" href="www.google.com">Impressum</a>
-                <Link className="nav-link active" aria-current="page" to="/about">About us</Link>
-            </div>
-            </nav>
+            <Flex bg={"#218395"} bottom={0} position={'fixed'} w={"100%"}> 
+                    <Link href="/about" p={"2"} color={'whitesmoke'}>About us</Link>
+            </Flex>
         );
     }
 }
