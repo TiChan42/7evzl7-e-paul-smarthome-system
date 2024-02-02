@@ -5,7 +5,6 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import Login from "./components/login";
 import SignIn from "./components/signIn";
-import ChooseUser from "./components/chooseUser";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 class App extends Component {
@@ -19,7 +18,6 @@ class App extends Component {
                     <Route path="/about" element={<About/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/signin" element={<SignIn/>}/>
-                    <Route path="/chooseuser" element={<ChooseUser/>}/>
                 </Routes>
                 <Footer/>
             </Router>
