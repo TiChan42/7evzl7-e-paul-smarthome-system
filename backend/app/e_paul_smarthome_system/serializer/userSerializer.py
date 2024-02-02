@@ -12,3 +12,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username','pin','key','gender','birthdate','microcontroller']
     microcontroller = MicrocontrollerSerializer(many=True)
+
+
+class UserEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'gender']
