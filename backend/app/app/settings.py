@@ -25,12 +25,14 @@ SECRET_KEY = 'django-insecure-4xaz4sy@@-yqki_2)s3wz@e&-h^^253+97#tra0oif9+b8m++g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Hosts allowed to access the backend server
+ALLOWED_HOSTS = ["http://localhost:3000", "localhost", "127.0.0.1"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'e_paul_smarthome_system',
     'rest_framework',
     'django.contrib.admin',
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'e_paul_smarthome_system.middleware.requestLog.SaveRequest',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -74,8 +78,18 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+   'rest_framework.permissions.AllowAny',
+]
 }
+
+
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
@@ -90,6 +104,20 @@ DATABASES = {
     }
 }
 
+# URL of the Frontend server
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "POST",
+    "PUT",
+)
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

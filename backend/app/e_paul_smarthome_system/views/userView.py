@@ -13,7 +13,6 @@ class UserView(APIView):
         serializer = UserSerializer(queryset, many = True)
         return Response(serializer.data, status = 200)
 
-
 class SingleUserView(APIView):
     queryset = User.objects.all()
 
@@ -22,8 +21,6 @@ class SingleUserView(APIView):
         serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
         
- 
-
     def delete(self, request, userid):
         user = User.objects.get(pk = userid)
         user.delete()
