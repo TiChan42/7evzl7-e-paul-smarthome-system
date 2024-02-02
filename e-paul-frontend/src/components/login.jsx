@@ -42,7 +42,9 @@ class Login extends Component {
                         <br/>
                     </CardBody>
                     <Center p={3}>
+                    <Link to="/chooseuser">
                         <Button colorScheme='teal'>Anmelden</Button>
+                    </Link>
                     </Center>
                 </Card>
             </Center>  

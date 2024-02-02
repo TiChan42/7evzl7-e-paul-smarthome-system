@@ -7,6 +7,7 @@ import Login from "./components/login";
 import SignIn from "./components/signIn";
 import RootLayout from "./Layouts/RootLayout"
 import Welcome from "./components/welcome"
+import ChooseUser from "./components/chooseUser"
 
 
 //router
@@ -17,6 +18,7 @@ const router = createBrowserRouter (
             <Route path="/about" element={<About/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/signin" element={<SignIn/>}/>
+            <Route path="/chooseuser" element={<ChooseUser/>}/>
         </Route>
     )
 )
