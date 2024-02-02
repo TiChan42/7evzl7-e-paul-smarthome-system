@@ -21,7 +21,9 @@ class Login extends Component {
                     </div>
 
                     <div className="mb-3">
+                    <Link to="/chooseuser">
                     <button type="submit" className="btn btn-primary">Anmelden</button>
+                    </Link>
                     </div>
                     
                 </form>

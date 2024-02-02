@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import './chooseUser.css'
-import './style.css'
+import './chooseUser.css';
+import './style.css';
+import Avatar from '@mui/material/Avatar';
 import BuildRoundedIcon from '@mui/icons-material/BuildRounded'
 
 class ChooseUser extends Component {
@@ -19,14 +20,16 @@ var data = [
 
 const firstTable = data.slice(0, 3);
 const secondTable = data.slice(4, 7);
-<h1>Benutzerkonto auswählen</h1>
+
 
 return (
+
     <div>
+    <h1>Benutzerkonto auswählen</h1>
       <table>
         <tbody>
 
-          {firstTable.map(data => (
+          {firstTable.map((data) => (
           <>
             <tr key={data.id}>
               <td>{data.name}</td>
@@ -42,7 +45,7 @@ return (
 
       <table>
         <tbody>
-          {secondTable.map(data => (
+          {secondTable.map((data) => (
             <>
             <tr key={data.id}>
               <td>{data.name}</td>
