@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import './about.css'
 import '../style.css'
-import { Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, Portal, Center } from '@chakra-ui/react';
+import { Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, Portal, Center, Box, SimpleGrid } from '@chakra-ui/react';
 
 function InternalStateEx() {
   const initRef = React.useRef()
   return (
+    <>
+    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh' borderRadius='lg' paddingLeft={"5%"} paddingRight={"5%"}>
+    <Box bg={"#218395"}  opacity={"0.4"}></Box>
+    <Box bg={"#218395"} opacity={"0.4"}></Box>
+    <Box bg={"#218395"} opacity={"0.4"}>
+
     <Popover closeOnBlur={false} placement='left' initialFocusRef={initRef}>
       {({ onClose }) => (
         <>
@@ -28,6 +34,12 @@ function InternalStateEx() {
         </>
       )}
     </Popover>
+    </Box>
+    </SimpleGrid>
+    
+
+    
+    </>
   )}
 
 class About extends Component {
