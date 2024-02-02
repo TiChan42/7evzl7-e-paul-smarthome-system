@@ -5,11 +5,13 @@ import { Box, ChakraProvider } from "@chakra-ui/react";
 export default function RootLayout() {
     return (
         <ChakraProvider>
-            <Header/>
-            <Box mt={14}>
-                <Outlet/>
+            <Box bg='gray.50'>
+                <Header/>
+                <Box mt={5} mb={5} minHeight="100vh">
+                    <Outlet/>
+                </Box>
+                <Footer/>
             </Box>
-            <Footer/>
         </ChakraProvider>
     )
 }
