@@ -15,9 +15,8 @@ class Welcome extends Component {
                     <br/> Einfach zu bedienen, energieeffizient und individuell anpassbar <br/> – <br/> gestalten Sie Ihr Zuhause so, wie Sie es sich immer gewünscht haben.
                 </Text>
                 <br/>
-                <moreCards />
 
-                <Flex pr={"5%"} pl={"5%"}>
+                <Flex>
         <Card maxW='sm' boxShadow={"xl"} borderRadius='lg'>
             <CardBody>
                 <Image

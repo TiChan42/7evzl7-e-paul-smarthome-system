@@ -15,5 +15,4 @@ body {
     top: calc(50vh - 25vw);
     left: 25vw;
     color: rgba(var(--color), 0.05);
-
 }
