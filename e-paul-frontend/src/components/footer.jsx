@@ -6,7 +6,8 @@ class Footer extends Component {
     render() { 
         return (
             <>
-                <Flex bg={"#218395"} position={'sticky'} w={"100%"} bottom={"0px"}>
+                <Flex bg={"#218395"} position={'sticky'} w={"100%"} bottom={"0px"} justifyContent="space-between">
+                        <Link href="/impressum" p={"2"} color={'whitesmoke'} _hover={{}}>Impressum</Link>
                         <Link href="/about" p={"2"} color={'whitesmoke'} _hover={{}}>About us</Link>
                 </Flex>
             </>
