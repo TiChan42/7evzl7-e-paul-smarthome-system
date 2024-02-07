@@ -20,6 +20,8 @@ import {
   Text,
   CardBody,
   Image,
+  Divider,
+  Flex
 } from '@chakra-ui/react'
 
 
@@ -83,13 +85,15 @@ function InternalStateEx() {
     <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
     <Card bg={"#218395"} opacity={"0.6"} borderRadius={"60px"}>
       <CardBody>
-          <Image
-            src='./smarthome2.png'
-            alt='smarthome'
-            borderRadius='lg'
-            height={250}
-            width={350}
-          />
+        <Flex justifyContent="center">
+            <Image
+              src='./smarthome2.png'
+              alt='smarthome'
+              borderRadius='lg'
+              height={250}
+              width={350}
+            />
+          </Flex>
             <Stack mt='6' spacing='3'>
             <Heading size='md' textAlign={"center"}>Motivation</Heading>
             <Text textAlign={'center'}>
@@ -130,6 +134,83 @@ function InternalStateEx() {
         />
         <Stack mt='6' spacing='3'>
         <Heading size='md' textAlign={"center"}>Support</Heading>
+        <Text>
+          Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht! 
+        </Text> 
+        <div>&nbsp;</div>
+        </Stack>
+
+        <InitialFocus />
+      </CardBody>
+    </Card>
+    </SimpleGrid>
+
+    <Stack direction='row' h='70px' p={4}>
+      <Divider orientation='vertical' />
+    </Stack>
+
+
+    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
+    <Card bg={"#218395"} opacity={"0.6"} borderRadius={"60px"}>
+      <CardBody>
+        <Flex justifyContent="center">
+          <Image
+            src='./maskottchen1.png'
+            alt='Paul'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
+            <Stack mt='6' spacing='3'>
+            <Heading size='md' textAlign={"center"}>Maskottchen</Heading>
+            <Text textAlign={'center'}>
+              Unser Maskottchen bei E-Paul ist ein Geist namens "Paul".
+            </Text> 
+            <div>&nbsp;</div>
+            </Stack>
+        </CardBody>
+
+    </Card>
+    <Card bg={"#218395"} opacity={"0.8"} borderRadius={"60px"}>
+      <CardBody>
+        <Flex justifyContent="center">
+          <Image
+            src='./frontend2.png'
+            alt='frontend'
+            borderRadius='lg'
+            height={250}
+            width={300}
+          />
+        </Flex>
+          <Stack mt='6' spacing='3'>
+          <Heading size='md' textAlign={"center"}>Frontend, Backend & Mikrokontroller</Heading>
+          <Text textAlign={'center'}>
+            Frontend: Anna, Eduard, Jonas, Linus
+            <div>&nbsp;</div>
+            Backend: Julia, Robin
+            <div>&nbsp;</div>
+            Mikrokontroller: Hannes, Mathias
+            <div>&nbsp;</div>
+
+            Allrounder: David, Timo
+          </Text> 
+          <div>&nbsp;</div>
+          </Stack>
+      </CardBody>
+      
+    </Card>
+    <Card bg={"#218395"} opacity={"1.0"} borderRadius={"60px"} textAlign={"center"} maxW='sm' CardShadow={"xl"}>
+      <CardBody>
+        <Image
+          src='./support.png'
+          alt='support'
+          borderRadius='lg'
+          height={250}
+          width={350}
+        />
+        <Stack mt='6' spacing='3'>
+        <Heading size='md' textAlign={"center"}>Mikrokontroller</Heading>
         <Text>
           Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht! 
         </Text> 
