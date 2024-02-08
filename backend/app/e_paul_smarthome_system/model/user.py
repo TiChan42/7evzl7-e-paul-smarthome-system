@@ -13,5 +13,6 @@ class User(models.Model):
     key = models.CharField(max_length=50, unique=True, null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
     birthdate = models.DateField(max_length=50, null = True, blank = True)
+    pictureid = models.CharField(max_length=50, null = True, blank = True)
     
     
