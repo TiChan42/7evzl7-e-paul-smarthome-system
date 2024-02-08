@@ -30,7 +30,7 @@ function InternalStateEx() {
                             E-Mail: mddruica@gmail.com<br />
                             <br />
                             <strong>Vertreten durch:</strong><br />
-                            Mathias Druica<br />
+                            Mathias Daniel Druica<br />
                             <br />
                             <strong>Haftungsausschluss:</strong><br />
                                 <p textAlign="center">Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. <br></br>Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p><br />

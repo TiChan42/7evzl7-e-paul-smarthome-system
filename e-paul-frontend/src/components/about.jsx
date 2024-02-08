@@ -202,22 +202,23 @@ function InternalStateEx() {
     </Card>
     <Card bg={"#218395"} opacity={"1.0"} borderRadius={"60px"} textAlign={"center"} maxW='sm' CardShadow={"xl"}>
       <CardBody>
-        <Image
-          src='./support.png'
-          alt='support'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
+        <Flex justifyContent={"center"}>
+          <Image
+            src='./location.png'
+            alt='location'
+            borderRadius='lg'
+            height={200}
+            width={300}
+          />
+        </Flex>
         <Stack mt='6' spacing='3'>
-        <Heading size='md' textAlign={"center"}>Mikrokontroller</Heading>
+        <Heading size='md' textAlign={"center"}>Location</Heading>
         <Text>
-          Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht! 
+          Wir haben unseren Firmensitz im DHBW Gebäude am Campus Fallenbrunnen. Von der ersten Idee bis hin zur spezifischen Planung haben wir fast alles im dortigen StuV-Raum organisiert und umgesetzt. <div>&nbsp;</div> Ihr wollt uns besuchen? <div>&nbsp;</div>Gerne könnt Ihr hier vorbeischauen: <br></br> Fallenbrunnen 2, 88045 Friedrichshafen
         </Text> 
         <div>&nbsp;</div>
         </Stack>
 
-        <InitialFocus />
       </CardBody>
     </Card>
     </SimpleGrid>
