@@ -7,12 +7,19 @@ class User(models.Model):
         weiblich = 'weiblich'
         divers = 'divers'
     
+    class Role(models.TextChoices):
+        superuser = 'superuser'
+        admin = 'admin'
+        user = 'user'
+
     username = models.CharField(max_length=50, unique=True, null = True, blank = True)
     account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
     pin = models.CharField(max_length=100)
     key = models.CharField(max_length=50, unique=True, null = True, blank = True)
+    role = models.TextField(choices = Role.choices)
+    pictureid = models.IntegerField(null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
     birthdate = models.DateField(max_length=50, null = True, blank = True)
-    pictureid = models.IntegerField(null = True, blank = True)
+    
     
     
