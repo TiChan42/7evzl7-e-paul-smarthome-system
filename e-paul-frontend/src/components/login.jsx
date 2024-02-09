@@ -6,7 +6,7 @@ import { Center, Button, Input, Text, InputGroup, InputRightElement, Card, CardB
 function PasswordInput() {
     const [show, setShow] = React.useState(false)
     const handleClick = () => setShow(!show)
-  
+    
     return (
       <InputGroup size='md'>
         <Input
@@ -29,8 +29,8 @@ class Login extends Component {
     state = {  } 
     render() { 
         return (
-            <Center>
-                <Card size="lg" width={400}>
+            <Center m={'50px'}>
+                <Card size="lg" width={400} bg={"#218395"} p={"50px"}>
                     <CardBody>
                         <Text>Email</Text>   
                         <Input placeholder='Email eingeben' size='md' variant={"filled"}/>

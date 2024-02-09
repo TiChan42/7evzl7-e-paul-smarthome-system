@@ -7,7 +7,7 @@ class Header extends Component {
     state = {  } 
     render() { 
         return (
-            <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} zIndex={2} top={"0px"}>
+            <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} h={'80px'} zIndex={2} top={"0px"}>
                 <GridItem>
                 <Link href="/" display={"flex"} p={"3"} alignItems="center" _hover={"false"}>
                     <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
@@ -38,6 +38,12 @@ class Header extends Component {
                             path="/login"
                             element={<Text as={"b"} fontSize='3xl' color={'white'}>Anmelden</Text>}
                         />
+                        <Route
+                            path="/devices"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
+                        />
+
+
                         </Routes>
                     </Box>
                 </GridItem>
