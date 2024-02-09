@@ -31,10 +31,22 @@ function InitialFocus() {
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
 
+  const [email, setEmail] = React.useState('')
+  const [subject, setSubject] = React.useState('')
+  const [message, setMessage] = React.useState('')
+
+  const handleEmailChange = (e) => setEmail(e.target.value)
+  const handleSubjectChange = (e) => setSubject(e.target.value)
+  const handleMessageChange = (e) => setMessage(e.target.value)
+
+  const generateMailtoLink = () => {
+    const mailtoLink = `mailto:mddruica@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`
+    return mailtoLink
+  }
+
   return (
     <>
       <Button onClick={onOpen} colorScheme='teal' variant='solid' >Ich brauche Support</Button>
-
 
       <Modal
         initialFocusRef={initialRef}
@@ -47,27 +59,22 @@ function InitialFocus() {
           <ModalHeader>Was ist Ihr Anliegen?</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl mt={4}>
-              <FormLabel>Ihre E-Mail</FormLabel>
-              <Input placeholder='max.mustermann@gmail.com' />
-            </FormControl>
-
+    
             <FormControl>
               <FormLabel>Betreff</FormLabel>
-              <Input ref={initialRef} placeholder='Ich habe ein Problem mit E-Paul' />
+              <Input ref={initialRef} placeholder='Ich habe ein Problem mit E-Paul' value={subject} onChange={handleSubjectChange} />
             </FormControl>
 
             <FormControl>
               <FormLabel>Ihre Nachricht an uns</FormLabel>
-              <Textarea ref={initialRef} placeholder='Mein Smart-Home ...' size="lg" />
+              <Textarea ref={initialRef} placeholder='Mein Smart-Home ...' size="lg" value={message} onChange={handleMessageChange} />
             </FormControl>
-
           </ModalBody>
 
           <ModalFooter>
-                  <a href = "mailto: mddruica@gmail.com">
-                    <Button colorScheme='blue' margin={'5px'}>Zur E-Mail</Button>
-                  </a>
+            <a href={generateMailtoLink()}>
+              <Button colorScheme='blue' margin={'5px'}>Zur E-Mail</Button>
+            </a>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
@@ -82,7 +89,7 @@ function InternalStateEx() {
   const initRef = React.useRef()
   return (
     <>
-    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
+    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"}>
     <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"}>
       <CardBody>
         <Flex justifyContent="center">
@@ -97,7 +104,7 @@ function InternalStateEx() {
             <Stack mt='6' spacing='3'>
             <Heading size='md' textAlign={"center"}>Motivation</Heading>
             <Text textAlign={'center'}>
-              Unser Ziel war es, den Menschen das tägliche Leben zu erleichtern, und wir haben dafür verschiedene Lösungsansätze in Betracht gezogen. Diese reichten von einem digitalen Inventarsystem für Zuhause bis hin zu einer Politik-App, die alle aktuellen Änderungen verfolgt. Letztendlich fiel unsere Wahl jedoch auf das Smart-Home-System "E-Paul", das es Ihnen ermöglicht, Ihr Zuhause ganz bequem über Ihr Smartphone zu steuern.
+              Unser Ziel war es, den Menschen das tägliche Leben zu erleichtern, und wir haben dafür verschiedene Lösungsansätze in Betracht gezogen. Diese reichten von einem digitalen Inventarsystem für Zuhause bis hin zu einer Politik-App, die alle aktuellen Änderungen verfolgt. Letztendlich fiel unsere Wahl jedoch auf das Smart-Home-System "E-Paul", das es Ihnen ermöglicht, Ihr Zuhause ganz bequem über Ihren Computer zu steuern.
             </Text> 
             <div>&nbsp;</div>
             </Stack>
@@ -123,7 +130,7 @@ function InternalStateEx() {
       </CardBody>
       
     </Card>
-    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} maxW='sm' CardShadow={"xl"}>
+    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
         <Image
           src='./support.png'
@@ -151,7 +158,7 @@ function InternalStateEx() {
 
 
     <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
-    <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"}>
+    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"}>
       <CardBody>
         <Flex justifyContent="center">
           <Image
@@ -200,7 +207,7 @@ function InternalStateEx() {
       </CardBody>
       
     </Card>
-    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} maxW='sm' CardShadow={"xl"}>
+    <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
         <Flex justifyContent={"center"}>
           <Image
