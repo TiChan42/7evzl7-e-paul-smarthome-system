@@ -39,12 +39,15 @@ class Header extends Component {
                             element={<Text as={"b"} fontSize='3xl' color={'white'}>Anmelden</Text>}
                         />
                         <Route
+                            path="/impressum"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Impressum</Text>}
+                        />
+                        <Route
                             path="/devices"
                             element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
                         />
-
-
                         </Routes>
+                        
                     </Box>
                 </GridItem>
 
