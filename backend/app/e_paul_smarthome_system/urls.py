@@ -20,6 +20,5 @@ urlpatterns = [
     path("login/user", LoginUser.as_view(), name = "user"),
     path("logout", Logout.as_view(), name = "Logout"),
     path("home/<userid>", HomeView.as_view(), name="Home"),
-    path("signUp", SignUp.as_view(), name="SignUp"),
     path("settings/<userid>", SingleUserSettingsView.as_view(), name = "settings")
 ]
