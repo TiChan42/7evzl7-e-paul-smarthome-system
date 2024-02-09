@@ -31,11 +31,9 @@ function InitialFocus() {
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
 
-  const [email, setEmail] = React.useState('')
   const [subject, setSubject] = React.useState('')
   const [message, setMessage] = React.useState('')
 
-  const handleEmailChange = (e) => setEmail(e.target.value)
   const handleSubjectChange = (e) => setSubject(e.target.value)
   const handleMessageChange = (e) => setMessage(e.target.value)
 
@@ -158,7 +156,7 @@ function InternalStateEx() {
 
 
     <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
-    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"}>
+    <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"}>
       <CardBody>
         <Flex justifyContent="center">
           <Image
@@ -207,7 +205,7 @@ function InternalStateEx() {
       </CardBody>
       
     </Card>
-    <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
+    <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
         <Flex justifyContent={"center"}>
           <Image
