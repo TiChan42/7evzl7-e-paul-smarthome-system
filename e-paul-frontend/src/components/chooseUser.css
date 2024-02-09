@@ -2,6 +2,29 @@ h1 {
     text-align: left;
 }
 
-body {
-    background: linear-gradient(to bottom right, #6fd2e3, #218395);
-}
+* {
+    box-sizing: border-box;
+  }
+  
+  .row {
+    margin-left:-5px;
+    margin-right:-5px;
+  }
+    
+  .column {
+    float: left;
+    width: 50%;
+    padding: 5px;
+  }
+  
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 14px;
+  }
+  

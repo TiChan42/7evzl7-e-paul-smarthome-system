@@ -9,6 +9,7 @@ import RootLayout from "./Layouts/RootLayout"
 import Welcome from "./components/welcome"
 import ChooseUser from "./components/chooseUser"
 import Devices from "./components/devices"
+import Options from "./components/options"
 
 //router
 const router = createBrowserRouter (
@@ -20,6 +21,7 @@ const router = createBrowserRouter (
             <Route path="/signin" element={<SignIn/>}/>
             <Route path="/chooseuser" element={<ChooseUser/>}/>
             <Route path="/devices" element={<Devices/>}/>
+            <Route path="/options" element={<Options/>}/>
         </Route>
     )
 )
