@@ -6,7 +6,7 @@ function OpenHistoryDrawer() {
   
     return (
     <>
-        <Button onClick={onOpen}><HamburgerIcon></HamburgerIcon> Verlauf </Button>
+        <Button onClick={onOpen} colorScheme="blackAlpha"><HamburgerIcon></HamburgerIcon> Verlauf </Button>
         <Drawer placement='right' onClose={onClose} isOpen={isOpen}>
           <DrawerOverlay />
           <DrawerContent>

@@ -6,7 +6,7 @@ class Footer extends Component {
     render() { 
         return (
             <>
-                <Flex bg={"#218395"} position={'sticky'} w={"100%"} bottom={"0px"}>
+                <Flex bg={"#218395"} position={'sticky'} w={"100%"} bottom={'0%'} h={'4vh'}>
                         <Link href="/about" p={"2"} color={'whitesmoke'}>About us</Link>
                 </Flex>
             </>

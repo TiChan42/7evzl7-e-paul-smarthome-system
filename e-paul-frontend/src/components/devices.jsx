@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, CardHeader} from "@chakra-ui/react";
+import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader} from "@chakra-ui/react";
 import { EditIcon } from '@chakra-ui/icons'
 import AddGroupDialog from "./addGroupDialog"
 import AddDeviceDialog from "./addDeviceDialog";
@@ -90,7 +90,20 @@ class Devices extends Component {
                                     <Heading size='lg' color={"white"}>Meine Geräte</Heading>
                                 </CardHeader>
                                 <CardBody>
-
+                                    <VStack
+                                        spacing={4}
+                                        align='stretch'
+                                        >
+                                        <Box h='40px' bg='yellow.200'>
+                                            1
+                                        </Box>
+                                        <Box h='40px' bg='tomato'>
+                                            2
+                                        </Box>
+                                        <Box h='40px' bg='pink.100'>
+                                            3
+                                        </Box>
+                                    </VStack>
                                 </CardBody>
                                 <Box align='end' m={4}>
                                     <AddDeviceDialog/>
@@ -102,6 +115,8 @@ class Devices extends Component {
                                 <CardHeader>
                                     <Heading size='lg' color={"white"}>Favoriten</Heading>
                                 </CardHeader>
+                                <CardBody>
+                                </CardBody>
                             </Card>
                         </GridItem>
                     </Grid>

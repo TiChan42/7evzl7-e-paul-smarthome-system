@@ -7,7 +7,7 @@ export default function RootLayout() {
         <ChakraProvider>
             <Box bg='gray.50'>
                 <Header/>
-                <Box minHeight="100vh">
+                <Box minHeight="88vh">
                     <Outlet/>
                 </Box>
                 <Footer/>
