@@ -1,6 +1,5 @@
 from django import urls
-
-from .views.userView import UserView, SingleUserView
+from .views.userView import UserView, SingleUserView, SingleUserSettingsView
 from .views.accountView import AccountView
 from .views.about_us import AboutUsView
 from .views.login import Login, LoginUser
@@ -21,4 +20,6 @@ urlpatterns = [
     path("login/user", LoginUser.as_view(), name = "user"),
     path("logout", Logout.as_view(), name = "Logout"),
     path("home/<userid>", HomeView.as_view(), name="Home"),
+    path("signUp", SignUp.as_view(), name="SignUp"),
+    path("settings/<userid>", SingleUserSettingsView.as_view(), name = "settings")
 ]
