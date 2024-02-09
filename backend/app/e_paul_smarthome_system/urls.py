@@ -19,6 +19,10 @@ urlpatterns = [
     path("login", Login.as_view(), name="Login"),
     path("login/user", LoginUser.as_view(), name = "user"),
     path("logout", Logout.as_view(), name = "Logout"),
+<<<<<<< HEAD
     path("home/<userid>", HomeView.as_view(), name="Home")
+=======
+    path("home/<userid>", HomeView.as_view(), name="Home"),
+>>>>>>> db42c30 (removed frontend from gitignore)
     path("settings/<userid>", SingleUserSettingsView.as_view(), name = "settings")
 ]
