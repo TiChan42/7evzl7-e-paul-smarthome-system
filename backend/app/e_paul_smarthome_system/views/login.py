@@ -31,12 +31,21 @@ class Login(APIView):
         else: 
             return Response(status = 400)
         
+"""
+{
+"accountId" : 1,
+"username" : "Link",
+"pin" : "325" ,
+"password":"435",
+"email":"test"
+}
+"""
 
 class LoginUser(APIView):
     queryset = User.objects.all()
     
     def post(self, request):
-        data = request.data[0]
+        data = request.data
         accountId = data["accountId"]
         username = data["username"]
         pin = data["pin"].encode("utf-8")
