@@ -48,6 +48,7 @@ class CreateUser(APIView):
         username = data["username"]
         pin = data["pin"]
         accountId = data["accountId"]
+        pictureId = data["pictureId"]
 
         try:
             account = Account.objects.get(id=accountId)
@@ -79,7 +80,7 @@ class CreateUser(APIView):
             pin = pin.encode("utf-8")
             pinHash = hashpw(pin, salt=gensalt())
             pin = pinHash.decode("utf-8")
-            user = User(username = username, pin = pin, account = account, role ='user')
+            user = User(username = username, pin = pin, account = account, role ='user', pictureid = pictureId)
             user.save()
             return Response(status=201)
         else:
@@ -90,6 +91,7 @@ for testing purposes
 {
 "accountId" : 2,
 "username" : "Zelda",
-"pin" : "187" 
+"pin" : "187",
+"pictureId" : 1
 }
 """
