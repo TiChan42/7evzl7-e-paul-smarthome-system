@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-4xaz4sy@@-yqki_2)s3wz@e&-h^^253+97#tra0oif9+b8m++g
 DEBUG = True
 
 # Hosts allowed to access the backend server
-ALLOWED_HOSTS = ["http://localhost:3000", "localhost", "127.0.0.1","www.epaul-smarthome.de" ]
+ALLOWED_HOSTS = ["http://localhost:3000", "localhost", "127.0.0.1"]
 
 
 # Application definition
