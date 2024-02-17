@@ -87,12 +87,12 @@ function InternalStateEx() {
   const initRef = React.useRef()
   return (
     <>
-    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"}>
+    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"} margin={"30px"}>
     <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"}>
       <CardBody>
         <Flex justifyContent="center">
             <Image
-              src='./smarthome2.png'
+              src='./smarthome.svg'
               alt='smarthome'
               borderRadius='lg'
               height={250}
@@ -111,13 +111,15 @@ function InternalStateEx() {
     </Card>
     <Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
       <CardBody>
-        <Image
-          src='./team.png'
-          alt='team'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
+      <Flex justifyContent="center">
+          <Image
+            src='./team.svg'
+            alt='team'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
           <Stack mt='6' spacing='3'>
           <Heading size='md' textAlign={"center"}>Unser Team</Heading>
           <Text textAlign={'center'}>
@@ -130,13 +132,15 @@ function InternalStateEx() {
     </Card>
     <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
-        <Image
-          src='./support.png'
-          alt='support'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
+        <Flex justifyContent="center">
+          <Image
+            src='./callcenter.svg'
+            alt='support'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
         <Stack mt='6' spacing='3'>
         <Heading size='md' textAlign={"center"}>Support</Heading>
         <Text>
@@ -155,12 +159,12 @@ function InternalStateEx() {
     </Stack>
 
 
-    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"}>
+    <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh'  paddingLeft={"5%"} paddingRight={"5%"} margin={"30px"}>
     <Card bg={"rgba(33, 131, 149, .6)"} borderRadius={"60px"}>
       <CardBody>
         <Flex justifyContent="center">
           <Image
-            src='./maskottchen1.png'
+            src='./paul2.png'
             alt='Paul'
             borderRadius='lg'
             height={250}
@@ -181,8 +185,7 @@ function InternalStateEx() {
       <CardBody>
         <Flex justifyContent="center">
           <Image
-            src='./frontend2.png'
-            alt='frontend'
+            src='./pc.svg'
             borderRadius='lg'
             height={250}
             width={300}
@@ -209,11 +212,11 @@ function InternalStateEx() {
       <CardBody>
         <Flex justifyContent={"center"}>
           <Image
-            src='./location.png'
+            src='./location2.svg'
             alt='location'
             borderRadius='lg'
-            height={200}
-            width={300}
+            height={250}
+            width={350}
           />
         </Flex>
         <Stack mt='6' spacing='3'>
