@@ -27,6 +27,21 @@ class UserHomeSerializer(serializers.ModelSerializer):
     #log = LogSerializer(many=True)
     # In doku nachschauen wie das genau geht
 
+
+
+class UserEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'gender']
+
+class UserHomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'pictureid']
+        #fields = ['username', 'pictureid', 'log']
+    #log = LogSerializer(many=True)
+    # In doku nachschauen wie das genau geht
+
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
