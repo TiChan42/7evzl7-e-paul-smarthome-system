@@ -1,0 +1,13 @@
+.card-text {
+    font-size: x-large;
+    text-align: justify;
+}
+
+.card-title {
+    font-size: xx-large;
+}
+
+.my-card {
+    width: auto; 
+    margin: 0 1cm;
+}
