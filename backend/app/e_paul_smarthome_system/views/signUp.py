@@ -14,11 +14,6 @@ class SignUp(APIView):
         email = data["email"]
         password = data["password"]
         wdhPassword = data["passwordRepeat"]
-        firstname = data["firstname"]
-        lastname = data["lastname"]
-        username = data["username"]
-        pin = data["pin"]
-
 
         def accountExists(email):
             if Account.objects.filter(email=email):
@@ -30,12 +25,8 @@ class SignUp(APIView):
             password = password.encode("utf-8")
             passwordHash = hashpw(password, salt=gensalt())
             password = passwordHash.decode("utf-8")
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            account = Account(password=password,email = email, firstname=firstname, lastname = lastname,)
-            user = User(username = username,account = account, pin = pin)
-            account.save(), user.save()
+            account = Account(password=password,email = email)
+            account.save()
             return Response(status=201)
         else:
             return Response(status=400)
@@ -45,11 +36,7 @@ for testing purposes
 {
 "email" : "test",
 "password" : "435",
-"passwordRepeat" : "435",
-"firstname" : "Robin",
-"lastname" : "Beetz",
-"username" : "Link",
-"pin": "325"
+"passwordRepeat" : "435"
 }
 """
 
@@ -61,10 +48,20 @@ class CreateUser(APIView):
         username = data["username"]
         pin = data["pin"]
         accountId = data["accountId"]
+        pictureId = data["pictureId"]
+
         try:
             account = Account.objects.get(id=accountId)
         except Account.DoesNotExist:
             return Response(status=400)
+        
+        try: 
+            if (Account.objects.filter(id=accountId, user__isnull = False)):
+                noUser = False
+            else:
+                noUser = True
+        except Account.DoesNotExist:
+            noUser = True 
         
         def userExists(accountId, username):
             if Account.objects.filter(id=accountId, user__username=username):
@@ -72,11 +69,18 @@ class CreateUser(APIView):
             else:
                 return 0
 
-        if(userExists(accountId, username)==0):
+        if(noUser == True):
             pin = pin.encode("utf-8")
             pinHash = hashpw(pin, salt=gensalt())
             pin = pinHash.decode("utf-8")
-            user = User(username = username, pin = pin, account = account)
+            user = User(username = username, pin = pin, account = account, role = 'superuser')
+            user.save()
+            return Response(status = 201)
+        elif(userExists(accountId, username)==0):
+            pin = pin.encode("utf-8")
+            pinHash = hashpw(pin, salt=gensalt())
+            pin = pinHash.decode("utf-8")
+            user = User(username = username, pin = pin, account = account, role ='user', pictureid = pictureId)
             user.save()
             return Response(status=201)
         else:
@@ -87,6 +91,7 @@ for testing purposes
 {
 "accountId" : 2,
 "username" : "Zelda",
-"pin" : "187" 
+"pin" : "187",
+"pictureId" : 1
 }
 """
