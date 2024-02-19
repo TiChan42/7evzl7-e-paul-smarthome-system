@@ -1,38 +1,73 @@
 import React, { Component } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Box, Grid, Button, Text, Image, Link, GridItem } from '@chakra-ui/react';
+import { Route, Routes } from 'react-router-dom';
 import './header.css'
-import { Routes } from 'react-router-dom';
 
 class Header extends Component {
     state = {  } 
-
     render() { 
         return (
-            <nav className="navbar" style={{backgroundColor: '#218395'}}>
-            <div className="container-fluid">
-                <Link className="navbar-brand" to="/">
-                    <img src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" className="d-inline-block align-text-top"/>
-                    <span class='logotext'> E-Paul 7EVZL7</span>
-                    
+            <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} h={"8vh"} zIndex={2} top={"0px"}>
+                <GridItem>
+                <Link href="/" display={"flex"} p={4} alignItems="center" _hover={"false"}>
+                    <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
+                    <Text color={"whitesmoke"} fontSize={"xl"} as={"b"} display={'inline-block'} _hover={{}}> E-Paul</Text>
                 </Link>
-                <Routes>
-                    <Route path="/about" element={<h2 className='heading-about'>About</h2>}></Route>
-                    <Route path="/signIn" element={<h2 className='heading-about'>Registrieren</h2>}></Route>
-                    <Route path="/login" element={<h2 className='heading-about'>Anmelden</h2>}></Route>
-                </Routes>
-                <div classname="loginButtons">
-                    <a href="/signin">
-                        <button className="btn btn-outline-success me-2 btn-sign-up" type="button" >Sign up</button>
-                    </a>    
+                </GridItem>
+                
+                <GridItem>
+                <Box textAlign={'center'}>
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Welcome</Text>}
+                        />
+                        <Route
+                            path="/about"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>About</Text>}
+                        />
+                        <Route
+                            path="/chooseuser"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>User</Text>}
+                        />
+                        <Route
+                            path="/signIn"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Registrieren</Text>}
+                        />
+                        <Route
+                            path="/login"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Anmelden</Text>}
+                        />
+                        <Route
+                            path="/impressum"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Impressum</Text>}
+                        />
+                        <Route
+                            path="/devices"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
+                        />
+                        </Routes>
+                        
+                    </Box>
+                </GridItem>
 
-                    <a href="/login">
-                        <button className="btn btn-outline-success me-2 btn-login" type="button" >Login</button>    
-                    </a>                    
-                </div>
-            </div>
-            </nav>    
-  );
-};
+                <GridItem>
+                    <Box align='end'>
+                    <Link href="/signin" _hover={false} pr={4}>
+                        <Button colorScheme='teal' variant='solid'>
+                            Sign up
+                        </Button>
+                    </Link>
+                    <Link href="/login" _hover={false} pr={4}>
+                        <Button colorScheme='whiteAlpha' variant='solid'>
+                            Log in
+                        </Button>
+                    </Link>
+                    </Box>
+                </GridItem>
+            </Grid>
+        );
+    };
 }
  
 export default Header;
