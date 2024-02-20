@@ -6,12 +6,12 @@ from .logSerializer import LogSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','key','gender','birthdate']
+        fields = ['id','username','gender','birthdate']
   
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','key','gender','birthdate','microcontroller', 'rights']
+        fields = ['id','username','gender','birthdate','microcontroller', 'rights']
     microcontroller = MicrocontrollerSerializer(many=True)
 
 class UserLoginSerializer(serializers.ModelSerializer):
