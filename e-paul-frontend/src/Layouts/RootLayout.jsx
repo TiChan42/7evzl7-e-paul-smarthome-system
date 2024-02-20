@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../components/pages/header";
+import Footer from "../components/pages/footer";
 import { Box, ChakraProvider } from "@chakra-ui/react";
 export default function RootLayout() {
     return (

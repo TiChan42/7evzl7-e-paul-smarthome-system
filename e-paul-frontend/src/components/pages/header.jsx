@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Grid, Button, Text, Image, Link, GridItem } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
-import './header.css'
 
 class Header extends Component {
     state = {  } 

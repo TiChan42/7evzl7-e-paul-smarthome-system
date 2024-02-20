@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import './about.css'
-import '../style.css'
-import { Button, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, Portal, Center, Card, SimpleGrid } from '@chakra-ui/react';
+import '../../style.css'
+import { Button, Card, SimpleGrid } from '@chakra-ui/react';
 import {
   Modal,
   ModalOverlay,

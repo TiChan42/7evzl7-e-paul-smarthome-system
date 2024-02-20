@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './chooseUser.css';
-import '../style.css';
+import '../../style.css';
 import {Avatar} from "@chakra-ui/avatar";
 import { Link } from 'react-router-dom';
 
