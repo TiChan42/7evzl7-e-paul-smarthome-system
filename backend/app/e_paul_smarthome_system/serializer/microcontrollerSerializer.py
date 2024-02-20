@@ -4,4 +4,4 @@ from rest_framework import serializers
 class MicrocontrollerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Microcontroller
-        fields = ['id','name','ip']
+        fields = ['id','name','key','User']
