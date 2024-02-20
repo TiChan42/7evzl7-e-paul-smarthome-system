@@ -12,10 +12,9 @@ class User(models.Model):
         admin = 'admin'
         user = 'user'
         
-    username = models.CharField(max_length=16, unique=True, null = True, blank = True)
+    username = models.CharField(max_length=12, unique=True, null = True, blank = True)
     account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
     pin = models.CharField(max_length=32)
-    key = models.CharField(max_length=50, unique=True, null = True, blank = True)
     role = models.TextField(choices = Role.choices)
     pictureid = models.IntegerField(null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
@@ -44,7 +43,6 @@ class User(models.Model):
         self.username = self.username
         self.account = self.account
         self.pin = self.pin
-        self.key = self.key
         self.role = self.role
         self.pictureid = self.pictureid
         self.gender = self.gender

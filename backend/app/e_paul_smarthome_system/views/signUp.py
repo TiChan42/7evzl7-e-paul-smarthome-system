@@ -1,5 +1,8 @@
 from ..model.account import Account
 from ..model.user import User
+from ..model.microcontroller import Microcontroller
+
+from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -93,5 +96,54 @@ for testing purposes
 "username" : "Zelda",
 "pin" : "187",
 "pictureId" : 1
+}
+"""
+
+import string
+import random
+
+def id_generator(size=20, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+class MicrocontrollerSignUp(APIView):
+    queryset = User.objects.all()
+    
+    def post(self, request):
+        data = request.data	
+        email = data["email"]
+        password = data["password"]
+        username = data["username"]
+        pin = data["pin"]
+        name = data["name"]
+
+        if Account.objects.get(email=email) == None:
+            return Response(status=400)
+        else:
+            account = Account.objects.get(email=email)
+            samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
+            if samePassword == 1:
+                if User.objects.get(account=account, username=username) :
+                    user = User.objects.get(account=account, username=username)
+                    samePin = checkpw(pin.encode("utf-8"), user.pin.encode("utf-8"))
+                    if samePin == 1:
+                        microcontroller = Microcontroller(name=name, User=user, key = id_generator())
+                        microcontroller.save()
+                        user.save()
+                        serializer = MicrocontrollerSerializer(microcontroller)
+                        return Response(serializer.data, status=201)
+                else:
+                    return Response(status=400)
+            else:
+                return Response(status=400)
+
+
+
+"""
+{
+"email" : "test",
+"password" : "435",
+"username" : "Zelda",
+"pin" : "187",
+"name" : "Zelda's Microcontroller"
 }
 """
