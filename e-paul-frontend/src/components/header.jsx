@@ -46,6 +46,10 @@ class Header extends Component {
                             path="/devices"
                             element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
                         />
+                        <Route
+                            path="/faq"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>FAQ</Text>}
+                        />
                         </Routes>
                         
                     </Box>

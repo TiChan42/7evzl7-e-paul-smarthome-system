@@ -149,7 +149,7 @@ function InternalStateEx() {
         <CardBody>
           <Flex justifyContent="center">
               <Image
-                src='./smarthome.svg'
+                src='../../assets/img/smarthome.svg'
                 alt='smarthome'
                 borderRadius='lg'
                 height={250}
@@ -170,7 +170,7 @@ function InternalStateEx() {
         <CardBody>
         <Flex justifyContent="center">
             <Image
-              src='./team.svg'
+              src='../../assets/img/team2.svg'
               alt='team'
               borderRadius='lg'
               height={250}
@@ -191,7 +191,7 @@ function InternalStateEx() {
         <CardBody>
           <Flex justifyContent="center">
             <Image
-              src='./callcenter.svg'
+              src='../../assets/img/callcenter.svg'
               alt='support'
               borderRadius='lg'
               height={250}
@@ -221,7 +221,7 @@ function InternalStateEx() {
         <CardBody>
           <Flex justifyContent="center">
             <Image
-              src='./paul2.png'
+              src='../../assets/img/paul2.png'
               alt='Paul'
               borderRadius='lg'
               height={250}
@@ -242,7 +242,7 @@ function InternalStateEx() {
         <CardBody>
           <Flex justifyContent="center">
             <Image
-              src='./pc.svg'
+              src='../../assets/img/pc.svg'
               borderRadius='lg'
               height={250}
               width={300}
@@ -269,7 +269,7 @@ function InternalStateEx() {
         <CardBody>
           <Flex justifyContent={"center"}>
             <Image
-              src='./location2.svg'
+              src='../../assets/img/location.svg'
               alt='location'
               borderRadius='lg'
               height={250}

@@ -11,6 +11,7 @@ import ChooseUser from "./components/chooseUser"
 import Impressum from "./components/impressum"
 import Devices from "./components/devices"
 import Options from "./components/options"
+import FAQ from "./components/faq";
 
 //router
 const router = createBrowserRouter (
@@ -24,6 +25,7 @@ const router = createBrowserRouter (
             <Route path="/impressum" element={<Impressum/>}/>
             <Route path="/devices" element={<Devices/>}/>
             <Route path="/options" element={<Options/>}/>
+            <Route path="/faq" element={<FAQ/>}/>
         </Route>
     )
 )
