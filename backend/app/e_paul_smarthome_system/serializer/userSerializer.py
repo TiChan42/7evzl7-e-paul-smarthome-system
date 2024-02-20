@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','key','gender','birthdate','microcontroller']
+        fields = ['id','username','key','gender','birthdate','microcontroller', 'rights']
     microcontroller = MicrocontrollerSerializer(many=True)
 
 class UserLoginSerializer(serializers.ModelSerializer):

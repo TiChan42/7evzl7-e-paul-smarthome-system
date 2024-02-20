@@ -13,7 +13,7 @@ class SignUp(APIView):
         data = request.data
         email = data["email"]
         password = data["password"]
-        wdhPassword = data["passwordRepeat"]
+        wdhPassword = data["confirmPassword"]
 
         def accountExists(email):
             if Account.objects.filter(email=email):
@@ -36,7 +36,7 @@ for testing purposes
 {
 "email" : "test",
 "password" : "435",
-"passwordRepeat" : "435"
+"confirmPassword" : "435"
 }
 """
 
@@ -73,7 +73,7 @@ class CreateUser(APIView):
             pin = pin.encode("utf-8")
             pinHash = hashpw(pin, salt=gensalt())
             pin = pinHash.decode("utf-8")
-            user = User(username = username, pin = pin, account = account, role = 'superuser')
+            user = User(username = username, pin = pin, account = account, role = 'superuser', pictureid=pictureId)
             user.save()
             return Response(status = 201)
         elif(userExists(accountId, username)==0):
