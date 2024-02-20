@@ -29,7 +29,6 @@ function InitialFocus() {
 
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
-
   const [subject, setSubject] = React.useState('')
   const [message, setMessage] = React.useState('')
 
@@ -110,32 +109,36 @@ function InternalStateEx() {
     </Card>
     <Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
       <CardBody>
-        <Image
-          src='./team.png'
-          alt='team'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
-          <Stack mt='6' spacing='3'>
-          <Heading size='md' textAlign={"center"}>Unser Team</Heading>
-          <Text textAlign={'center'}>
-            Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
-          </Text> 
-          <div>&nbsp;</div>
-          </Stack>
+        <Flex justifyContent="center">
+          <Image
+            src='./team.png'
+            alt='team'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
+        <Stack mt='6' spacing='3'>
+        <Heading size='md' textAlign={"center"}>Unser Team</Heading>
+        <Text textAlign={'center'}>
+          Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
+        </Text> 
+        <div>&nbsp;</div>
+        </Stack>
       </CardBody>
       
     </Card>
     <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
-        <Image
-          src='./support.png'
-          alt='support'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
+        <Flex justifyContent="center">
+          <Image
+            src='./support.png'
+            alt='support'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
         <Stack mt='6' spacing='3'>
         <Heading size='md' textAlign={"center"}>Support</Heading>
         <Text>

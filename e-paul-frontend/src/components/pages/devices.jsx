@@ -14,7 +14,7 @@ class Devices extends Component {
                     <Spacer></Spacer>
                     <OpenHistoryDrawer></OpenHistoryDrawer>
                 </Flex>
-
+                
                 <Box p={4}>
                     <Grid
                         h='700px'
