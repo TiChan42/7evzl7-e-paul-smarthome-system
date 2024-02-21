@@ -5,7 +5,10 @@
 
 body {
     background-color: rgba(var(--color), 0.2);
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
+    position: fixed;
+
 }
 
 .logo {

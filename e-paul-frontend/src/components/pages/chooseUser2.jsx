@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Grid, GridItem, Center, Show} from "@chakra-ui/react";
+import {Box, Text, Grid, GridItem, Center} from "@chakra-ui/react";
 import {Avatar} from "@chakra-ui/avatar";
 import { Link } from 'react-router-dom';
 import { encryptString, decryptString } from '../../encryptionUtils';
@@ -45,6 +45,37 @@ class ChooseUser extends Component {
       id: 7
     }
   };
+
+  //checks if user needs a pin
+  checkPinNeeded = (id) => {
+    //fetch user from backend
+    //if user needs pin, return true
+    //else return false
+    return false;
+
+  }
+
+  switchToUserMainPage = (id) => {
+    const encryptedId = encryptString(id.toString());
+    sessionStorage.setItem("userId", encryptedId);
+    window.location.href = "/devices";
+  }
+
+
+    
+
+  //if user is clicked, this method is called
+  openUser = (id) => {
+    if(this.checkPinNeeded(id)){
+      console.log("PIN needed!");
+      
+
+    }else{
+      console.log("OPEN User without PIN");
+      this.switchToUserMainPage(id);
+    }
+  }
+
   render() { 
     
     return (
@@ -53,7 +84,7 @@ class ChooseUser extends Component {
           templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', xl: 'repeat(4, 1fr)'}} 
           rowGap={196}
           columnGap={2}
-          mt={150}
+          mt={'100px'}
           maxWidth={'1000px'}
           >
 
@@ -61,7 +92,7 @@ class ChooseUser extends Component {
             return (
               <GridItem w='100%' h='0'  key={index} >
                 <Center w='250px' h='192px'  color='white' bg='transparent' alignItems='top' >
-                  <Link to="/devices" color='black' role='group' onClick={console.log("test")}>
+                  <Box variant='ghost' as='button' color='black' role='group' onClick={() => this.openUser(this.user[key].id)}>
                     <Center>
                       <Avatar 
                         border='4px' 
@@ -86,7 +117,7 @@ class ChooseUser extends Component {
                         {this.user[key].name}
                       </Text>
                     </Center>
-                  </Link>
+                  </Box>
                 </Center>
               </GridItem> 
             );

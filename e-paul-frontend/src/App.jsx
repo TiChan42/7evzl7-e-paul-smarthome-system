@@ -4,11 +4,11 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 //components
 import About from "./components/pages/about"
 import Login from "./components/pages/login"
-import SignIn from "./components/pages/signIn"
+import Register from "./components/pages/register"
 import RootLayout from "./Layouts/RootLayout"
 import Welcome from "./components/pages/welcome"
 import ChooseUser from "./components/pages/chooseUser2"
-import Impressum from "./components/pages/impressum"
+import Imprint from "./components/pages/imprint"
 import Devices from "./components/pages/devices"
 import UserSettings from "./components/pages/userSettings"
 import UserAdministration from "./components/pages/userAdministration"
@@ -20,9 +20,9 @@ const router = createBrowserRouter (
             <Route index element={<Welcome/>}/>
             <Route path="/about" element={<About/>}/>
             <Route path="/login" element={<Login/>}/>
-            <Route path="/signin" element={<SignIn/>}/>
-            <Route path="/chooseuser" element={<ChooseUser/>}/>
-            <Route path="/impressum" element={<Impressum/>}/>
+            <Route path="/register" element={<Register/>}/>
+            <Route path="/chooseUser" element={<ChooseUser/>}/>
+            <Route path="/imprint" element={<Imprint/>}/>
             <Route path="/devices" element={<Devices/>}/>
             <Route path="/userSettings" element={<UserSettings/>}/>
             <Route path="/userAdministration" element={<UserAdministration/>}/>

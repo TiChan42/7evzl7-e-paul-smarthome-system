@@ -6,7 +6,7 @@ class Header extends Component {
     state = {  } 
     render() { 
         return (
-            <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} h={"8vh"} zIndex={2} top={"0px"}>
+            <Grid templateColumns={{base: 'repeat(2, 1fr)',lg:'repeat(3, 1fr)'}} bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} h={"64px"} zIndex={2} top={"0px"} borderBottom={"1px"} borderBottomColor={"#f8fafc"}>
                 <GridItem>
                 <Link href="/" display={"flex"} p={4} alignItems="center" _hover={"false"}>
                     <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
@@ -14,7 +14,7 @@ class Header extends Component {
                 </Link>
                 </GridItem>
                 
-                <GridItem>
+                <GridItem display={{base:'none',lg:'inherit' }}>
                 <Box textAlign={'center'}>
                     <Routes>
                         <Route
@@ -60,14 +60,14 @@ class Header extends Component {
 
                 <GridItem>
                     <Box align='end'>
-                    <Link href="/signin" _hover={false} pr={4}>
+                    <Link href="/register" _hover={false} pr={4}>
                         <Button colorScheme='teal' variant='solid'>
-                            Sign up
+                            Registrieren
                         </Button>
                     </Link>
                     <Link href="/login" _hover={false} pr={4}>
                         <Button colorScheme='whiteAlpha' variant='solid'>
-                            Log in
+                            Anmelden
                         </Button>
                     </Link>
                     </Box>
