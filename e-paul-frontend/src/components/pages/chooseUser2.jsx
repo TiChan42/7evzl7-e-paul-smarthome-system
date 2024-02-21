@@ -46,6 +46,16 @@ class ChooseUser extends Component {
     }
   };
 
+  accountId = decryptString(sessionStorage.getItem('accountId').toString());
+  users = this.getUsers(this.accountId);
+
+
+  getUsers = (accountId) => {
+    //fetch users from backend
+    //return users
+    return this.user;
+  }
+
   //checks if user needs a pin
   checkPinNeeded = (id) => {
     //fetch user from backend
@@ -68,7 +78,7 @@ class ChooseUser extends Component {
   openUser = (id) => {
     if(this.checkPinNeeded(id)){
       console.log("PIN needed!");
-      
+
 
     }else{
       console.log("OPEN User without PIN");
@@ -88,11 +98,11 @@ class ChooseUser extends Component {
           maxWidth={'1000px'}
           >
 
-          {Object.keys(this.user).map((key, index) => {
+          {Object.keys(this.users).map((key, index) => {
             return (
               <GridItem w='100%' h='0'  key={index} >
                 <Center w='250px' h='192px'  color='white' bg='transparent' alignItems='top' >
-                  <Box variant='ghost' as='button' color='black' role='group' onClick={() => this.openUser(this.user[key].id)}>
+                  <Box variant='ghost' as='button' color='black' role='group' onClick={() => this.openUser(this.users[key].id)}>
                     <Center>
                       <Avatar 
                         border='4px' 
@@ -101,8 +111,8 @@ class ChooseUser extends Component {
                         borderTopColor='Teal'
                         borderBottomColor='Teal'
                         size='2xl' 
-                        name={ this.user[key].name } 
-                        src={this.user[key].profileImagePath} 
+                        name={ this.users[key].name } 
+                        src={this.users[key].profileImagePath} 
                         _groupHover={{border:'8px', borderColor: 'teal.300' }}
                       />
                     </Center>
@@ -114,7 +124,7 @@ class ChooseUser extends Component {
                         mt={2}
                         maxWidth='250px'
                       >
-                        {this.user[key].name}
+                        {this.users[key].name}
                       </Text>
                     </Center>
                   </Box>
