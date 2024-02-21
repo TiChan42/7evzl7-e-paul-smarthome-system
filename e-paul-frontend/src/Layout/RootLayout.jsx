@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import Header from "./header";
-import Footer from "./footer";
+import Header from "../components/header";
+import Footer from "../components/footer";
 import { Box, ChakraProvider } from "@chakra-ui/react";
 import theme from "../styles/theme";
 
 export default function RootLayout() {
     return (
         <ChakraProvider theme={theme}>
-            <Box bg='gray.50'>
+            <Box>
                 <Header/>
                 <Box minHeight="88vh">
                     <Outlet/>

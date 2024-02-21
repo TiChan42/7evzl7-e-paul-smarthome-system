@@ -2,15 +2,16 @@ import React from "react";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 
 //components
-import About from "./components/pages/about";
-import Login from "./components/pages/login";
-import SignIn from "./components/pages/signIn";
-import RootLayout from "./Layouts/RootLayout"
-import Welcome from "./components/pages/welcome"
-import ChooseUser from "./components/pages/chooseUser"
-import Impressum from "./components/pages/impressum"
-import Devices from "./components/pages/devices"
-import Options from "./components/pages/options"
+import About from "./pages/about";
+import Login from "./pages/login";
+import SignIn from "./pages/signIn";
+import RootLayout from "./Layout/RootLayout"
+import Welcome from "./pages/welcome"
+import ChooseUser from "./pages/chooseUser"
+import Impressum from "./pages/impressum"
+import Devices from "./pages/devices"
+import Options from "./pages/options"
+import Darkmode from "./pages/darkmode"
 
 //router
 const router = createBrowserRouter (
@@ -24,6 +25,7 @@ const router = createBrowserRouter (
             <Route path="/impressum" element={<Impressum/>}/>
             <Route path="/devices" element={<Devices/>}/>
             <Route path="/options" element={<Options/>}/>
+            <Route path="/darkmode" element={<Darkmode/>}/>
         </Route>
     )
 )

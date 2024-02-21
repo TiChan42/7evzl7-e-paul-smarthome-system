@@ -3,7 +3,6 @@ import {Card, CardBody, Image, Stack, Heading, Text, Flex, Box} from '@chakra-ui
 
 
 function InternalStateEx() {
-    const initRef = React.useRef()
     return (
         <Box width="100%" display="flex" justifyContent="center">
             <Card bg={"#fff"} opacity={"1.0"} borderRadius={"60px"} width="800px" justifyContent={"center"} align={"center"}>

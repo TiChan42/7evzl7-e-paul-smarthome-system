@@ -1,52 +1,32 @@
 import { mode } from "@chakra-ui/theme-tools";
 import { extendTheme } from "@chakra-ui/react";
-
+import { ButtonStyles as Button } from "./componentStyles/buttonStyles";
+import { colors } from "./colors";
 const config = {
-    initialColorMode: 'system',
-    useSystemColorMode: true,
-  }
+  //use System ColorMode Settings
+  initialColorMode: 'system',
+  useSystemColorMode: true,
+}
 
 const theme = extendTheme ({ 
   config,
-  colors: {
-    //custom colors
-    custom: {
-      primary: {
-        light: "#218395",
-        dark: "",
+  colors,
+
+  styles: {
+    global: (props) => ({
+      body: {
+        bg: mode("#ffffff","#214554")(props),
       },
-      secondary: {
-        light: "#69a5bf",
-        dark: "",
-      },
-      info: {
-        light: "#3f885f",
-        dark: "",
-      },
-      success: { 
-        light: "#139f4f",
-        dark: "",
-      },
-      warning: {
-        light: "#e7c715",
-        dark: "",
-      },
-      danger: {
-        light: "#f10927",
-        dark: "",
-      },
-      bar: {
-        light: "#96b7c0",
-        dark: "#213e59",
-      },
-      background: {
-        light: "",
-        dark: "#214554",
-      },
-    },
+      ':root': {
+        '--chakra-colors-primary': mode('#214554','#213e59')(props),
+        '--chakra-colors-nav': mode('#96b7c0','#213e59')(props),
+      }
+    })
   },
   
   components: {
+    Button,
+
     Input: {
       variants: {
         filled: (props) => ({

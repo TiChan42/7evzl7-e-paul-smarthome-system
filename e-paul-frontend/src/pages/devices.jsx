@@ -1,9 +1,9 @@
 import { Component } from "react";
 import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader} from "@chakra-ui/react";
 import { EditIcon } from '@chakra-ui/icons'
-import AddGroupDialog from "../addGroupDialog"
-import AddDeviceDialog from "../addDeviceDialog";
-import OpenHistoryDrawer from "../openhistoryDrawer";
+import AddGroupDialog from "../components/addGroupDialog"
+import AddDeviceDialog from "../components/addDeviceDialog";
+import OpenHistoryDrawer from "../components/openhistoryDrawer";
 
 class Devices extends Component {
     render() { 
