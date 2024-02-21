@@ -109,41 +109,44 @@ function InternalStateEx() {
     </Card>
     <Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
       <CardBody>
-        <Image
-          src='./team.png'
-          alt='team'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
-          <Stack mt='6' spacing='3'>
-          <Heading size='md' textAlign={"center"}>Unser Team</Heading>
-          <Text textAlign={'center'}>
-            Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
-          </Text> 
-          <div>&nbsp;</div>
-          </Stack>
+        <Flex justifyContent="center">
+          <Image
+            src='./team.png'
+            alt='team'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
+            <Stack mt='6' spacing='3'>
+            <Heading size='md' textAlign={"center"}>Unser Team</Heading>
+            <Text textAlign={'center'}>
+              Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
+            </Text> 
+            <div>&nbsp;</div>
+            </Stack>
       </CardBody>
       
     </Card>
     <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
-        <Image
-          src='./support.png'
-          alt='support'
-          borderRadius='lg'
-          height={250}
-          width={350}
-        />
-        <Stack mt='6' spacing='3'>
-        <Heading size='md' textAlign={"center"}>Support</Heading>
-        <Text>
-          Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht! 
-        </Text> 
-        <div>&nbsp;</div>
-        </Stack>
-
-        <InitialFocus />
+        <Flex justifyContent="center">
+          <Image
+            src='./support.png'
+            alt='support'
+            borderRadius='lg'
+            height={250}
+            width={350}
+          />
+        </Flex>
+          <Stack mt='6' spacing='3'>
+          <Heading size='md' textAlign={"center"}>Support</Heading>
+          <Text>
+            Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht! 
+          </Text> 
+          <div>&nbsp;</div>
+          </Stack>
+          <InitialFocus />
       </CardBody>
     </Card>
     </SimpleGrid>
