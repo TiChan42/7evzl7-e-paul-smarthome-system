@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import '../../style.css'
+import '../../styles/style.css'
+import '../../styles/theme.js'
 import { 
   Button, 
   Card, 
@@ -44,7 +45,8 @@ function InitialFocus() {
   }
   return (
     <>
-      <Button onClick={onOpen} colorScheme='teal' variant='solid' >Ich brauche Support</Button>
+      <Button onClick={onOpen} bg={"primary"} variant='solid'>Ich brauche Support</Button>
+  
 
       <Modal
         initialFocusRef={initialRef}
@@ -60,7 +62,7 @@ function InitialFocus() {
     
             <FormControl>
               <FormLabel>Betreff</FormLabel>
-              <Input ref={initialRef} placeholder='Ich habe ein Problem mit E-Paul' value={subject} onChange={handleSubjectChange} />
+              <Input ref={initialRef} variant={"filled"} placeholder='Ich habe ein Problem mit E-Paul' value={subject} onChange={handleSubjectChange} />
             </FormControl>
 
             <FormControl>
