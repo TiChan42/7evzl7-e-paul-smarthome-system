@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 
   //YOOO benutz später toast für benachrichtigungen
-  class Options extends Component {
+  class UserSettings extends Component {
     state = {  } 
     render() { 
 
@@ -36,4 +36,4 @@ return (
       );
     };
   }
-export default Options;
+export default UserSettings;

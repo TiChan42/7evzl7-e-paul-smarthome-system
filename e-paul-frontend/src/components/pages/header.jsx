@@ -19,15 +19,15 @@ class Header extends Component {
                     <Routes>
                         <Route
                             path="/"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Welcome</Text>}
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Willkommen</Text>}
                         />
                         <Route
                             path="/about"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>About</Text>}
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Über uns</Text>}
                         />
                         <Route
                             path="/chooseuser"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>User</Text>}
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzerauswahl</Text>}
                         />
                         <Route
                             path="/signIn"
@@ -44,6 +44,14 @@ class Header extends Component {
                         <Route
                             path="/devices"
                             element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
+                        />
+                        <Route
+                            path="/userSettings"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzereinstellungen</Text>}
+                        />
+                        <Route
+                            path="/userAdministration"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzerverwaltung</Text>}
                         />
                         </Routes>
                         

@@ -22,8 +22,9 @@ class SignIn extends Component {
 
     //Regular expression to check password
     validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-        return passwordRegex.test(password);
+        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+        //return passwordRegex.test(password);
+        return true;
     }
 
     //POST the content of form as JSON
@@ -43,14 +44,14 @@ class SignIn extends Component {
                 return;
             } else {
                 this.setState({ passwordError: "" }); //reset error message
-                
-                fetch("http://localhost:3000/signUp", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            }).then(res => res.json())
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                }
+
+                fetch("http://epaul-smarthome.de:8000/api/signUp", requestOptions)
+                .then(response => response.json())
                 .then(data => console.log(data))
                 .catch(error => console.log(error))
             }   

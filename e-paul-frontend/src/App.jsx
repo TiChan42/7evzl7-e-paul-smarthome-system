@@ -2,15 +2,16 @@ import React from "react";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 
 //components
-import About from "./components/pages/about";
-import Login from "./components/pages/login";
-import SignIn from "./components/pages/signIn";
+import About from "./components/pages/about"
+import Login from "./components/pages/login"
+import SignIn from "./components/pages/signIn"
 import RootLayout from "./Layouts/RootLayout"
 import Welcome from "./components/pages/welcome"
-import ChooseUser from "./components/pages/chooseUser"
+import ChooseUser from "./components/pages/chooseUser2"
 import Impressum from "./components/pages/impressum"
 import Devices from "./components/pages/devices"
-import Options from "./components/pages/options"
+import UserSettings from "./components/pages/userSettings"
+import UserAdministration from "./components/pages/userAdministration"
 
 //router
 const router = createBrowserRouter (
@@ -23,7 +24,8 @@ const router = createBrowserRouter (
             <Route path="/chooseuser" element={<ChooseUser/>}/>
             <Route path="/impressum" element={<Impressum/>}/>
             <Route path="/devices" element={<Devices/>}/>
-            <Route path="/options" element={<Options/>}/>
+            <Route path="/userSettings" element={<UserSettings/>}/>
+            <Route path="/userAdministration" element={<UserAdministration/>}/>
         </Route>
     )
 )
