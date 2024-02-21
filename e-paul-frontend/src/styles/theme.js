@@ -51,7 +51,7 @@ const theme = extendTheme ({
       variants: {
         filled: (props) => ({
           field: {
-            bg: mode("blue.200", "purple.200")(props),
+            bg: mode("primary.light", "primary.dark")(props),
             _focusVisible: {
               bg: "transparent",
               borderColor: mode("blue", "purple")(props)
