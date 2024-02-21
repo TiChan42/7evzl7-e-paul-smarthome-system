@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import '../../style.css'
-import { Button, Card, SimpleGrid } from '@chakra-ui/react';
-import {
+import { 
+  Button, 
+  Card, 
+  SimpleGrid, 
   Modal,
   ModalOverlay,
   ModalContent,
@@ -29,6 +31,7 @@ function InitialFocus() {
 
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
+
   const [subject, setSubject] = React.useState('')
   const [message, setMessage] = React.useState('')
 
@@ -39,7 +42,6 @@ function InitialFocus() {
     const mailtoLink = `mailto:mddruica@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`
     return mailtoLink
   }
-
   return (
     <>
       <Button onClick={onOpen} colorScheme='teal' variant='solid' >Ich brauche Support</Button>
@@ -80,9 +82,7 @@ function InitialFocus() {
 }
 
 
-
 function InternalStateEx() {
-  const initRef = React.useRef()
   return (
     <>
     <SimpleGrid columns={[2, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"}>
@@ -109,36 +109,32 @@ function InternalStateEx() {
     </Card>
     <Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
       <CardBody>
-        <Flex justifyContent="center">
-          <Image
-            src='./team.png'
-            alt='team'
-            borderRadius='lg'
-            height={250}
-            width={350}
-          />
-        </Flex>
-        <Stack mt='6' spacing='3'>
-        <Heading size='md' textAlign={"center"}>Unser Team</Heading>
-        <Text textAlign={'center'}>
-          Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
-        </Text> 
-        <div>&nbsp;</div>
-        </Stack>
+        <Image
+          src='./team.png'
+          alt='team'
+          borderRadius='lg'
+          height={250}
+          width={350}
+        />
+          <Stack mt='6' spacing='3'>
+          <Heading size='md' textAlign={"center"}>Unser Team</Heading>
+          <Text textAlign={'center'}>
+            Unser E-Paul-Team besteht aus 10 engagierten und motivierten Entwicklern. Unser Ziel ist es Ihr Smart-Home-System zu verbessern und deshalb arbeiten wir ununterbrochen daran neue Funktionen einzubauen. Hierfür sind wir als Entwickler immer im Frontend, Backend und mit den ESP-8266 Mikrokontrollern tätig.
+          </Text> 
+          <div>&nbsp;</div>
+          </Stack>
       </CardBody>
       
     </Card>
     <Card bg={"rgba(33, 131, 149, 1.0)"} borderRadius={"60px"} textAlign={"center"} CardShadow={"xl"}>
       <CardBody>
-        <Flex justifyContent="center">
-          <Image
-            src='./support.png'
-            alt='support'
-            borderRadius='lg'
-            height={250}
-            width={350}
-          />
-        </Flex>
+        <Image
+          src='./support.png'
+          alt='support'
+          borderRadius='lg'
+          height={250}
+          width={350}
+        />
         <Stack mt='6' spacing='3'>
         <Heading size='md' textAlign={"center"}>Support</Heading>
         <Text>
