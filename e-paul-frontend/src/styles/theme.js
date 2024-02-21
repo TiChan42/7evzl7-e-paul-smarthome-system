@@ -15,11 +15,12 @@ const theme = extendTheme ({
   styles: {
     global: (props) => ({
       body: {
-        bg: mode("#ffffff","#214554")(props),
+        bg: mode("#DFE3E4","#5e7a8d")(props),
       },
       ':root': {
         '--chakra-colors-primary': mode('#214554','#213e59')(props),
-        '--chakra-colors-nav': mode('#96b7c0','#213e59')(props),
+        '--chakra-colors-secondary': mode('#54B8D2','#54B8D2')(props),
+        '--chakra-colors-nav': mode('#00697B','#002939')(props),
       }
     })
   },

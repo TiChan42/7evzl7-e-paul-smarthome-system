@@ -58,7 +58,7 @@ class Header extends Component {
                         </Button>
                     </Link>
                     <Link href="/login" _hover={false} pr={4}>
-                        <Button colorScheme='whiteAlpha' variant='solid'>
+                        <Button variant={'secondary'}>
                             Log in
                         </Button>
                     </Link>

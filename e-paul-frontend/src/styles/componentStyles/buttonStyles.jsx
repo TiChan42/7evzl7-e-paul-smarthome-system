@@ -9,18 +9,21 @@ export const ButtonStyles = {
 
 
     variants: {
-        primary: {
-            bg: mode("white","black"),
+        primary: (props) => ({
+            bg: mode("primary","secondary")(props),
             color: "black",
             _hover: {
-                //bg: whiten("primary", 20),
+                bg: mode("#primary","#039FA0")(props),
+                transition: "0.5s",
+            },
+            _active: {
+                transform: "scale(1.02)",
             }
-        },
+        }),
         secondary: {
             bg: "secondary",
         },
-    },
-        
+    },  
 
     defaultProps: {},
 }
