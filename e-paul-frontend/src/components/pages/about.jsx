@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../styles/style.css'
-import '../../styles/theme.js'
+import ChangeColorMode from '../changeColorMode'
 import { 
   Button, 
   Card, 
@@ -46,6 +46,8 @@ function InitialFocus() {
   return (
     <>
       <Button onClick={onOpen} bg={"primary"} variant='solid'>Ich brauche Support</Button>
+      <ChangeColorMode />
+      <Button bg={"custom.info"}>ff</Button>
   
 
       <Modal
