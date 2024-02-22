@@ -50,11 +50,11 @@ class LoginUser(APIView):
         username = data["username"]
         pin = data["pin"].encode("utf-8")
         try:
-            user = User.objects.filter(account = accountId, username = username)
+            user = User.objects.get(account = accountId, username = username)
         except User.DoesNotExist:
             return Response(status = 400)
         if user:
-            savedpin = user[0].pin.encode("utf-8")
+            savedpin = user.pin.encode("utf-8")
             try:
                 samePin = checkpw(pin, savedpin)
             except ValueError:

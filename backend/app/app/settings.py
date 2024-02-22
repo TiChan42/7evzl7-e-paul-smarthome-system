@@ -105,7 +105,7 @@ DATABASES = {
 
 # URL of the Frontend server
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://epaul-smarthome.de"
 ]
 
 CORS_ALLOW_METHODS = (
