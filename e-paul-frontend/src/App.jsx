@@ -6,12 +6,18 @@ import About from "./components/pages/about"
 import Login from "./components/pages/login"
 import Register from "./components/pages/register"
 import RootLayout from "./Layouts/RootLayout"
-import Welcome from "./components/pages/welcome"
-import ChooseUser from "./components/pages/chooseUser2"
+import Welcome from "./components/welcome"
+import ChooseUser from "./components/chooseUser"
+import Impressum from "./components/impressum"
 import Imprint from "./components/pages/imprint"
-import Devices from "./components/pages/devices"
+import Devices from "./components/devices"
+import Options from "./components/options"
+import FAQ from "./components/faq"
 import UserSettings from "./components/pages/userSettings"
 import UserAdministration from "./components/pages/userAdministration"
+
+import theme from "./theme";
+import { ChakraProvider } from "@chakra-ui/react";
 
 //router
 const router = createBrowserRouter (
@@ -24,6 +30,8 @@ const router = createBrowserRouter (
             <Route path="/chooseUser" element={<ChooseUser/>}/>
             <Route path="/imprint" element={<Imprint/>}/>
             <Route path="/devices" element={<Devices/>}/>
+            <Route path="/options" element={<Options/>}/>
+            <Route path="/faq" element={<ChakraProvider theme={theme}><FAQ/></ChakraProvider>}/>
             <Route path="/userSettings" element={<UserSettings/>}/>
             <Route path="/userAdministration" element={<UserAdministration/>}/>
         </Route>

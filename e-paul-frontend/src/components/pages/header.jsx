@@ -6,11 +6,11 @@ class Header extends Component {
     state = {  } 
     render() { 
         return (
-            <Grid templateColumns={{base: 'repeat(2, 1fr)',lg:'repeat(3, 1fr)'}} bg={"#218395"} alignItems="center" position={'sticky'} w={"100%"} h={"64px"} zIndex={2} top={"0px"} borderBottom={"1px"} borderBottomColor={"#f8fafc"}>
+            <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" verticalAlign="middle" position={'sticky'} w={"100%"} h="8vh" minH="50px" zIndex={2} top={"0px"}>
                 <GridItem>
-                <Link href="/" display={"flex"} p={4} alignItems="center" _hover={"false"}>
+                <Link href="/" display={"flex"} p={[1]} alignItems="center" _hover={"false"}>
                     <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
-                    <Text color={"whitesmoke"} fontSize={"xl"} as={"b"} display={'inline-block'} _hover={{}}> E-Paul</Text>
+                    <Text color={"whitesmoke"} fontSize={["sm","md", "xl"]} as={"b"} display={'inline-block'} _hover={{}}> E-Paul</Text>
                 </Link>
                 </GridItem>
                 
@@ -19,31 +19,35 @@ class Header extends Component {
                     <Routes>
                         <Route
                             path="/"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Willkommen</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Welcome</Text>}
                         />
                         <Route
                             path="/about"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Über uns</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>About</Text>}
                         />
                         <Route
                             path="/chooseuser"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzerauswahl</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>User</Text>}
                         />
                         <Route
                             path="/signIn"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Registrieren</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Registrieren</Text>}
                         />
                         <Route
                             path="/login"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Anmelden</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Anmelden</Text>}
                         />
                         <Route
                             path="/impressum"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Impressum</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Impressum</Text>}
                         />
                         <Route
                             path="/devices"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Geräteübersicht</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Geräteübersicht</Text>}
+                        />
+                        <Route
+                            path="/faq"
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>FAQ</Text>}
                         />
                         <Route
                             path="/userSettings"
@@ -60,14 +64,14 @@ class Header extends Component {
 
                 <GridItem>
                     <Box align='end'>
-                    <Link href="/register" _hover={false} pr={4}>
-                        <Button colorScheme='teal' variant='solid'>
-                            Registrieren
+                    <Link href="/signin" _hover={false} pr={[1, 2, 4]}>
+                        <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]}>
+                            Sign up
                         </Button>
                     </Link>
-                    <Link href="/login" _hover={false} pr={4}>
-                        <Button colorScheme='whiteAlpha' variant='solid'>
-                            Anmelden
+                    <Link href="/login" _hover={false} pr={[1, 2, 4]}>
+                        <Button colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]}>
+                            Log in
                         </Button>
                     </Link>
                     </Box>
