@@ -1,0 +1,43 @@
+from ..model.account import Account
+from ..model.user import User
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from bcrypt import checkpw
+
+class ValidatePin(APIView):
+    queryset = Account.objects.all()
+    
+    def post(self, request):
+        accountId = request.data["accountId"]
+        userId = request.data["userId"]
+        pin = request.data["pin"].encode("utf-8")
+        account = Account.objects.get(pk = accountId)
+        
+        #user = account.user.get(pk = userId)
+        user = User.objects.filter(account__id= accountId).get(id = userId)
+        
+        savedpin = user.pin.encode("utf-8")
+        try:
+            samePin = checkpw(pin, savedpin)
+        except ValueError:
+            return Response(status = 400)     
+        
+        if samePin == 1:
+            return Response({"valid" : 1},status = 200)
+        if samePin == 0:
+            return Response({"valid" : 0},status = 200)
+        else:
+            return Response(status = 400)
+        
+# User.objects.get(id = userId) | User.objects.get(account__id = accountId)
+"""
+Teststring:
+{
+    "accountId" : 3,
+    "userId" : 4,
+    "pin" : "187"
+}
+"""
+
