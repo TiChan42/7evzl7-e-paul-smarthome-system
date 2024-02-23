@@ -1,164 +1,228 @@
-import React, { Component } from 'react';
-import {Box, Text, Grid, GridItem, Center} from "@chakra-ui/react";
+import React, { Component,useState, useEffect } from 'react';
+import {Box, Text, Center, Spinner,Wrap,WrapItem,useDisclosure} from "@chakra-ui/react";
 import {Avatar} from "@chakra-ui/avatar";
-import { Link } from 'react-router-dom';
 import { encryptString, decryptString } from '../../encryptionUtils';
+import UserPinRequestModal from '../userPinRequestModal';
 
+//local test presets (dont needed at server)
+sessionStorage.setItem('accountID', encryptString('1'));
 
+function Users(isTest) {
+  const userImageFolder = "assets/img/user_profile_images/";
 
-class ChooseUser extends Component {
-  state = {  } 
-  user = {
+  //Test Array für Benutzer
+  const user = {
     user1: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_1.jpg",
+      profileImagePath: "user_profile_1.jpg",
       name: "Paul56789012",
       id: 1
     },
     user2: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_2.jpg",
+      profileImagePath: "user_profile_2.jpg",
       name: "WWWWWWWWWWWW",
       id: 2
     },
     user3: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_3.jpg",
-      name: "Deine Mutter",
+      profileImagePath: "user_profile_3.jpg",
+      name: "XXXXXXXXXXXX",
       id: 3
     },
     user4: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_4.jpg",
-      name: "Hans",
+      profileImagePath: "user_profile_4.jpg",
+      name: "YYYYYYYYYYYY",
       id: 4
     },
     user5: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_5.jpg",
-      name: "Peter",
+      profileImagePath: "user_profile_5.jpg",
+      name: "ZZZZZZZZZZZZ",
       id: 5
     },
     user6: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_6.jpg",
-      name: "Klaus",
+      profileImagePath: "user_profile_6.jpg",
+      name: "AAAAAAAAAAAA",
       id: 6
     },
     user7: {
-      profileImagePath: "assets/img/user_profile_images/user_profile_7.jpg",
-      name: "Karl",
+      profileImagePath: "user_profile_7.jpg",
+      name: "BBBBBBBBBBBB",
       id: 7
     }
+
   };
 
-  accountId = decryptString(sessionStorage.getItem('accountId').toString());
-  users = this.getUsers(this.accountId);
+  //Benutzerliste
+  const [users, setUsers] = useState(null);
 
+  //Referenzen auf die Pin-Modals Array
+  const pinModals = [React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef()];
+  const userAdministrationPinModal = React.createRef();
+  let accountID = decryptString(sessionStorage.getItem('accountID').toString());
 
-  getUsers = (accountId) => {
-    //fetch users from backend
-    //return users
-    return this.user;
-  }
+  
 
-  //checks if user needs a pin
-  checkPinNeeded = (id) => {
+  
+  //setzt den Nutzer
+  useEffect(() => {
+    if(isTest){
+      setUsers(user);
+    }else{
+      setUsers(user);
+    }
+    console.log(users);
+    
+
+  }, []);
+
+  //prüft ob ein Pin benötigt wird
+  const checkPinNeeded = (id) => {
     //fetch user from backend
     //if user needs pin, return true
     //else return false
-    return false;
+    return true;
+  };
 
-  }
-
-  switchToUserMainPage = (id) => {
+  //Benutzer wird in der Session gespeichert und die Seite wird auf die Übersichtsseite weitergeleitet
+  const switchToUserMainPage = (id) => {
     const encryptedId = encryptString(id.toString());
-    sessionStorage.setItem("userId", encryptedId);
+    sessionStorage.setItem("executingUserID", encryptedId);
     window.location.href = "/devices";
-  }
+  };
 
+  //wenn auf Benutzereinstellungen geklickt wird
+  const openUserSettings = () => {
+    console.log(userAdministrationPinModal);
+    //window.location.href = "/userSettings";
+  };
 
-    
-
-  //if user is clicked, this method is called
-  openUser = (id) => {
-    if(this.checkPinNeeded(id)){
-      console.log("PIN needed!");
-
-
+  //wenn auf Benutzer geklickt wird
+  const openUser = (id,index) => {
+    if(checkPinNeeded(id)){
+        console.log("PIN needed!");
+        //document.getElementsByClassName("UserPinRequestModal-"+index).onOpen();
+        console.log(pinModals[index].current);
+        
     }else{
-      console.log("OPEN User without PIN");
-      this.switchToUserMainPage(id);
+        console.log("OPEN User without PIN");
+        switchToUserMainPage(id);
     }
-  }
+  };
 
-  render() { 
-    
-    return (
-      <Center>
-        <Grid 
-          templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)', xl: 'repeat(4, 1fr)'}} 
-          rowGap={196}
-          columnGap={2}
-          mt={'100px'}
-          maxWidth={'1000px'}
-          >
+  return (
+    <Wrap 
+      w='auto'
+      
+      mt={'100px'}
+      maxWidth={{base: '220px', md: '445px', xl: '895px'}}
+      spacing='5px' 
+      >
+        
+      
+        {users &&
 
-          {Object.keys(this.users).map((key, index) => {
-            return (
-              <GridItem w='100%' h='0'  key={index} >
-                <Center w='250px' h='192px'  color='white' bg='transparent' alignItems='top' >
-                  <Box variant='ghost' as='button' color='black' role='group' onClick={() => this.openUser(this.users[key].id)}>
-                    <Center>
-                      <Avatar 
-                        border='4px' 
-                        borderEndColor='Teal' 
-                        borderStartColor='Teal' 
-                        borderTopColor='Teal'
-                        borderBottomColor='Teal'
-                        size='2xl' 
-                        name={ this.users[key].name } 
-                        src={this.users[key].profileImagePath} 
-                        _groupHover={{border:'8px', borderColor: 'teal.300' }}
-                      />
-                    </Center>
-                    <Center>
-                      <Text
-                        fontSize='lg'
-                        fontWeight='bold'
-                        color='black'
-                        mt={2}
-                        maxWidth='250px'
-                      >
-                        {this.users[key].name}
-                      </Text>
-                    </Center>
-                  </Box>
-                </Center>
-              </GridItem> 
-            );
-          }
-          )}
-          <GridItem w='100%' h='0'>
-            <Center w='200' h='190px'  color='white' bg='transparent'>
-              <Link to="/userAdministration" color='black' pt='0' role='group'>
+          <React.Fragment>
+          {Object.keys(users).map((key, index) => (
+            <WrapItem w='220px' h='192px' key={index} alignItems='top'>
+              <Center w='220px' h='192px' color='white' bg='transparent' alignItems='top'>
+                <Box variant='ghost' as='button' color='black' role='group' onClick={() => openUser(users[key].id, index)}>
+                  <Center>
+                    <Avatar
+                      border='4px'
+                      borderEndColor='Teal'
+                      borderStartColor='Teal'
+                      borderTopColor='Teal'
+                      borderBottomColor='Teal'
+                      size='2xl'
+                      name={users[key].name}
+                      src={userImageFolder + users[key].profileImagePath}
+                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                    />
+                  </Center>
+                  <Center>
+                    <Text
+                      fontSize='lg'
+                      fontWeight='bold'
+                      color='black'
+                      mt={2}
+                      maxWidth='250px'
+                    >
+                      {users[key].name}
+                    </Text>
+                  </Center>
+                </Box>
+              </Center>
+              <UserPinRequestModal ref={pinModals[index]} executeIfValid={() => window.location.href = "/devices"} users={users}/>
+            </WrapItem>
+            
+          ))}
+          <WrapItem w='220px' h='192px' alignItems='top'>
+              <Center w='220px' h='192px' color='white' bg='transparent' alignItems='top'>
+                <Box variant='ghost' as='button' color='black' role='group' onClick={() => openUserSettings()}>
+                  <Center>
+                    <Avatar
+                      border='4px'
+                      borderEndColor='Teal'
+                      borderStartColor='Teal'
+                      borderTopColor='Teal'
+                      borderBottomColor='Teal'
+                      size='2xl'
+                      src={userImageFolder + 'user_settings.png'}
+                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                    />
+                  </Center>
+                  <Center>
+                    <Text
+                      fontSize='lg'
+                      fontWeight='bold'
+                      color='black'
+                      mt={2}
+                      maxWidth='250px'
+                    >
+                      Benutzerverwaltung
+                    </Text>
+                  </Center>
+                </Box>
+              </Center>
+              <UserPinRequestModal ref={userAdministrationPinModal} executeIfValid={() => window.location.href = "/userAdministration"} users={users} />
+            </WrapItem>
+          </React.Fragment>
+        }
+        {!users && 
+          <WrapItem w='220px' h='192px'>
+            <Center w='220px' h='192px'  color='white' bg='transparent' alignItems='top' display='block'>
+              
                 <Avatar 
-                  
                   border='4px' 
                   borderEndColor='Teal' 
                   borderStartColor='Teal' 
                   borderTopColor='Teal'
                   borderBottomColor='Teal'
                   size='2xl' 
-                  name='user_settings'
-                  src='assets/img/user_profile_images/user_settings.png'
-                  _groupHover={{border:'8px', borderColor: 'teal.300' }}
+                  icon = {<Spinner size='xl' color='Teal' />}
                 />
-                <Center>
-                  <Text fontSize='lg' fontWeight='bold' color='black' mt={2} whiteSpace="pre-line">Benutzer</Text>
-                </Center>
-                <Center>
-                  <Text fontSize='lg' fontWeight='bold' color='black'  whiteSpace="pre-line">Verwaltung</Text>
-                </Center>
-                
-              </Link>
+              <Box>
+              <Center>
+                  <Text fontSize='lg' fontWeight='bold' color='black' mt={2} whiteSpace="pre-line">Lade Benutzer</Text>
+              </Center>
+              </Box>
             </Center>
-          </GridItem>
-        </Grid>
+            
+          </WrapItem>
+        }
+    </Wrap>
+  );
+}
+
+
+
+
+
+class ChooseUser extends Component {
+  isTest = true;
+  render() { 
+    
+    return (
+      <Center>
+        <Users isTest={this.isTest} ></Users>
       </Center>
       );
   };  

@@ -7,7 +7,7 @@ import OpenHistoryDrawer from "../openhistoryDrawer";
 import { decryptString } from '../../encryptionUtils';
 
 class Devices extends Component {
-    userID = decryptString(sessionStorage.getItem('userId').toString());
+    userID = decryptString(sessionStorage.getItem('executingUserID').toString());
     state = {  }
     
 
