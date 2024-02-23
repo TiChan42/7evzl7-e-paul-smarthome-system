@@ -6,6 +6,13 @@ from rest_framework.response import Response
 class Logout(APIView):
     queryset = Account.objects.all()
     def logout(self, request):
-        account = Account.objects.filter()
+        accountId = request.data["accountId"]
+        try:
+            account = Account.objects.get(pk = accountId)
+        except Account.DoesNotExist:
+            return Response(status = 400)
+        
+        return Response({"logout":1},status = 200)
+        
 
         

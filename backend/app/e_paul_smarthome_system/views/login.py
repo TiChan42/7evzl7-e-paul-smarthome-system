@@ -33,9 +33,6 @@ class Login(APIView):
         
 """
 {
-"accountId" : 1,
-"username" : "Link",
-"pin" : "325" ,
 "password":"435",
 "email":"test"
 }
