@@ -24,8 +24,8 @@ urlpatterns = [
     path("login/user", LoginUser.as_view(), name = "loginUser"),
     path("logout", Logout.as_view(), name = "logout"),
     path("home/<userid>", HomeView.as_view(), name="home"),
-    path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
-    path("settings/<userid>", SingleUserSettingsView.as_view(), name = "userSettings"),
     path("devices", DeviceView.as_view(), name = "devices"), 
     path("validatePin", ValidatePin.as_view(), name = "validatePin"),
+    path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
+    path("settings/<userid>", SingleUserSettingsView.as_view(), name = "userSettings"),
 ]

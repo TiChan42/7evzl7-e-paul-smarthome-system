@@ -8,7 +8,7 @@ class DeviceView(APIView):
     queryset = Account.objects.all()
 
     def post(self, request):
-        id = request.data['id']
+        id = request.data['accountId']
         queryset = Account.objects.get(pk = id)
         serializer = AccountMicrocontrollerSerializer(queryset)
         return Response(serializer.data, status = 200)
@@ -16,6 +16,6 @@ class DeviceView(APIView):
 """
 teststring
 {
-    "id" : 1
+    "accountId" : 1
 }
 """
