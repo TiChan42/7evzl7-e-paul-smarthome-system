@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Box, Accordion, AccordionIcon, AccordionButton, AccordionPanel, AccordionItem, Tab, TabList, TabPanel, TabPanels } from '@chakra-ui/react'
+import { Box, Accordion, AccordionIcon, AccordionButton, AccordionPanel, AccordionItem, Tab, TabList, TabPanel, TabPanels,Tabs } from '@chakra-ui/react'
 
 class FAQ extends Component {
     state = { activeTab: 'faq' };
@@ -8,6 +8,7 @@ class FAQ extends Component {
         const { activeTab } = this.state;
 
         return (
+            <Tabs>
             <Box display="flex">
                 <Box width="20%" marginRight={4}>
                     <TabList>
@@ -19,11 +20,11 @@ class FAQ extends Component {
                     <TabPanels>
                         <TabPanel>
                             {activeTab === 'faq' && (
-                                <Accordion>
+                                <Accordion allowMultiple>
                                     <AccordionItem>
                                         <h2>
                                             <AccordionButton>
-                                                <Box as="span" flex='1' textAlign='left' color={"rgba(33, 131, 149)"}>
+                                                <Box as="span" flex='1' textAlign='left' >
                                                     Wie verbinde ich mich mit dem Esp8266?
                                                 </Box>
                                                 <AccordionIcon />
@@ -37,10 +38,10 @@ class FAQ extends Component {
                                         </AccordionPanel>
                                     </AccordionItem>
 
-                                    <AccordionItem>
+                                    <AccordionItem variant="second">
                                         <h2>
                                             <AccordionButton>
-                                                <Box as="span" flex='1' textAlign='left' color={"rgba(33, 131, 149, .8)"}>
+                                                <Box as="span" flex='1' textAlign='left'>
                                                     Wie ändere ich meinen Account zu Admin?
                                                 </Box>
                                                 <AccordionIcon />
@@ -57,7 +58,7 @@ class FAQ extends Component {
                                     <AccordionItem>
                                         <h2>
                                             <AccordionButton>
-                                                <Box as="span" flex='1' textAlign='left' color={"rgba(33, 131, 149, .6)"}>
+                                                <Box as="span" flex='1' textAlign='left'>
                                                     Wie viele E-Paul User gibt es?
                                                 </Box>
                                                 <AccordionIcon />
@@ -83,6 +84,8 @@ class FAQ extends Component {
                     </TabPanels>
                 </Box>
             </Box>
+            
+            </Tabs>
         );
     }
 }

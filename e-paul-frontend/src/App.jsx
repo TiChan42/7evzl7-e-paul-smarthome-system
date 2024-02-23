@@ -13,6 +13,9 @@ import Devices from "./components/devices"
 import Options from "./components/options"
 import FAQ from "./components/faq";
 
+import theme from "./theme";
+import { ChakraProvider } from "@chakra-ui/react";
+
 //router
 const router = createBrowserRouter (
     createRoutesFromElements (
@@ -25,7 +28,7 @@ const router = createBrowserRouter (
             <Route path="/impressum" element={<Impressum/>}/>
             <Route path="/devices" element={<Devices/>}/>
             <Route path="/options" element={<Options/>}/>
-            <Route path="/faq" element={<FAQ/>}/>
+            <Route path="/faq" element={<ChakraProvider theme={theme}><FAQ/></ChakraProvider>}/>
         </Route>
     )
 )
