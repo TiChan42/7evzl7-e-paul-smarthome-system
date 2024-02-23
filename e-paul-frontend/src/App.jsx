@@ -1,20 +1,38 @@
 import React from "react";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 
+// //components
+// import About from "./components/pages/about"
+// import Login from "./components/pages/login"
+// import Register from "./components/pages/register"
+// import RootLayout from "./Layouts/RootLayout"
+// import Welcome from "./components/pages/welcome"
+// import ChooseUser from "./components/pages/chooseUser2"
+// //import Impressum from "./components/impressum"
+// import Imprint from "./components/pages/imprint"
+// import Devices from "./components/pages/devices"
+// import Options from "./components/options"
+// import FAQ from "./components/faq"
+// import UserSettings from "./components/pages/userSettings"
+// import UserAdministration from "./components/pages/userAdministration"
+
 //components
 import About from "./components/pages/about"
 import Login from "./components/pages/login"
 import Register from "./components/pages/register"
 import RootLayout from "./Layouts/RootLayout"
-import Welcome from "./components/welcome"
-import ChooseUser from "./components/chooseUser"
-import Impressum from "./components/impressum"
+import Welcome from "./components/pages/welcome"
+import ChooseUser from "./components/pages/chooseUser2"
 import Imprint from "./components/pages/imprint"
-import Devices from "./components/devices"
-import Options from "./components/options"
-import FAQ from "./components/faq"
+import Devices from "./components/pages/devices"
 import UserSettings from "./components/pages/userSettings"
 import UserAdministration from "./components/pages/userAdministration"
+
+import Options from "./components/pages/options"
+import FAQ from "./components/pages/faq";
+//deleted
+//import SignIn from "./components/signIn";
+//import Impressum from "./components/impressum"
 
 import theme from "./theme";
 import { ChakraProvider } from "@chakra-ui/react";

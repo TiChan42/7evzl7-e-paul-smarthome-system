@@ -3,7 +3,7 @@ import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import './about.css'
-import '../style.css'
+import '../../style.css'
 import {
   Modal,
   ModalOverlay,
@@ -17,19 +17,16 @@ import {
   FormLabel,
   useDisclosure,
   Textarea,
-  Stack,
   Heading,
   Text,
   CardBody,
   Image,
-  Divider,
   Flex,
   Card,
   SimpleGrid,
   Button,
   IconButton,
   Box,
-  StackDivider,
   Center
 } from '@chakra-ui/react'
 
@@ -106,7 +103,6 @@ const customArrowStyles = {
 
 
 function InternalStateEx() {
-  const initRef = React.useRef()
   return (
     <>
       <Carousel
@@ -189,6 +185,8 @@ function InternalStateEx() {
                   <Text textAlign={'center'}>
                     Sie haben Fragen, Probleme oder wollen uns allgemeinen Feedback geben? Schreiben Sie unserem E-Paul-Team einfach eine E-Mail an mddruica@gmail.com oder klicken Sie auf den Button unten. Wir freuen uns auf Ihre Nachricht!
                   </Text>
+                  <br/>
+                  <InitialFocus/>
                   <div>&nbsp;</div>
                 </Center>
               </Flex>
@@ -205,12 +203,9 @@ function InternalStateEx() {
                 <Center display="flex" flexDirection="column">
                   <Heading size='md' textAlign={"center"}>Frontend, Backend & Mikrokontroller</Heading>
                   <Text textAlign={'center'}>
-                    Frontend: Anna, Eduard, Jonas, Linus
-                    <div>&nbsp;</div>
-                    Backend: Julia, Robin
-                    <div>&nbsp;</div>
-                    Mikrokontroller: Hannes, Mathias
-                    <div>&nbsp;</div>
+                    Frontend: Anna, Eduard, Jonas, Linus<br/><br/>
+                    Backend: Julia, Robin<br/><br/>
+                    Mikrokontroller: Hannes, Mathias<br/><br/>
                     Allrounder: David, Timo
                   </Text>
                   <div>&nbsp;</div>
@@ -227,7 +222,7 @@ function InternalStateEx() {
                 <Center display="flex" flexDirection="column">
                   <Heading size='md' textAlign={"center"}>Location</Heading>
                   <Text textAlign={'center'}>
-                    Wir haben unseren Firmensitz im DHBW Gebäude am Campus Fallenbrunnen. Von der ersten Idee bis hin zur spezifischen Planung haben wir fast alles im dortigen StuV-Raum organisiert und umgesetzt. <div>&nbsp;</div> Ihr wollt uns besuchen? <div>&nbsp;</div>Gerne könnt Ihr hier vorbeischauen: <br></br> Fallenbrunnen 2, 88045 Friedrichshafen
+                    Wir haben unseren Firmensitz im DHBW Gebäude am Campus Fallenbrunnen. Von der ersten Idee bis hin zur spezifischen Planung haben wir fast alles im dortigen StuV-Raum organisiert und umgesetzt.<br/>Ihr wollt uns besuchen? <br/>Gerne könnt Ihr hier vorbeischauen: <br/> Fallenbrunnen 2, 88045 Friedrichshafen
                   </Text>
                   <div>&nbsp;</div>
                 </Center>
@@ -259,9 +254,7 @@ function InternalStateEx() {
 class About extends Component {
   render() {
     return (
-      <div>
-        <InternalStateEx></InternalStateEx>
-      </div>
+        <InternalStateEx/>
     );
   }
 }

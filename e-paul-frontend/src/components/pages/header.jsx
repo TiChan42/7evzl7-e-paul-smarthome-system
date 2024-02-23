@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Box, Grid, Button, Text, Image, Link, GridItem } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
+import "./header.css"
 
 class Header extends Component {
     state = {  } 
@@ -14,7 +15,7 @@ class Header extends Component {
                 </Link>
                 </GridItem>
                 
-                <GridItem display={{base:'none',lg:'inherit' }}>
+                <GridItem>
                 <Box textAlign={'center'}>
                     <Routes>
                         <Route
@@ -51,11 +52,11 @@ class Header extends Component {
                         />
                         <Route
                             path="/userSettings"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzereinstellungen</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Benutzereinstellungen</Text>}
                         />
                         <Route
                             path="/userAdministration"
-                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzerverwaltung</Text>}
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Benutzerverwaltung</Text>}
                         />
                         </Routes>
                         
@@ -64,7 +65,7 @@ class Header extends Component {
 
                 <GridItem>
                     <Box align='end'>
-                    <Link href="/signin" _hover={false} pr={[1, 2, 4]}>
+                    <Link href="/register" _hover={false} pr={[1, 2, 4]}>
                         <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]}>
                             Sign up
                         </Button>
