@@ -1,13 +1,14 @@
 import { Outlet } from "react-router-dom";
-import Header from "../components/header";
-import Footer from "../components/footer";
-import { Box, ChakraProvider } from "@chakra-ui/react";
+import Header from "../components/pages/header";
+import Footer from "../components/pages/footer";
+import { Box, ChakraProvider, calc } from "@chakra-ui/react";
+import { calcLength } from "framer-motion";
 export default function RootLayout() {
     return (
-        <ChakraProvider>
-            <Box bg='gray.50'>
+        <ChakraProvider >
+            <Box bg='gray.50' h='100vh' overflow='hidden'>
                 <Header/>
-                <Box minHeight="88vh">
+                <Box h='calc(100vh - 114px);' overflowY='auto'>
                     <Outlet/>
                 </Box>
                 <Footer/>

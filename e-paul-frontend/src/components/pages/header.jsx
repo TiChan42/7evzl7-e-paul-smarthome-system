@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Grid, Button, Text, Image, Link, GridItem } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
-import './header.css'
 
 class Header extends Component {
     state = {  } 
@@ -15,7 +14,7 @@ class Header extends Component {
                 </Link>
                 </GridItem>
                 
-                <GridItem>
+                <GridItem display={{base:'none',lg:'inherit' }}>
                 <Box textAlign={'center'}>
                     <Routes>
                         <Route
@@ -49,6 +48,14 @@ class Header extends Component {
                         <Route
                             path="/faq"
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>FAQ</Text>}
+                        />
+                        <Route
+                            path="/userSettings"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzereinstellungen</Text>}
+                        />
+                        <Route
+                            path="/userAdministration"
+                            element={<Text as={"b"} fontSize='3xl' color={'white'}>Benutzerverwaltung</Text>}
                         />
                         </Routes>
                         
