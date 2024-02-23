@@ -3,7 +3,7 @@ from ..model.user import User
 
 from ..serializer.loginSerializer import LoginAccountSerializer, LoginUserSerializer
 
-from bcrypt import hashpw, gensalt, checkpw
+from bcrypt import checkpw
 
 from rest_framework.views import APIView
 from rest_framework.response import Response

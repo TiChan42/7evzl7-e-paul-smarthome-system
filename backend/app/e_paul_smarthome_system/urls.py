@@ -8,6 +8,7 @@ from .views.signUp import SignUp, CreateUser, MicrocontrollerSignUp
 from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView
+from .views.validate import ValidatePin
 from django.urls import path
 
 
@@ -26,4 +27,5 @@ urlpatterns = [
     path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
     path("settings/<userid>", SingleUserSettingsView.as_view(), name = "userSettings"),
     path("devices", DeviceView.as_view(), name = "devices"), 
+    path("validatePin", ValidatePin.as_view(), name = "validatePin"),
 ]
