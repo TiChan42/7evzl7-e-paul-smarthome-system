@@ -112,8 +112,6 @@ class MicrocontrollerSignUp(APIView):
         data = request.data	
         email = data["email"]
         password = data["password"]
-        username = data["username"]
-        pin = data["pin"]
         name = data["name"]
 
         if Account.objects.get(email=email) == None:
@@ -122,17 +120,10 @@ class MicrocontrollerSignUp(APIView):
             account = Account.objects.get(email=email)
             samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
             if samePassword == 1:
-                if User.objects.get(account=account, username=username) :
-                    user = User.objects.get(account=account, username=username)
-                    samePin = checkpw(pin.encode("utf-8"), user.pin.encode("utf-8"))
-                    if samePin == 1:
-                        microcontroller = Microcontroller(name=name, User=user, key = id_generator())
-                        microcontroller.save()
-                        user.save()
-                        serializer = MicrocontrollerSerializer(microcontroller)
-                        return Response(serializer.data, status=201)
-                else:
-                    return Response(status=400)
+                microcontroller = Microcontroller(name=name, account = account, key = id_generator())
+                microcontroller.save()
+                serializer = MicrocontrollerSerializer(microcontroller)
+                return Response(serializer.data, status=201)
             else:
                 return Response(status=400)
 
@@ -142,8 +133,6 @@ class MicrocontrollerSignUp(APIView):
 {
 "email" : "test",
 "password" : "435",
-"username" : "Zelda",
-"pin" : "187",
 "name" : "Zelda's Microcontroller"
 }
 """
