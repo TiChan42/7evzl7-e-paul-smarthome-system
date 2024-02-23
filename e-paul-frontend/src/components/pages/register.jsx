@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Center, Button, Input, Text } from '@chakra-ui/react';
+import { Center, Button, Input, Text, InputGroup, InputRightElement, Card, CardBody } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-class SignIn extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,9 +22,8 @@ class SignIn extends Component {
 
     //Regular expression to check password
     validatePassword = (password) => {
-        //const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
-        //return passwordRegex.test(password);
-        return true;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^&_*+\-=~`|\\/:;,.<>,])([A-Za-z\d@$!%*?&#^&_*+\-=~`|\\/:;,.<>,]){8,}$/;
+        return passwordRegex.test(password);
     }
 
     //POST the content of form as JSON
@@ -62,15 +61,15 @@ class SignIn extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <Text>Email</Text>
-                <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} />
+                <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
                 <br />
                 <br />
                 <Text>Passwort</Text>
-                <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} />
+                <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
                 <br />
                 <br />
                 <Text>Passwort wiederholen</Text>
-                <Input type="password" name="confirmPassword" placeholder='Passwort wiederholen' size='md' variant={"filled"} />
+                <Input type="password" name="confirmPassword" placeholder='Passwort wiederholen' size='md' variant={"filled"} color="black"/>
                 <br />
                 <Text color="red">{this.state.confirmPasswordError}</Text>
                 <Text color="red">{this.state.passwordError}</Text>
@@ -84,4 +83,4 @@ class SignIn extends Component {
     }
 }
 
-export default SignIn;
+export default Register;
