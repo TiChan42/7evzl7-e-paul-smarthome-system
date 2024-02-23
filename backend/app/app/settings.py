@@ -10,6 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+from json import loads
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../../.env"))
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4xaz4sy@@-yqki_2)s3wz@e&-h^^253+97#tra0oif9+b8m++g'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG")
 
 # Hosts allowed to access the backend server
-ALLOWED_HOSTS = ["www.epaul-smarthome.de", "195.90.215.140", "epaul-smarthome.de"]
+ALLOWED_HOSTS = loads(os.getenv("DJANGO_ALLOWED_HOSTS"))
 
 # Application definition
 
@@ -104,9 +109,8 @@ DATABASES = {
 }
 
 # URL of the Frontend server
-CORS_ALLOWED_ORIGINS = [
-    "http://epaul-smarthome.de"
-]
+CORS_ALLOWED_ORIGINS = loads(os.getenv("DJANGO_CORS_ALLOWED_ORIGINS"))
+
 
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -116,7 +120,7 @@ CORS_ALLOW_METHODS = (
     "PUT",
 )
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+CSRF_TRUSTED_ORIGINS = loads(os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS"))
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
