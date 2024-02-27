@@ -76,7 +76,7 @@ class Register extends Component {
                 <Link to="/login"> Bereits registriert? </Link>
                 <br />
                 <Center p={3}>
-                    <Button type="submit" colorScheme='teal'>Anmelden</Button>
+                    <Button type="submit" colorScheme='teal'>Registrieren</Button>
                 </Center>
             </form>
         );

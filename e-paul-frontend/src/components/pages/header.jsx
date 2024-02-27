@@ -31,7 +31,7 @@ class Header extends Component {
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>User</Text>}
                         />
                         <Route
-                            path="/signIn"
+                            path="/register"
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Registrieren</Text>}
                         />
                         <Route

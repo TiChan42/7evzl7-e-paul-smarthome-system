@@ -26,9 +26,64 @@ function PasswordInput() {
   }
 
 class Login extends Component {
-    state = {  } 
+
+    constructor(props) {
+      super(props);
+      this.state = {
+          passwordError: "" //empty Strings of Errormessage
+      };
+  }
+    
+    //check if form is in DOM
+    componentDidMount() {
+      const formEl = document.querySelector(".form");
+      if (formEl) {
+          formEl.addEventListener("submit", this.handleSubmit);
+      }
+  }
+  
+  //POST the content of form as JSON
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData);
+    console.log(data);
+
+    if (true) {
+        this.setState({ passwordError: "" }); //reset error message
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }
+
+        fetch("http://epaul-smarthome.de:8000/api/login", requestOptions)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.log(error))
+    } else {
+        this.setState({ passwordError: "Login failed" });
+    }
+}
     render() { 
         return (
+          <form onSubmit={this.handleSubmit}>
+
+            <Text>Email</Text>
+                <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
+                <br />
+                <br />
+                <Text>Passwort</Text>
+                <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
+                <br />
+                <Text color="red">{this.state.passwordError}</Text>
+                <Link to="/register"> Jetzt registieren! </Link>
+                <br />
+                <Center p={3}>
+                    <Button type="submit" colorScheme='teal'>Anmelden</Button>
+                </Center>
+            
+            {/*
             <Center m={'50px'}>
                 <Card size="lg" width={400} bg={"#218395"} p={"50px"}>
                     <CardBody>
@@ -38,16 +93,19 @@ class Login extends Component {
                         <br/>
                         <Text>Passwort</Text>   
                         <PasswordInput />
-                        <Link to="/signin"> Jetzt registieren! </Link>
+                        <Link to="/register"> Jetzt registieren! </Link>
                         <br/>
                     </CardBody>
                     <Center p={3}>
                     <Link to="/chooseuser">
-                        <Button colorScheme='teal'>Anmelden</Button>
+                        <Button type="submit" colorScheme='teal'>Anmelden</Button>
                     </Link>
                     </Center>
                 </Card>
-            </Center>  
+            </Center>
+        */}
+
+          </form>
         );
     }
 }
