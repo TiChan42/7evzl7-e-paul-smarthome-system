@@ -6,7 +6,6 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    useDisclosure,
     Button,
     FormControl,
     FormLabel,
@@ -20,14 +19,16 @@ import {
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
   import {env} from '../env';
 
-
-function UserPinRequestModal(executeIfValid, users) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+//Komponente für die Abfrage des Pins und (wenn nötig) des Benutzers
+const UserPinRequestModal = (props) => {
     const [showPin, setShowPin] = React.useState(false)
     const [requireUserSelection, setRequireUserSelection] = useState(false)
     const [noPossibleUser, setNoPossibleUser] = useState(false)
     const [userSelectValue, setUserSelectValue] = useState(null)
+    const [executingUser, setExecutingUser] = useState(null)
     const handlePinShowClick = () => setShowPin(!showPin)
+
+    //Versuch den Pin zu validieren
     const tryToSubmitPin = (event) => {
         const pin = event.target.value;
         const userID = (requireUserSelection) ? userSelectValue : decryptString(sessionStorage.getItem('executingUserID'));
@@ -47,35 +48,47 @@ function UserPinRequestModal(executeIfValid, users) {
                 event.target.value = "";
                 sessionStorage.setItem('executingUserID', encryptString(userID.toString()));
                 sessionStorage.setItem('userAuthorized', encryptString("true"));
-                onClose();
-                executeIfValid();
+                props.closeModal();
+                props.executeIfValid();
             }
         })
         .catch(error => {
             console.log(error);
             event.target.value = "";
         })
-
     }
 
+    //Holt den Benutzer anhand der ID
+    function getUserByID(id){
+        return props.users.find(user => user.id === id);
+    }
+
+    //Auswahl der Angezeigten Fensters zwischen Benutzerauswahl + Pin-Eingabe, oder nur Pin-Eingabe, oder keine Benutzer vorhanden
     useEffect (() => {
+        console.log(decryptString(sessionStorage.getItem('executingUserID')));
         if(sessionStorage.getItem('executingUserID') === ""){
             sessionStorage.setItem('userAuthorized', encryptString("false"));
             setRequireUserSelection(true);
-            if(users === null){
+            if(props.users[0] == null){
                 setNoPossibleUser(true);
             }
         }
-    }, [isOpen]);
+        else 
+        {
+
+            setExecutingUser(getUserByID(decryptString(sessionStorage.getItem('executingUserID'))));
+            setRequireUserSelection(false);
+        }
+    }, [props.users,props.openModal]);
 
     
     
     return (
         <React.Fragment>
-        <Button onClick={onOpen}>Open Modal</Button>    
+          
         <Modal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={props.openModal}
+        onClose={props.closeModal}
         >
             <ModalOverlay />
                 <ModalContent>
@@ -87,21 +100,28 @@ function UserPinRequestModal(executeIfValid, users) {
                                 Es sind keine Benutzer vorhanden. Bitte erstellen Sie einen Benutzer.
                             </ModalBody>
                             <ModalFooter>
-                                <Button onClick={onClose}>Schließen</Button>
+                                <Button onClick={props.closeModal}>Schließen</Button>
                             </ModalFooter>
                         </React.Fragment>
                     }
                     {!noPossibleUser &&
                         <React.Fragment>
-                            <ModalHeader>Pin Eingabe</ModalHeader>
+                            {requireUserSelection && props.users &&
+                            <ModalHeader>Benutzerauswahl und Pin</ModalHeader>
+                            }
+                            {!requireUserSelection && props.users &&
+                            <ModalHeader>Pin eingeben</ModalHeader>
+                            }
                             <ModalCloseButton />
                             <ModalBody pb={6}>
-                                {requireUserSelection && users &&
+                                {requireUserSelection && props.users &&
                                     <FormControl>
                                         <FormLabel>ausführenden Benutzer auswählen</FormLabel>
-                                        <Select defaultValue={users[0].id} placeholder={users[0].name} onChange={(event) => setUserSelectValue(event.target.value)}>
-                                            {users.map((user) => (
-                                                <option key={user.id} value={user.id}>{user.name}</option>
+                                        <Select defaultValue={props.users[0].id} placeholder={props.users[0].name} onClick={(event) => setUserSelectValue(event.target.value)} isRequired>
+                                            {props.users.slice(1).map((user) => (
+                                                <option key={user.id} value={user.id}>
+                                                    {user.name}
+                                                </option>
                                             ))}
                                         </Select>
                                     </FormControl>
@@ -126,13 +146,13 @@ function UserPinRequestModal(executeIfValid, users) {
                             </ModalBody>
 
                             <ModalFooter>
-                                
-                                
-                                <Button onClick={onClose}>Schließen</Button>
+                                <Button onClick={props.closeModal}>Schließen</Button>
                             </ModalFooter>
+
                         </React.Fragment>
                     }
                 </ModalContent>
+            
         </Modal>
         </React.Fragment>
     )

@@ -1,5 +1,5 @@
 import React, { Component,useState, useEffect } from 'react';
-import {Box, Text, Center, Spinner,Wrap,WrapItem,useDisclosure} from "@chakra-ui/react";
+import {Box, Text, Center, Spinner,Wrap,WrapItem} from "@chakra-ui/react";
 import {Avatar} from "@chakra-ui/avatar";
 import { encryptString, decryptString } from '../../encryptionUtils';
 import UserPinRequestModal from '../userPinRequestModal';
@@ -7,103 +7,115 @@ import UserPinRequestModal from '../userPinRequestModal';
 //local test presets (dont needed at server)
 sessionStorage.setItem('accountID', encryptString('1'));
 
-function Users(isTest) {
+//Test Array für Benutzer
+const user = [
+  {
+    profileImagePath: "user_profile_1.jpg",
+    name: "Paul56789012",
+    id: 1
+  },
+  {
+    profileImagePath: "user_profile_2.jpg",
+    name: "WWWWWWWWWWWW",
+    id: 2
+  },
+  {
+    profileImagePath: "user_profile_3.jpg",
+    name: "XXXXXXXXXXXX",
+    id: 3
+  },
+  {
+    profileImagePath: "user_profile_4.jpg",
+    name: "YYYYYYYYYYYY",
+    id: 4
+  },
+  {
+    profileImagePath: "user_profile_5.jpg",
+    name: "ZZZZZZZZZZZZ",
+    id: 5
+  },
+  {
+    profileImagePath: "user_profile_6.jpg",
+    name: "AAAAAAAAAAAA",
+    id: 6
+  },
+  {
+    profileImagePath: "user_profile_7.jpg",
+    name: "BBBBBBBBBBBB",
+    id: 7
+  }
+];
+
+
+
+function Users() {
   const userImageFolder = "assets/img/user_profile_images/";
 
-  //Test Array für Benutzer
-  const user = {
-    user1: {
-      profileImagePath: "user_profile_1.jpg",
-      name: "Paul56789012",
-      id: 1
-    },
-    user2: {
-      profileImagePath: "user_profile_2.jpg",
-      name: "WWWWWWWWWWWW",
-      id: 2
-    },
-    user3: {
-      profileImagePath: "user_profile_3.jpg",
-      name: "XXXXXXXXXXXX",
-      id: 3
-    },
-    user4: {
-      profileImagePath: "user_profile_4.jpg",
-      name: "YYYYYYYYYYYY",
-      id: 4
-    },
-    user5: {
-      profileImagePath: "user_profile_5.jpg",
-      name: "ZZZZZZZZZZZZ",
-      id: 5
-    },
-    user6: {
-      profileImagePath: "user_profile_6.jpg",
-      name: "AAAAAAAAAAAA",
-      id: 6
-    },
-    user7: {
-      profileImagePath: "user_profile_7.jpg",
-      name: "BBBBBBBBBBBB",
-      id: 7
-    }
-
-  };
-
   //Benutzerliste
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState(user);
 
   //Referenzen auf die Pin-Modals Array
-  const pinModals = [React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef(),React.createRef()];
-  const userAdministrationPinModal = React.createRef();
-  let accountID = decryptString(sessionStorage.getItem('accountID').toString());
+  const [pinModals, setPinModals] = useState([false,false,false,false,false,false,false]);
+  const [userAdministrationPinModal, setUserAdministrationPinModal] = useState(false);
+  let accountID = decryptString(('accountID').toString());
 
-  
-
-  
-  //setzt den Nutzer
+  //Wird beim Laden der Komponente ausgeführt
   useEffect(() => {
-    if(isTest){
-      setUsers(user);
-    }else{
-      setUsers(user);
-    }
-    console.log(users);
-    
-
+    sessionStorage.setItem('userAuthorized', encryptString("false"));
+    //fetch users from backend
+    //setUsers(users);
   }, []);
+
+  //Managed das Array für die Pin-Modals (öffnen)
+  function openPinModal(index) {
+    const nextPinModals = pinModals.map((c, i) => {
+      if (i === index) {
+        return true;
+      } else {
+        return c;
+      }
+    });
+    setPinModals(nextPinModals);
+  }
+
+  //Managed das Array für die Pin-Modals (schließen)
+  function closePinModal(index) {
+    const nextPinModals = pinModals.map((c, i) => {
+      if (i === index) {
+        return false;
+      } else {
+        return c;
+      }
+    });
+    setPinModals(nextPinModals);
+  }
+
 
   //prüft ob ein Pin benötigt wird
   const checkPinNeeded = (id) => {
     //fetch user from backend
     //if user needs pin, return true
     //else return false
-    return true;
-  };
-
-  //Benutzer wird in der Session gespeichert und die Seite wird auf die Übersichtsseite weitergeleitet
-  const switchToUserMainPage = (id) => {
-    const encryptedId = encryptString(id.toString());
-    sessionStorage.setItem("executingUserID", encryptedId);
-    window.location.href = "/devices";
+    return false;
   };
 
   //wenn auf Benutzereinstellungen geklickt wird
   const openUserSettings = () => {
-    console.log(userAdministrationPinModal);
-    //window.location.href = "/userSettings";
+    sessionStorage.setItem("executingUserID", "");
+    setUserAdministrationPinModal(true);
   };
 
   //wenn auf Benutzer geklickt wird
   const openUser = (id,index) => {
+    const encryptedId = encryptString(id.toString());
+    sessionStorage.setItem("executingUserID", encryptedId);
     if(checkPinNeeded(id)){
         console.log("PIN needed!");
-        //document.getElementsByClassName("UserPinRequestModal-"+index).onOpen();
-        console.log(pinModals[index].current);
-        
+        openPinModal(index);
     }else{
         console.log("OPEN User without PIN");
-        switchToUserMainPage(id);
+        sessionStorage.setItem('userAuthorized', encryptString("true"));
+        window.location.href = "/devices";
     }
   };
 
@@ -116,7 +128,6 @@ function Users(isTest) {
       spacing='5px' 
       >
         
-      
         {users &&
 
           <React.Fragment>
@@ -150,7 +161,7 @@ function Users(isTest) {
                   </Center>
                 </Box>
               </Center>
-              <UserPinRequestModal ref={pinModals[index]} executeIfValid={() => window.location.href = "/devices"} users={users}/>
+              <UserPinRequestModal executeIfValid={() => window.location.href = "/devices"} users={users} openModal={pinModals[index]} closeModal={() => closePinModal(index)}/>
             </WrapItem>
             
           ))}
@@ -182,7 +193,7 @@ function Users(isTest) {
                   </Center>
                 </Box>
               </Center>
-              <UserPinRequestModal ref={userAdministrationPinModal} executeIfValid={() => window.location.href = "/userAdministration"} users={users} />
+             <UserPinRequestModal openModal={userAdministrationPinModal} closeModal={() => setUserAdministrationPinModal(false)} executeIfValid={() => window.location.href = "/userAdministration"} users={users}/>
             </WrapItem>
           </React.Fragment>
         }
@@ -213,16 +224,12 @@ function Users(isTest) {
 }
 
 
-
-
-
 class ChooseUser extends Component {
-  isTest = true;
   render() { 
     
     return (
       <Center>
-        <Users isTest={this.isTest} ></Users>
+        <Users  ></Users>
       </Center>
       );
   };  
