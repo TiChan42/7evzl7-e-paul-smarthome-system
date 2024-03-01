@@ -1,4 +1,5 @@
 from django.db import models
+from .account import Account
 
 class User(models.Model):
     
@@ -14,11 +15,11 @@ class User(models.Model):
         
     username = models.CharField(max_length=12, unique=True, null = True, blank = True)
     account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
-    pin = models.CharField(max_length=32)
+    pin = models.CharField(max_length=32, default = "", blank = True)
     role = models.TextField(choices = Role.choices)
-    pictureid = models.IntegerField(null = True, blank = True)
+    imageName = models.CharField(max_length = 32,null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
-    birthdate = models.DateField(max_length=50, null = True, blank = True)
+    birthdate = models.DateField(null = True, blank = True)
     rights = models.JSONField(null = True, blank = True)
     
     def changeRights(self, rights):
@@ -44,10 +45,15 @@ class User(models.Model):
         self.account = self.account
         self.pin = self.pin
         self.role = self.role
-        self.pictureid = self.pictureid
+        self.imageName = self.imageName
         self.gender = self.gender
         self.birthdate = self.birthdate
 
+        if self.imageName == None:
+            self.imageName = "user_profile_" + str(Account.objects.get(id=self.account.id).user.count()) + ".jpg"
+        else:
+            self.imageName = self.imageName
+        
         if self.rights == None:
             match self.role:
                 case 'user':

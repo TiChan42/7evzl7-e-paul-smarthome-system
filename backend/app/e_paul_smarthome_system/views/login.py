@@ -45,20 +45,27 @@ class LoginUser(APIView):
         data = request.data
         accountId = data["accountId"]
         username = data["username"]
-        pin = data["pin"].encode("utf-8")
+        try: 
+            pin = data["pin"].encode("utf-8")
+        except KeyError:
+            pin = None
         try:
             user = User.objects.get(account = accountId, username = username)
         except User.DoesNotExist:
             return Response(status = 400)
         if user:
-            savedpin = user.pin.encode("utf-8")
-            try:
-                samePin = checkpw(pin, savedpin)
-            except ValueError:
-                return Response(status = 400)
-            if (samePin == 1):
-                serializer = LoginUserSerializer(user, many = True)
+            if not bool(pin):
+                serializer = LoginUserSerializer(user)
                 return Response(serializer.data, status = 200)
+            else:
+                savedpin = user.pin.encode("utf-8")
+                try:
+                    samePin = checkpw(pin, savedpin)
+                except ValueError:
+                    return Response(status = 400)
+                if (samePin == 1):
+                    serializer = LoginUserSerializer(user)
+                    return Response(serializer.data, status = 200)
         else:
             return Response(status = 400)
         
