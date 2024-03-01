@@ -27,6 +27,7 @@ import Imprint from "./components/pages/imprint"
 import Devices from "./components/pages/devices"
 import UserSettings from "./components/pages/userSettings"
 import UserAdministration from "./components/pages/userAdministration"
+import Settings from "./components/pages/settings"
 
 import Options from "./components/pages/options"
 import FAQ from "./components/pages/faq";
@@ -51,6 +52,7 @@ const router = createBrowserRouter (
             <Route path="/options" element={<Options/>}/>
             <Route path="/faq" element={<ChakraProvider theme={theme}><FAQ/></ChakraProvider>}/>
             <Route path="/userSettings" element={<UserSettings/>}/>
+            <Route path="/settings" element={<Settings/>}/>
             <Route path="/userAdministration" element={<UserAdministration/>}/>
         </Route>
     )

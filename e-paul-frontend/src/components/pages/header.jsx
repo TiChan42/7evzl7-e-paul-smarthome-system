@@ -58,6 +58,10 @@ class Header extends Component {
                             path="/userAdministration"
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Benutzerverwaltung</Text>}
                         />
+                        <Route
+                            path="/settings"
+                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Einstellungen</Text>}
+                        />
                         </Routes>
                         
                     </Box>
