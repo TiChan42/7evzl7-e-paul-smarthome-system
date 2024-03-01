@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Input, Text, Card } from '@chakra-ui/react';
@@ -6,10 +6,14 @@ import { Center, Button, Input, Text, Card } from '@chakra-ui/react';
 class Register extends Component {
     constructor(props) {
         super(props);
+        this.inputRefEmail = React.createRef();
+        this.inputRefPassword = React.createRef();
+        this.inputRefPasswordRepeat = React.createRef();
         this.state = {
             //empty Strings of Errormessages
             confirmPasswordError: "",
-            passwordError: ""
+            passwordError: "",
+            emptyInputError: ""
         };
     }
 
@@ -27,6 +31,26 @@ class Register extends Component {
         return passwordRegex.test(password);
     }
 
+    isInputEmpty(){
+        if (this.inputRefEmail.current.value.trim() === "") {
+          console.log("Input of Email is empty");
+          this.setState({ emptyInputError: "Registrierung fehlgeschlagen: \nEmail wurde nicht eingegeben" });
+          return true;
+        }else if (this.inputRefPassword.current.value.trim() === "") {
+          console.log("Input of Password is empty");
+          this.setState({ emptyInputError: "Registrierung fehlgeschlagen:\nPasswort wurde nicht eingegeben" });
+          return true;
+        }else if (this.inputRefPasswordRepeat.current.value.trim() === "") {
+            console.log("Input of Password Repeat is empty");
+            this.setState({ emptyInputError: "Registrierung fehlgeschlagen:\nPasswort Wiederholen wurde nicht eingegeben" });
+            return true;
+        }else{
+          this.setState({ emptyInputError: "" });
+          return false;
+        }
+    
+      }
+
     //POST the content of form as JSON
     handleSubmit = (event) => {
         event.preventDefault();
@@ -34,28 +58,32 @@ class Register extends Component {
         const data = Object.fromEntries(formData);
         console.log(data);
 
-        if (data.password !== data.confirmPassword) {
-            this.setState({ confirmPasswordError: "Die Passwörter stimmen nicht überein." });
-        } else {
-            this.setState({ confirmPasswordError: "" }); //reset error message
-
-            if (!this.validatePassword(data.password)) {
-                this.setState({ passwordError: "Das Passwort muss mindestens 8 Zeichen lang sein, einen kleinen Buchstaben, einen großen Buchstaben, eine Zahl und ein Sonderzeichen enthalten." });
-                return;
+        if(!this.isInputEmpty()){
+            if (data.password !== data.confirmPassword) {
+                this.setState({ confirmPasswordError: "Die Passwörter stimmen nicht überein." });
             } else {
-                this.setState({ passwordError: "" }); //reset error message
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                }
+                this.setState({ confirmPasswordError: "" }); //reset error message
 
-                fetch("http://epaul-smarthome.de:8000/api/signUp", requestOptions)
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.log(error))
-            }   
+                if (!this.validatePassword(data.password)) {
+                    this.setState({ passwordError: "Das Passwort muss mindestens 8 Zeichen lang sein, einen kleinen Buchstaben, einen großen Buchstaben, eine Zahl und ein Sonderzeichen enthalten." });
+                    return;
+                } else {
+                    this.setState({ passwordError: "" }); //reset error message
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    }
+
+                    fetch("http://epaul-smarthome.de:8000/api/signUp", requestOptions)
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.log(error))
+                }   
+            } 
         }
+
+        
     }
 
     render() {
@@ -74,7 +102,8 @@ class Register extends Component {
                             _focusVisible={{
                                 bg: "gray.300",
                                 borderColor: "teal.300",
-                            }} 
+                            }}
+                            ref={this.inputRefEmail}  
                         />
                         <br />
                         <br />
@@ -89,7 +118,8 @@ class Register extends Component {
                             _focusVisible={{
                                 bg: "gray.300",
                                 borderColor: "teal.300",
-                            }} 
+                            }}
+                            ref={this.inputRefPassword}  
                         />
                         <br />
                         <br />
@@ -104,11 +134,13 @@ class Register extends Component {
                             _focusVisible={{
                                 bg: "gray.300",
                                 borderColor: "teal.300",
-                            }} 
+                            }}
+                            ref={this.inputRefPasswordRepeat}   
                         />
                         <br />
                         <Text color="red">{this.state.confirmPasswordError}</Text>
                         <Text color="red">{this.state.passwordError}</Text>
+                        <Text color="red">{this.state.emptyInputError}</Text>
                         <ChakraLink as={ReactRouterLink} to={"/login"} color={'white'}> Bereits registriert? </ChakraLink>
                         <br />
                         <Center p={3}>
