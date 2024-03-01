@@ -49,7 +49,7 @@ function InitialFocus() {
 
 	return (
 		<>
-			<Button onClick={onOpen} colorScheme='teal' variant='solid' >Ich brauche Support</Button>
+			<Button onClick={onOpen} colorScheme='whiteAlpha' variant='solid' >Ich brauche Support</Button>
 
 			<Modal
 			initialFocusRef={initialRef}
@@ -140,7 +140,7 @@ function InternalStateEx() {
 				)
 			}>
 				<SimpleGrid id="sgrid" columns={[1, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"} margin={"30px"} overflow="scroll" overflowY="visible">
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
@@ -156,7 +156,7 @@ function InternalStateEx() {
 							</Flex>
 						</CardBody>
 					</Card>
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
@@ -172,7 +172,7 @@ function InternalStateEx() {
 							</Flex>
 						</CardBody>
 					</Card>
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
@@ -185,14 +185,13 @@ function InternalStateEx() {
 								</Text>
 								<br/>
 								<InitialFocus/>
-								<div>&nbsp;</div>
 							</Center>
 							</Flex>
 						</CardBody>
 					</Card>
 				</SimpleGrid>
 				<SimpleGrid id="sgrid" columns={[1, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"} margin={"30px"} overflow="scroll" overflowY="visible">
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
@@ -211,7 +210,7 @@ function InternalStateEx() {
 							</Flex>
 						</CardBody>
 					</Card>
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
@@ -227,7 +226,7 @@ function InternalStateEx() {
 							</Flex>
 						</CardBody>
 					</Card>
-					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"60px"}>
+					<Card bg={"rgba(33, 131, 149, .8)"} borderRadius={"32px"}>
 						<CardBody>
 							<Flex justifyContent="center" flexDirection="column">
 							<Box>
