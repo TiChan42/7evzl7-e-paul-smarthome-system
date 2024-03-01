@@ -71,11 +71,33 @@ class Login extends Component {
         <form onSubmit={this.handleSubmit}>
           <Card p={8} borderRadius={"32px"} bg={'#218395'}>
             <Text color={'white'}>Email</Text>
-              <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="white"/>
+              <Input 
+                type="email" 
+                name="email" 
+                placeholder='Email eingeben' 
+                size='md' 
+                variant={"filled"} 
+                color="black"
+                _focusVisible={{
+                  bg: "gray.300",
+                  borderColor: "teal.300",
+                }} 
+              />
               <br />
               <br />
               <Text color={'white'}>Passwort</Text>
-              <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="white"/>
+              <Input 
+                type="password" 
+                name="password" 
+                placeholder='Passwort eingeben' 
+                size='md' 
+                variant={"filled"} 
+                color="black"
+                _focusVisible={{
+                  bg: "gray.300",
+                  borderColor: "teal.300",
+                }} 
+              />
               <br />
               <Text color="red">{this.state.passwordError}</Text>
               <ChakraLink as={ReactRouterLink} to="/register" color={'white'}> Jetzt registieren! </ChakraLink>
