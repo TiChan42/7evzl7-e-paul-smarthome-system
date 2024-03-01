@@ -1,6 +1,6 @@
 import React, { Component,useState, useEffect } from 'react';
-import {Box, Text, Center, Spinner,Wrap,WrapItem} from "@chakra-ui/react";
-import {Avatar} from "@chakra-ui/avatar";
+import {Box, Text, Center, Spinner,Wrap,WrapItem} from '@chakra-ui/react';
+import {Avatar} from '@chakra-ui/avatar';
 import { encryptString, decryptString } from '../../encryptionUtils';
 import UserPinRequestModal from '../userPinRequestModal';
 
@@ -161,7 +161,7 @@ function Users() {
                   </Center>
                 </Box>
               </Center>
-              <UserPinRequestModal executeIfValid={() => window.location.href = "/devices"} users={users} openModal={pinModals[index]} closeModal={() => closePinModal(index)}/>
+              <UserPinRequestModal executeIfValid={() => window.location.href='/devices'} users={users} openModal={pinModals[index]} closeModal={() => closePinModal(index)}/>
             </WrapItem>
             
           ))}
@@ -193,7 +193,7 @@ function Users() {
                   </Center>
                 </Box>
               </Center>
-             <UserPinRequestModal openModal={userAdministrationPinModal} closeModal={() => setUserAdministrationPinModal(false)} executeIfValid={() => window.location.href = "/userAdministration"} users={users}/>
+             <UserPinRequestModal openModal={userAdministrationPinModal} closeModal={() => setUserAdministrationPinModal(false)} executeIfValid={() => window.location.href='/userAdministration'} users={users}/>
             </WrapItem>
           </React.Fragment>
         }
@@ -212,7 +212,7 @@ function Users() {
                 />
               <Box>
               <Center>
-                  <Text fontSize='lg' fontWeight='bold' color='black' mt={2} whiteSpace="pre-line">Lade Benutzer</Text>
+                  <Text fontSize='lg' fontWeight='bold' color='black' mt={2} whiteSpace='pre-line'>Lade Benutzer</Text>
               </Center>
               </Box>
             </Center>

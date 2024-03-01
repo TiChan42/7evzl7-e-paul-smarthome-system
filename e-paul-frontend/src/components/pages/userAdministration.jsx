@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, Grid, GridItem, Center, Show} from "@chakra-ui/react";
-import {Avatar} from "@chakra-ui/avatar";
+import { Text, Grid, GridItem, Center, Show} from '@chakra-ui/react';
+import {Avatar} from '@chakra-ui/avatar';
 import { Link } from 'react-router-dom';
 import { encryptString, decryptString } from '../../encryptionUtils';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 
@@ -11,14 +10,14 @@ const groupOptions = [
 ]
 
 export default function MultiSelect() {
-return (
-    <Select
-        placeholder="Geräte auswählen"
-        closeMenuOnSelect={false}
-        components={animatedComponents}
-        defaultValue={[groupOptions[4], groupOptions[5]]}
-        isMulti
-        options={groupOptions}
-    />
+    return (
+        <Select
+            placeholder='Geräte auswählen'
+            closeMenuOnSelect={false}
+            components={animatedComponents}
+            defaultValue={[groupOptions[4], groupOptions[5]]}
+            isMulti
+            options={groupOptions}
+        />
     );
 }

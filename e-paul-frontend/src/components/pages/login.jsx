@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-//import './login.css'
+import { Link as ReactRouterLink } from 'react-router-dom'
+import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
 
 function PasswordInput() {
@@ -70,15 +70,15 @@ class Login extends Component {
         <Center p={8}>
         <form onSubmit={this.handleSubmit}>
           <Card p={8} borderRadius={"32px"} bg={'#218395'}>
-            <Text>Email</Text>
-              <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
+            <Text color={'white'}>Email</Text>
+              <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="white"/>
               <br />
               <br />
-              <Text>Passwort</Text>
-              <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
+              <Text color={'white'}>Passwort</Text>
+              <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="white"/>
               <br />
               <Text color="red">{this.state.passwordError}</Text>
-              <Link to="/register"> Jetzt registieren! </Link>
+              <ChakraLink as={ReactRouterLink} to="/register" color={'white'}> Jetzt registieren! </ChakraLink>
               <br />
               <Center p={3}>
                   <Button type="submit" colorScheme='teal'>Anmelden</Button>

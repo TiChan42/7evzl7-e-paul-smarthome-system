@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Carousel } from 'react-responsive-carousel';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import '../../style.css'
 import {
 Modal,
@@ -75,7 +75,7 @@ function InitialFocus() {
 
 					<ModalFooter>
 						<a href={generateMailtoLink()}>
-							<Button colorScheme='blue' margin={'5px'}>Zur E-Mail</Button>
+							<Button colorScheme='blue' margin='5px'>Zur E-Mail</Button>
 						</a>
 						<Button onClick={onClose}>Cancel</Button>
 					</ModalFooter>
@@ -127,16 +127,16 @@ function InternalStateEx() {
 			}
 			renderArrowNext={(onClickHandler, hasNext, label) =>
 				hasNext && (
-				<IconButton
-					onClick={onClickHandler}
-					icon={<ChevronRightIcon />}
-					variant="styled"
-					aria-label={label}
-					position="absolute"
-					top="50%"
-					transform="translateY(-50%)"
-					style={{ ...customArrowStyles.nextButton, fontSize: '45px' }}
-				/>
+					<IconButton
+						onClick={onClickHandler}
+						icon={<ChevronRightIcon />}
+						variant="styled"
+						aria-label={label}
+						position="absolute"
+						top="50%"
+						transform="translateY(-50%)"
+						style={{ ...customArrowStyles.nextButton, fontSize: '45px' }}
+					/>
 				)
 			}>
 				<SimpleGrid id="sgrid" columns={[1, null, 3]} spacing='40px' height='80vh' paddingLeft={"5%"} paddingRight={"5%"} margin={"30px"} overflow="scroll" overflowY="visible">

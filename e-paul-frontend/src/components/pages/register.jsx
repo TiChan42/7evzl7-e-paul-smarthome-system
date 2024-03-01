@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Center, Button, Input, Text, InputGroup, InputRightElement, Card, CardBody } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom'
+import { Link as ChakraLink } from '@chakra-ui/react'
+import { Center, Button, Input, Text, Card } from '@chakra-ui/react';
 
 class Register extends Component {
     constructor(props) {
@@ -62,20 +63,20 @@ class Register extends Component {
             <Center p={8}>
                 <form onSubmit={this.handleSubmit}>
                     <Card p={8} borderRadius={"32px"} bg={'#218395'}>
-                        <Text>Email</Text>
+                        <Text color={'white'}>Email</Text>
                         <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
                         <br />
                         <br />
-                        <Text>Passwort</Text>
+                        <Text color={'white'}>Passwort</Text>
                         <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
                         <br />
                         <br />
-                        <Text>Passwort wiederholen</Text>
+                        <Text color={'white'}>Passwort wiederholen</Text>
                         <Input type="password" name="confirmPassword" placeholder='Passwort wiederholen' size='md' variant={"filled"} color="black"/>
                         <br />
                         <Text color="red">{this.state.confirmPasswordError}</Text>
                         <Text color="red">{this.state.passwordError}</Text>
-                        <Link to="/login"> Bereits registriert? </Link>
+                        <ChakraLink as={ReactRouterLink} to={"/login"} color={'white'}> Bereits registriert? </ChakraLink>
                         <br />
                         <Center p={3}>
                             <Button type="submit" colorScheme='teal'>Registrieren</Button>
