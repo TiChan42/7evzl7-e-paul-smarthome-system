@@ -1,16 +1,16 @@
 import { Component } from 'react';
-import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader, Text} from '@chakra-ui/react';
+import { Heading, Grid, Box, GridItem, Card, Center, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader, Text} from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons'
 import AddGroupDialog from '../addGroupDialog'
 import AddDeviceDialog from '../addDeviceDialog';
 import OpenHistoryDrawer from '../openhistoryDrawer';
 import { decryptString } from '../../encryptionUtils';
+import { LuLamp } from "react-icons/lu";
+import { MdArrowForwardIos } from "react-icons/md";
 
 class Devices extends Component {
-    userID = decryptString(sessionStorage.getItem('executingUserID').toString());
-    state = {  }
+    //userID = decryptString(sessionStorage.getItem('executingUserID').toString());
     
-
     render() { 
         return (
             <Box>
@@ -28,7 +28,7 @@ class Devices extends Component {
                         gap={4}
                         >
                         <GridItem colSpan={1}>
-                            <Card bg={"#218395"} w='100%' h='100%'>
+                            <Card bg={"blue2"} w='100%' h='100%'>
                             <CardHeader>
                                 <Heading size='lg' color={"white"}>Statusmeldung</Heading>
                                 {this.userID}
@@ -38,27 +38,27 @@ class Devices extends Component {
                             </Card>
                         </GridItem>
                         <GridItem rowSpan={2} colSpan={1}>
-                            <Card bg={"#218395"} w='100%' h='100%'>
+                            <Card bg={"blue2"} w='100%' h='100%'>
                                 <CardHeader>
                                     <Heading size='lg' color={"white"}>Gruppen</Heading>
                                 </CardHeader>
                                 <CardBody>
-                                    <Accordion allowToggle  background={"white"}>
+                                    <Accordion allowToggle borderRadius='lg'>
                                         <AccordionItem>
                                             <h2>
-                                            <AccordionButton>
+                                            <AccordionButton background={'#3e5f74'} _hover={{bg: "#5b7a91"}}>
                                                 <Box as="span" flex='1' textAlign='left' fontWeight={'bold'}>
                                                     Gruppe1
                                                 </Box>
                                                 <AccordionIcon />
                                             </AccordionButton>
                                             </h2>
-                                            <AccordionPanel pb={4}>
+                                            <AccordionPanel pb={4} background={"#7b99a7"}>
                                                 <Button mr={4}>Szene1</Button>
                                                 <Button mr={4}>Szene2</Button>
                                                 <Divider mt={4} mb={4} orientation='horizontal' />
                                                 <Box align='end'>
-                                                    <Button ml={4}><EditIcon></EditIcon> Bearbeiten </Button>
+                                                    <Button ml={4}><EditIcon mr={2}></EditIcon> Bearbeiten </Button>
                                                 </Box>
                                             </AccordionPanel>
                                         </AccordionItem>
@@ -67,19 +67,19 @@ class Devices extends Component {
                                             {({ isExpanded }) => (
                                             <>
                                                 <h2>
-                                                <AccordionButton>
+                                                <AccordionButton background={'#3e5f74'} _hover={{bg: "#536f82"}}>
                                                     <Box as="span" flex='1' textAlign='left' fontWeight={'bold'}>
                                                         Gruppe2
                                                     </Box>
                                                     <AccordionIcon />
                                                 </AccordionButton>
                                                 </h2>
-                                                <AccordionPanel pb={4}>
+                                                <AccordionPanel pb={4} background={"#91a3af"}>
                                                 <Button mr={4}>Szene1</Button>
                                                 <Button mr={4}>Szene2</Button>
                                                 <Divider mt={4} mb={4} orientation='horizontal' />
                                                 <Box align='end'>
-                                                    <Button ml={4}><EditIcon></EditIcon> Bearbeiten </Button>
+                                                    <Button ml={4}><EditIcon mr={2}></EditIcon>Bearbeiten </Button>
                                                 </Box>
                                                 </AccordionPanel>
                                             </>
@@ -93,7 +93,7 @@ class Devices extends Component {
                             </Card>
                         </GridItem>
                         <GridItem rowSpan={2} colSpan={1}>
-                            <Card bg={"#218395"} w='100%' h='100%'>
+                            <Card bg={"blue2"} w='100%' h='100%'>
                                 <CardHeader>
                                     <Heading size='lg' color={"white"}>Meine Geräte</Heading>
                                 </CardHeader>
@@ -102,15 +102,64 @@ class Devices extends Component {
                                         spacing={4}
                                         align='stretch'
                                         >
-                                        <Box h='40px' bg='yellow.200'>
-                                            1
-                                        </Box>
-                                        <Box h='40px' bg='tomato'>
-                                            2
-                                        </Box>
-                                        <Box h='40px' bg='pink.100'>
-                                            3
-                                        </Box>
+                                        <Card h='80px' bg='#3e5f74' color={'white'}>
+                                            <Grid
+                                            templateRows='repeat(1, 1fr)'
+                                            templateColumns='repeat(5, 1fr)'
+                                            gap={4}
+                                            h="100%" 
+                                            w="100%"
+                                            p={2}
+                                            >
+                                                <GridItem colSpan={1} rowSpan={1}>
+                                                    <Center h="100%">
+                                                        <LuLamp size={'60px'}/>
+                                                    </Center>
+                                                </GridItem>
+
+                                                <GridItem colSpan={3} rowSpan={1} textAlign="center">
+                                                    <Flex align="center"  h="100%">
+                                                        <Text color={'white'} fontSize='3xl' fontWeight={'bold'}>Lampe1</Text>
+                                                    </Flex>
+                                                </GridItem>
+
+                                                <GridItem colSpan={1} rowSpan={1}>
+                                                    <Center h="100%">
+                                                        <MdArrowForwardIos size={'60px'}/>
+                                                    </Center>
+                                                </GridItem>
+                                            </Grid>
+                                        </Card>
+                                        
+                                        <Card h='80px' bg='#3e5f74' color={'white'}>
+                                            <Grid
+                                            templateRows='repeat(1, 1fr)'
+                                            templateColumns='repeat(5, 1fr)'
+                                            gap={4}
+                                            h="100%" 
+                                            w="100%"
+                                            p={2}
+                                            >
+                                                <GridItem colSpan={1} rowSpan={1}>
+                                                    <Center h="100%">
+                                                        <LuLamp size={'60px'}/>
+                                                    </Center>
+                                                </GridItem>
+
+                                                <GridItem colSpan={3} rowSpan={1} textAlign="center">
+                                                    <Flex align="center"  h="100%">
+                                                        <Text color={'white'} fontSize='3xl' fontWeight={'bold'}>Lampe1</Text>
+                                                    </Flex>
+                                                </GridItem>
+
+                                                <GridItem colSpan={1} rowSpan={1}>
+                                                    <Center h="100%">
+                                                        <MdArrowForwardIos size={'60px'}/>
+                                                    </Center>
+                                                </GridItem>
+                                            </Grid>
+                                        </Card>
+
                                     </VStack>
                                 </CardBody>
                                 <Box align='end' m={4}>
@@ -119,7 +168,7 @@ class Devices extends Component {
                             </Card>
                         </GridItem>
                         <GridItem colSpan={1}>
-                            <Card bg={"#218395"} w='100%' h='100%'>
+                            <Card bg={"blue2"} w='100%' h='100%'>
                                 <CardHeader>
                                     <Heading size='lg' color={"white"}>Favoriten</Heading>
                                 </CardHeader>

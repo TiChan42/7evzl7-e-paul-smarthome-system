@@ -6,7 +6,7 @@ class Header extends Component {
     state = {  } 
     render() { 
         return (
-            <Grid templateColumns='repeat(3, 1fr)' bg={"#00697B"} alignItems="center" verticalAlign="middle" position={'sticky'} w={"100%"} h="8vh" minH="50px" zIndex={2} top={"0px"}>
+            <Grid templateColumns='repeat(3, 1fr)' bg={"#00697B"} alignItems="center" position={'sticky'} w={"100%"} h="8vh" minH="50px" zIndex={2} top={"0px"}>
                 <GridItem>
                     <Link href="/" display={"flex"} p={[1, 2 , 4]} alignItems="center" _hover={"false"}>
                         <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
