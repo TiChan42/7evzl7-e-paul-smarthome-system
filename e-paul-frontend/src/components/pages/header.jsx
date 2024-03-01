@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Grid, Button, Text, Image, Link, GridItem } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
-import "./header.css"
 
 class Header extends Component {
     state = {  } 
@@ -9,10 +8,10 @@ class Header extends Component {
         return (
             <Grid templateColumns='repeat(3, 1fr)' bg={"#218395"} alignItems="center" verticalAlign="middle" position={'sticky'} w={"100%"} h="8vh" minH="50px" zIndex={2} top={"0px"}>
                 <GridItem>
-                <Link href="/" display={"flex"} p={[1]} alignItems="center" _hover={"false"}>
-                    <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
-                    <Text color={"whitesmoke"} fontSize={["sm","md", "xl"]} as={"b"} display={'inline-block'} _hover={{}}> E-Paul</Text>
-                </Link>
+                    <Link href="/" display={"flex"} p={[1]} alignItems="center" _hover={"false"}>
+                        <Image src="assets/img/clearLogoWhite.png" alt="Logo" width="30" height="30" display={'inline-block'} m={"1"}/>
+                        <Text color={"whitesmoke"} fontSize={["sm","md", "xl"]} as={"b"} display={'inline-block'} _hover={{}}> E-Paul</Text>
+                    </Link>
                 </GridItem>
                 
                 <GridItem>

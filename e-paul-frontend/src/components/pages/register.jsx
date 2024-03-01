@@ -59,26 +59,30 @@ class Register extends Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <Text>Email</Text>
-                <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
-                <br />
-                <br />
-                <Text>Passwort</Text>
-                <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
-                <br />
-                <br />
-                <Text>Passwort wiederholen</Text>
-                <Input type="password" name="confirmPassword" placeholder='Passwort wiederholen' size='md' variant={"filled"} color="black"/>
-                <br />
-                <Text color="red">{this.state.confirmPasswordError}</Text>
-                <Text color="red">{this.state.passwordError}</Text>
-                <Link to="/login"> Bereits registriert? </Link>
-                <br />
-                <Center p={3}>
-                    <Button type="submit" colorScheme='teal'>Registrieren</Button>
-                </Center>
-            </form>
+            <Center p={8}>
+                <form onSubmit={this.handleSubmit}>
+                    <Card p={8} borderRadius={"32px"} bg={'#218395'}>
+                        <Text>Email</Text>
+                        <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
+                        <br />
+                        <br />
+                        <Text>Passwort</Text>
+                        <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
+                        <br />
+                        <br />
+                        <Text>Passwort wiederholen</Text>
+                        <Input type="password" name="confirmPassword" placeholder='Passwort wiederholen' size='md' variant={"filled"} color="black"/>
+                        <br />
+                        <Text color="red">{this.state.confirmPasswordError}</Text>
+                        <Text color="red">{this.state.passwordError}</Text>
+                        <Link to="/login"> Bereits registriert? </Link>
+                        <br />
+                        <Center p={3}>
+                            <Button type="submit" colorScheme='teal'>Registrieren</Button>
+                        </Center>
+                    </Card>
+                </form>
+            </Center>
         );
     }
 }

@@ -69,7 +69,7 @@ class Login extends Component {
       return (
         <Center p={8}>
         <form onSubmit={this.handleSubmit}>
-          <Card p={8} size={"md"}>
+          <Card p={8} borderRadius={"32px"} bg={'#218395'}>
             <Text>Email</Text>
               <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
               <br />
