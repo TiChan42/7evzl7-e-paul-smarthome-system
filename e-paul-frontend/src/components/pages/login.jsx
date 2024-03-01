@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
+import { encryptString, decryptString } from '../../encryptionUtils';
 
 function PasswordInput() {
     const [show, setShow] = React.useState(false)
@@ -29,6 +30,8 @@ class Login extends Component {
 
     constructor(props) {
       super(props);
+      this.inputRefEmail = React.createRef();
+      this.inputRefPassword = React.createRef();
       this.state = {
           passwordError: "" //empty Strings of Errormessage
       };
@@ -41,6 +44,22 @@ class Login extends Component {
           formEl.addEventListener("submit", this.handleSubmit);
       }
   }
+
+  isInputEmpty(){
+    if (this.inputRefEmail.current.value.trim() === "") {
+      console.log("Input of Email is empty");
+      this.setState({ passwordError: "Anmeldung fehlgeschlagen: \nEmail wurde nicht eingegeben" });
+      return true;
+    }else if (this.inputRefPassword.current.value.trim() === "") {
+      console.log("Input of Password is empty");
+      this.setState({ passwordError: "Anmeldung fehlgeschlagen:\nPasswort wurde nicht eingegeben" });
+      return true;
+    }else{
+      this.setState({ passwordError: "" });
+      return false;
+    }
+
+  }
   
   //POST the content of form as JSON
   handleSubmit = (event) => {
@@ -49,8 +68,10 @@ class Login extends Component {
     const data = Object.fromEntries(formData);
     console.log(data);
 
-    if (true) {
-        this.setState({ passwordError: "" }); //reset error message
+    this.setState({ passwordError: "" }); //reset error message
+
+   
+    if(!this.isInputEmpty()){
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -58,12 +79,23 @@ class Login extends Component {
         }
 
         fetch("http://epaul-smarthome.de:8000/api/login", requestOptions)
-        .then(response => response.json())
-        .then(data => console.log(data))
+        .then(response => {
+          console.log(response); // HTTP-Response ausgeben
+          return response.json();})
+        .then(data => {
+          console.log(data);
+          if(data["falseEmailPassword"] == 0){
+            this.setState({ passwordError: "Email oder Passwort ist falsch" });
+          }else{
+            console.log(data["id"])
+            sessionStorage.setItem('accountID', encryptString(data["id"].toString()));
+            console.log("Session: "+sessionStorage.getItem("accountID"))
+            window.location.href = "/chooseuser";
+          }
+        })
         .catch(error => console.log(error))
-    } else {
-        this.setState({ passwordError: "Login failed" });
     }
+
   }
     render() { 
       return (
@@ -81,7 +113,8 @@ class Login extends Component {
                 _focusVisible={{
                   bg: "gray.300",
                   borderColor: "teal.300",
-                }} 
+                }}
+                ref={this.inputRefEmail} 
               />
               <br />
               <br />
@@ -96,7 +129,8 @@ class Login extends Component {
                 _focusVisible={{
                   bg: "gray.300",
                   borderColor: "teal.300",
-                }} 
+                }}
+                ref={this.inputRefPassword}  
               />
               <br />
               <Text color="red">{this.state.passwordError}</Text>

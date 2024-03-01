@@ -8,6 +8,9 @@ export const encryptString = (plainText) => {
 };
 
 export const decryptString = (encryptedText) => {
+  if (!encryptedText) {
+    return '';
+  }
   const decrypted = CryptoJS.AES.decrypt(encryptedText, SECRET_KEY).toString(CryptoJS.enc.Utf8);
   return decrypted;
 };
