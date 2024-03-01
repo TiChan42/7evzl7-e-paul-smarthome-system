@@ -1,70 +1,95 @@
 import React, { Component,useState, useEffect } from 'react';
-import {Box, Text, Center, Spinner,Wrap,WrapItem} from '@chakra-ui/react';
-import {Avatar} from '@chakra-ui/avatar';
+import {Box, Text, Center, Spinner,Wrap,WrapItem,Button} from "@chakra-ui/react";
+import {Avatar} from "@chakra-ui/avatar";
 import { encryptString, decryptString } from '../../encryptionUtils';
 import UserPinRequestModal from '../userPinRequestModal';
+import AddUserModal from '../addUserModal';
+import {env} from '../../env';
 
 //local test presets (dont needed at server)
-sessionStorage.setItem('accountID', encryptString('1'));
+sessionStorage.setItem('accountID', encryptString('7'));
 
 //Test Array für Benutzer
 const user = [
   {
-    profileImagePath: "user_profile_1.jpg",
-    name: "Paul56789012",
+    userImageName: "user_profile_1.jpg",
+    username: "Paul56789012",
     id: 1
   },
   {
-    profileImagePath: "user_profile_2.jpg",
-    name: "WWWWWWWWWWWW",
+    userImageName: "user_profile_2.jpg",
+    username: "WWWWWWWWWWWW",
     id: 2
   },
   {
-    profileImagePath: "user_profile_3.jpg",
-    name: "XXXXXXXXXXXX",
+    userImageName: "user_profile_3.jpg",
+    username: "XXXXXXXXXXXX",
     id: 3
   },
   {
-    profileImagePath: "user_profile_4.jpg",
-    name: "YYYYYYYYYYYY",
+    userImageName: "user_profile_4.jpg",
+    username: "YYYYYYYYYYYY",
     id: 4
   },
   {
-    profileImagePath: "user_profile_5.jpg",
-    name: "ZZZZZZZZZZZZ",
+    userImageName: "user_profile_5.jpg",
+    username: "ZZZZZZZZZZZZ",
     id: 5
   },
   {
-    profileImagePath: "user_profile_6.jpg",
-    name: "AAAAAAAAAAAA",
+    userImageName: "user_profile_6.jpg",
+    username: "AAAAAAAAAAAA",
     id: 6
   },
   {
-    profileImagePath: "user_profile_7.jpg",
-    name: "BBBBBBBBBBBB",
+    userImageName: "user_profile_0.jpg",
+    username: "BBBBBBBBBBBB",
     id: 7
   }
-];
-
-
+]
 
 function Users() {
   const userImageFolder = "assets/img/user_profile_images/";
 
   //Benutzerliste
-  const [users, setUsers] = useState(user);
+  const [users, setUsers] = useState(null);
 
   //Referenzen auf die Pin-Modals Array
   const [pinModals, setPinModals] = useState([false,false,false,false,false,false,false]);
   const [userAdministrationPinModal, setUserAdministrationPinModal] = useState(false);
-  let accountID = decryptString(('accountID').toString());
+  const [accountID,setAccountID] = useState(decryptString(('accountID').toString()));
+
+  //openModal for Create new User
+  const [createUserModal, setCreateUserModal] = useState(false);
+
+  //fetch users from backend
+  function fetchUsers(accountID) {
+    //fetch users from backend
+    const fetchPath = env()["api-path"] + "getUser/" + '7';
+    console.log(fetchPath);
+    fetch(fetchPath, {method: "GET"})
+      .then(response => {
+        console.log(response); // HTTP-Response ausgeben
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        setUsers(data["user"]);
+        if (data["user"][0] == null) {
+          setCreateUserModal(true);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    return user;
+    }
 
   //Wird beim Laden der Komponente ausgeführt
   useEffect(() => {
     sessionStorage.setItem('userAuthorized', encryptString("false"));
-    //fetch users from backend
-    //setUsers(users);
-  }, []);
+    fetchUsers(accountID);
+  }, [accountID]);
 
   //Managed das Array für die Pin-Modals (öffnen)
   function openPinModal(index) {
@@ -93,10 +118,10 @@ function Users() {
 
   //prüft ob ein Pin benötigt wird
   const checkPinNeeded = (id) => {
-    //fetch user from backend
+    //TODO: fetch user from backend
     //if user needs pin, return true
     //else return false
-    return false;
+    return true;
   };
 
   //wenn auf Benutzereinstellungen geklickt wird
@@ -120,6 +145,7 @@ function Users() {
   };
 
   return (
+    <>
     <Wrap 
       w='auto'
       
@@ -143,8 +169,8 @@ function Users() {
                       borderTopColor='Teal'
                       borderBottomColor='Teal'
                       size='2xl'
-                      name={users[key].name}
-                      src={userImageFolder + users[key].profileImagePath}
+                      name={users[key].username}
+                      src={userImageFolder + users[key].userImageName}
                       _groupHover={{ border: '8px', borderColor: 'teal.300' }}
                     />
                   </Center>
@@ -156,7 +182,7 @@ function Users() {
                       mt={2}
                       maxWidth='250px'
                     >
-                      {users[key].name}
+                      {users[key].username}
                     </Text>
                   </Center>
                 </Box>
@@ -193,7 +219,7 @@ function Users() {
                   </Center>
                 </Box>
               </Center>
-             <UserPinRequestModal openModal={userAdministrationPinModal} closeModal={() => setUserAdministrationPinModal(false)} executeIfValid={() => window.location.href='/userAdministration'} users={users}/>
+              <UserPinRequestModal openModal={userAdministrationPinModal} closeModal={() => setUserAdministrationPinModal(false)} executeIfValid={() => window.location.href = "/userAdministration"} users={users}/>
             </WrapItem>
           </React.Fragment>
         }
@@ -220,6 +246,9 @@ function Users() {
           </WrapItem>
         }
     </Wrap>
+    <Button onClick = {() => setCreateUserModal(true)}>Test AdUser</Button>
+    <AddUserModal openModal={createUserModal} closeModal={() => {setCreateUserModal(false); fetchUsers(accountID);}} accountID={accountID}/>        
+    </>
   );
 }
 
