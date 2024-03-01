@@ -97,6 +97,7 @@ void handleGET() {
   {
     //TODO @Hannes@Mathi muss zur weiterverarbeitung angepasst werden
     Serial.println(user);
+    Serial.println("hier");
     Serial.println(password);
     if(testLogIn(user, password) == false){
       answer = "400";

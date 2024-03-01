@@ -32,16 +32,10 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
   switch(type){
     case 1:
       targetID = String(jsonDoc["target"]);
-      Serial.println(targetID);
       ownID = readIDFromEEPROM(eepromStart);
-      Serial.println(ownID);
       if(targetID == ownID){
         command = String(jsonDoc["command"]);
-        /*
-        if(commandInterpretation(command) == false){
-          success = false;
-        }
-        */
+
         if (command == "activateLamp"){
           writeModeToEEPROM(eepromStart, "lamp");
           controllerAnswer("Der Modus wurde geändert zu: lamp");
@@ -56,7 +50,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
             controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp");
             Serial.println("der Modus des Controllers ist aktuell nicht: lamp");
           }
-        }else if(command == "changeLampBrightness"){
+        }else if(command == "changeRGBValue"){
         currentMode = readModeFromEEPROM(eepromStart);
         if(currentMode == "lamp"){
           rgb = String(jsonDoc["rgb"]);
@@ -67,17 +61,6 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp");
           Serial.println("der Modus des Controllers ist aktuell nicht: lamp");
         }
-
-        }else if(command == "changeRGBValue"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if(currentMode == "lamp"){
-            rgb = String(jsonDoc["rgb"]);
-            //@timos methode zum ändern der Farbe
-
-          } else {
-            controllerAnswer("der Modus des Controllers ist aktuell nicht: Lampe");
-            Serial.println("der Modus des Controllers ist aktuell nicht: Lampe");
-          }
 
         }else if(command == "activateButton"){
           writeModeToEEPROM(eepromStart, "button");
@@ -90,7 +73,6 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         } else{
           Serial.println("kein gültiger Befehl");
           controllerAnswer("Der empfangene Befehl ist nicht gültig");
-          //HIER: statusmeldung schicken
         }
       } else {
         Serial.println("message received but not for this controller");

@@ -72,6 +72,7 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(100)
 char msg[MSG_BUFFER_SIZE];
 
+void clearEEPROM();
 
 void setup() 
 { 
@@ -109,6 +110,11 @@ void setup()
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
+  //nur für testen, später wieder löschen
+  writeModeToEEPROM(eepromStart, controllerMode);
+  //nur für debugging um zu überprüfen ob der Mode richtig im EEPROM liegt
+  Serial.println(readModeFromEEPROM(eepromStart));
+
   //initialisieren der Variablen für die module
   controllerMode = readModeFromEEPROM(eepromStart);
 
@@ -131,12 +137,18 @@ void setup()
     digitalWrite(LED_WHITE, HIGH); 
   }
 
+
+
+
 }
 
 bool mqttJsonInterpretation(String mqttJsonSignal);
 
 //löschen nach testen:
 void mqttChangeBrightness();
+
+//löschen nach testen:
+void mqttChangeColor();
 
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -208,7 +220,8 @@ void loop() {
     checkButton();
   }
 
-  mqttChangeBrightness();
+  //mqttChangeBrightness();
+  mqttChangeColor();
   delay(10000);
 
   //zum Testen und debuggen vorerst dalassen

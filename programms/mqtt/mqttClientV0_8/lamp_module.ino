@@ -55,6 +55,8 @@ void writeColor(char r, char g, char b, char brightness){
   analogWrite(LED_BLUE, blue);
 
   white_flag = false;
+
+  controllerAnswer("Farbe geändert zu: rot: " + String(int(r)) + " grün: " + String(int(g)) + " blau: " + String(int(b))+ " helligkeit: " + String(int(brightness)));
 }
 
 // Funktion zum Setzen der Farbkomponenten
@@ -95,6 +97,7 @@ void setHexColor(String hexString) {
 
   if (hexString.length() != 6) {
     Serial.println("Ungültiger Hex-String");
+    controllerAnswer("Ungültiger Hex-String");
     return;
   }
 
@@ -131,6 +134,9 @@ void setBrightness(char brightness){
   } else {
     setRGBA(global_red, global_green, global_blue, brightness);
   }
+  
+  Serial.println(String(int(brightness)));
+  controllerAnswer("helligkeit geändert zu: " + String(int(brightness)));
 }
 
 //brauch ich 
