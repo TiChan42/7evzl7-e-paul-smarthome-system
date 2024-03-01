@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react';
+import React, { Component } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
@@ -82,13 +82,18 @@ class Login extends Component {
         .then(response => {
           console.log(response); // HTTP-Response ausgeben
           return response.json();})
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data);
+          if(data["falseEmailPassword"] == 0){
+            this.setState({ passwordError: "Email oder Passwort ist falsch" });
+          }else{
+            console.log(data["id"])
+            sessionStorage.setItem('accountID', encryptString(data["id"].toString()));
+            console.log("Session: "+sessionStorage.getItem("accountID"))
+            window.location.href = "/chooseuser";
+          }
+        })
         .catch(error => console.log(error))
-
-        
-        sessionStorage.setItem('accountID', encryptString(data["id"]));
-        console.log("Session: "+sessionStorage.getItem("accountID"))
-        //window.location.href = "/chooseuser";
     }
 
   }
