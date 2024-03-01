@@ -7,8 +7,8 @@ from rest_framework.response import Response
 class HomeView(APIView):
     queryset = User.objects.all()
     
-    def get(self, request, userid):
-        user = User.objects.get(pk = userid)
+    def get(self, request, userId):
+        user = User.objects.get(pk = userId)
         serializer = UserHomeSerializer(user)
         return Response(serializer.data, status = 200)
     

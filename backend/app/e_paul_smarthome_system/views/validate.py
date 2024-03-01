@@ -31,6 +31,20 @@ class ValidatePin(APIView):
         else:
             return Response(status = 400)
         
+class CheckPinRequired(APIView):
+     queryset = User.objects.all()
+
+     def get(self, request, userid):
+         user = User.objects.get(pk = userid)
+         userPin = user.pin
+         if not bool(userPin):
+             return Response({"Required" : False}, status = 200) 
+         else: 
+             return Response({"Required" : True}, status = 200)
+         
+
+
+        
 # User.objects.get(id = userId) | User.objects.get(account__id = accountId)
 """
 Teststring:

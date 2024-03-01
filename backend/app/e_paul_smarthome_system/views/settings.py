@@ -53,13 +53,13 @@ Teststring:
 class SingleUserSettingsView(APIView):
     queryset = User.objects.all()
 
-    def get(self, request, userid):
-        user = User.objects.get(pk = userid)
+    def get(self, request, userId):
+        user = User.objects.get(pk = userId)
         serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
 
-    def put(self, request, userid):
-        user = User.objects.get(pk = userid)
+    def put(self, request, userId):
+        user = User.objects.get(pk = userId)
         #account = user.account
         accountId = request.data["accountId"]
         gender = request.data["gender"]
