@@ -16,13 +16,13 @@ class UserView(APIView):
 class SingleUserView(APIView):
     queryset = User.objects.all()
 
-    def get(self, request, userid):
-        user = User.objects.get(pk = userid)
+    def get(self, request, userId):
+        user = User.objects.get(pk = userId)
         serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
         
-    def delete(self, request, userid):
-        user = User.objects.get(pk = userid)
+    def delete(self, request, userId):
+        user = User.objects.get(pk = userId)
         user.delete()
         return Response('User erfolgreich gelöscht')
     

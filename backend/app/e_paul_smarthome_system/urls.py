@@ -15,7 +15,7 @@ from django.urls import path
 
 urlpatterns = [
     path("user", UserView.as_view(), name = "user"),
-    path("user/<userid>", SingleUserView.as_view(), name = "singleUser"),
+    path("user/<userId>", SingleUserView.as_view(), name = "singleUser"),
     path("account", AccountView.as_view(), name = "group"),
     path("aboutUs", AboutUsView.as_view(), name="aboutUs"),
     path("signUp", SignUp.as_view(), name="signUp"),
@@ -24,11 +24,11 @@ urlpatterns = [
     path("login", Login.as_view(), name="login"),
     path("login/user", LoginUser.as_view(), name = "loginUser"),
     path("logout", Logout.as_view(), name = "logout"),
-    path("home/<userid>", HomeView.as_view(), name="home"),
+    path("home/<userId>", HomeView.as_view(), name="home"),
     path("devices", DeviceView.as_view(), name = "devices"), 
     path("validatePin", ValidatePin.as_view(), name = "validatePin"),
     path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
     path("settings/pin", ChangePin.as_view(), name = "validatePin"),
-    path("settings/<userid>", SingleUserSettingsView.as_view(), name = "userSettings"),
+    path("settings/<userId>", SingleUserSettingsView.as_view(), name = "userSettings"),
     path("getUser/<accountId>", GetUser.as_view(), name = "getUser"),
 ]
