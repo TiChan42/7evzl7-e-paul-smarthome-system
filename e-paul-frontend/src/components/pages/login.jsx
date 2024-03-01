@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
+import { encryptString, decryptString } from '../../encryptionUtils';
 
 function PasswordInput() {
     const [show, setShow] = React.useState(false)
@@ -58,9 +59,17 @@ class Login extends Component {
         }
 
         fetch("http://epaul-smarthome.de:8000/api/login", requestOptions)
-        .then(response => response.json())
+        .then(response => {
+          console.log(response); // HTTP-Response ausgeben
+          return response.json();})
         .then(data => console.log(data))
         .catch(error => console.log(error))
+    
+        
+        sessionStorage.setItem('accountID', encryptString(data["id"]));
+        console.log(sessionStorage.getItem("accountID"))
+        //window.location.href = "/chooseuser";
+
     } else {
         this.setState({ passwordError: "Login failed" });
     }
