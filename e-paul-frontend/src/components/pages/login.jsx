@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import './login.css'
-import { Center, Button, Input, Text, InputGroup, InputRightElement, Card, CardBody } from '@chakra-ui/react';
+//import './login.css'
+import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
 
 function PasswordInput() {
     const [show, setShow] = React.useState(false)
@@ -64,49 +64,29 @@ class Login extends Component {
     } else {
         this.setState({ passwordError: "Login failed" });
     }
-}
+  }
     render() { 
-        return (
-          <form onSubmit={this.handleSubmit}>
-
+      return (
+        <Center p={8}>
+        <form onSubmit={this.handleSubmit}>
+          <Card p={8} size={"md"}>
             <Text>Email</Text>
-                <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
-                <br />
-                <br />
-                <Text>Passwort</Text>
-                <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
-                <br />
-                <Text color="red">{this.state.passwordError}</Text>
-                <Link to="/register"> Jetzt registieren! </Link>
-                <br />
-                <Center p={3}>
-                    <Button type="submit" colorScheme='teal'>Anmelden</Button>
-                </Center>
-            
-            {/*
-            <Center m={'50px'}>
-                <Card size="lg" width={400} bg={"#218395"} p={"50px"}>
-                    <CardBody>
-                        <Text>Email</Text>   
-                        <Input placeholder='Email eingeben' size='md' variant={"filled"}/>
-                        <br/>
-                        <br/>
-                        <Text>Passwort</Text>   
-                        <PasswordInput />
-                        <Link to="/register"> Jetzt registieren! </Link>
-                        <br/>
-                    </CardBody>
-                    <Center p={3}>
-                    <Link to="/chooseuser">
-                        <Button type="submit" colorScheme='teal'>Anmelden</Button>
-                    </Link>
-                    </Center>
-                </Card>
-            </Center>
-        */}
-
-          </form>
-        );
+              <Input type="email" name="email" placeholder='Email eingeben' size='md' variant={"filled"} color="black"/>
+              <br />
+              <br />
+              <Text>Passwort</Text>
+              <Input type="password" name="password" placeholder='Passwort eingeben' size='md' variant={"filled"} color="black"/>
+              <br />
+              <Text color="red">{this.state.passwordError}</Text>
+              <Link to="/register"> Jetzt registieren! </Link>
+              <br />
+              <Center p={3}>
+                  <Button type="submit" colorScheme='teal'>Anmelden</Button>
+              </Center>
+            </Card>
+        </form>
+        </Center>
+      );
     }
 }
  
