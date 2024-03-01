@@ -3,11 +3,15 @@ import { decryptString } from '../../encryptionUtils';
 import React, { Component } from 'react';
 
 
-function InitialFocus({ isOpen, onClose }) {
+function InitialFocus() {
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     return (
+        <>
+        <Button onClick={onOpen} colorScheme='teal' variant='solid' >Account löschen</Button>
+
         <Modal
             initialFocusRef={initialRef}
             finalFocusRef={finalRef}
@@ -32,6 +36,7 @@ function InitialFocus({ isOpen, onClose }) {
                 </ModalFooter>
             </ModalContent>
         </Modal>
+        </>
     );
 }
 
@@ -85,7 +90,6 @@ class Settings extends Component {
                             marginTop={'1em'}
                         />
                         <Button onClick={this.updateBirthdate} margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Geburtsdatum aktualisieren</Button>
-                        <Button margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Account löschen</Button>
                         <InitialFocus />
                     </Box>
                 </Card>
