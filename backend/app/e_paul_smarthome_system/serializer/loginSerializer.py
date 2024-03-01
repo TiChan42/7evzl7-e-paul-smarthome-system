@@ -19,4 +19,4 @@ class LoginAccountSerializer(serializers.ModelSerializer):
 class LoginUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username']
+        fields = ['id']

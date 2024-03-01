@@ -49,14 +49,20 @@ class CreateUser(APIView):
     def post(self, request):
         data = request.data
         username = data["username"]
-        pin = data["pin"]
+        try:
+            pin = data["pin"]
+        except KeyError:
+            pin = None
         accountId = data["accountId"]
-        pictureId = data["pictureId"]
 
         try:
             account = Account.objects.get(id=accountId)
         except Account.DoesNotExist:
             return Response(status=400)
+         
+        if(Account.objects.get(id=accountId).user.count() >= 7):
+            return Response(status=400)
+        
         
         try: 
             if (Account.objects.filter(id=accountId, user__isnull = False)):
@@ -73,19 +79,29 @@ class CreateUser(APIView):
                 return 0
 
         if(noUser == True):
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            user = User(username = username, pin = pin, account = account, role = 'superuser', pictureid=pictureId)
-            user.save()
-            return Response(status = 201)
+            if(pin == None):
+                user = User(username = username, account = account, role = 'superuser')
+                user.save()
+                return Response(status = 201)
+            else:
+                pin = pin.encode("utf-8")
+                pinHash = hashpw(pin, salt=gensalt())
+                pin = pinHash.decode("utf-8")
+                user = User(username = username, pin = pin, account = account, role = 'superuser')
+                user.save()
+                return Response(status = 201)
         elif(userExists(accountId, username)==0):
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            user = User(username = username, pin = pin, account = account, role ='user', pictureid = pictureId)
-            user.save()
-            return Response(status=201)
+            if(pin == None):
+                user = User(username = username, account = account, role = 'user')
+                user.save()
+                return Response(status = 201)
+            else:
+                pin = pin.encode("utf-8")
+                pinHash = hashpw(pin, salt=gensalt())
+                pin = pinHash.decode("utf-8")
+                user = User(username = username, pin = pin, account = account, role ='user')
+                user.save()
+                return Response(status=201)
         else:
             return Response(status=400)
         
@@ -94,8 +110,7 @@ for testing purposes
 {
 "accountId" : 2,
 "username" : "Zelda",
-"pin" : "187",
-"pictureId" : 1
+"pin" : "187"
 }
 """
 

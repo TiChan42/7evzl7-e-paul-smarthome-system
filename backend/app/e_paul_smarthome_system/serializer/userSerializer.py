@@ -19,26 +19,20 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username']
 
-class UserHomeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'pictureid']
-        #fields = ['username', 'pictureid', 'log']
-    #log = LogSerializer(many=True)
-    # In doku nachschauen wie das genau geht
-
-
-
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'gender']
 
 class UserHomeSerializer(serializers.ModelSerializer):
+    userImageName = serializers.SerializerMethodField("getUserImageName")
     class Meta:
         model = User
-        fields = ['username', 'pictureid']
+        fields = ['id','username', 'userImageName']
         #fields = ['username', 'pictureid', 'log']
+        
+    def getUserImageName(self, obj):
+        return obj.imageName
     #log = LogSerializer(many=True)
     # In doku nachschauen wie das genau geht
 
