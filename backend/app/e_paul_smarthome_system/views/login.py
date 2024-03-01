@@ -15,21 +15,24 @@ class Login(APIView):
         data = request.data
         password = data["password"].encode("utf-8")
         email = data["email"]
-        account = Account.objects.filter(email = email)
+        try: 
+            account = Account.objects.get(email = email)
+        except Account.DoesNotExist:
+            return Response({"fallseEmailPassword" : 0},status = 400)
         if account:
-            savedPassword = account[0].password.encode("utf-8")
+            savedPassword = account.password.encode("utf-8")
             try:
                 samePassword = checkpw(password, savedPassword)
             except ValueError:
-                return Response(status = 400)
+                return Response({"falseEmailPassword": 0},status = 400)
             if (samePassword == 1):
-                serializer = LoginAccountSerializer(account, many = True)
+                serializer = LoginAccountSerializer(account)
                 # muss noch zuende implementiert werden
                 return Response(serializer.data, status = 200)
             else:
-                return Response(status = 400)
+                return Response({"falseEmailPassword": 0},status = 400)
         else: 
-            return Response(status = 400)
+            return Response({"falseEmailPassword": 0}, status = 400)
         
 """
 {
