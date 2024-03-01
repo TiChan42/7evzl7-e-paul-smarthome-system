@@ -18,7 +18,7 @@ class Login(APIView):
         try: 
             account = Account.objects.get(email = email)
         except Account.DoesNotExist:
-            return Response({"fallseEmailPassword" : 0},status = 400)
+            return Response({"falseEmailPassword" : 0},status = 400)
         if account:
             savedPassword = account.password.encode("utf-8")
             try:

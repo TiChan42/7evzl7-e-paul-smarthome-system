@@ -1,6 +1,6 @@
 from django.db import models
 
-class Pin(models.Model):
+class Port(models.Model):
     
     art = models.CharField(max_length=50, choices=[
         ("Eingang", "Eingang"), ("Ausgang", "Ausgang") # liste muss noch bestimmt werden

@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from bcrypt import hashpw, gensalt, checkpw
+from os import system
 
 class SignUp(APIView):
     queryset = Account.objects.all()
@@ -135,8 +136,12 @@ class MicrocontrollerSignUp(APIView):
             account = Account.objects.get(email=email)
             samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
             if samePassword == 1:
-                microcontroller = Microcontroller(name=name, account = account, key = id_generator())
+                key = id_generator()
+                microcontroller = Microcontroller(name=name, account = account, key = key)
                 microcontroller.save()
+                with open("/etc/mosquitto/auth", "a") as myfile:
+                    myfile.write(str(microcontroller.id) + ":" + key + "\n")
+                system("mosquitto_passwd -U /etc/mosquitto/auth")
                 serializer = MicrocontrollerSerializer(microcontroller)
                 return Response(serializer.data, status=201)
             else:
