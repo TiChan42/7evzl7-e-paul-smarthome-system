@@ -96,7 +96,9 @@ const AddUserModal = (props) => {
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Benutzer erstellen</ModalHeader>
-                <ModalCloseButton />
+                {!props.disableClose &&
+                    <ModalCloseButton />
+                }
                 <ModalBody>
                     <FormControl>
                         <FormLabel>Benutzername</FormLabel>

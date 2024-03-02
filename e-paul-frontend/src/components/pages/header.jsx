@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
 import { Box, Button, Text, Image, Link, Flex, Spacer } from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
+import SignUpAndInModal from '../signUpAndInModal';
 
 class Header extends Component {
-    state = {  } 
+    state = {  
+        openSignUpAndInModal: false,
+        signUpAndInModalSite: 0
+    } 
+    openSignUpAndInModal = () => {
+        this.setState({ openSignUpAndInModal: true });
+    }
+    closeSignUpAndInModal = () => {
+        this.setState({ openSignUpAndInModal: false });
+    }
+    setSignUpAndInModalSiteToSignUp = () => {
+        this.setState({ signUpAndInModalSite: 0 });
+    }
+    setSignUpAndInModalSiteToSignIn = () => {
+        this.setState({ signUpAndInModalSite: 1 });
+    }
+
+    openSignUpModal = () => {
+        this.setSignUpAndInModalSiteToSignUp();
+        this.openSignUpAndInModal();
+    }
+
+    openSignInModal = () => {
+        this.setSignUpAndInModalSiteToSignIn();
+        this.openSignUpAndInModal();
+    }
+    
     render() { 
         return (
             <Flex bg={"#00697B"} alignItems="center" verticalAlign="middle" position={'sticky'} w={"100%"} h="70px" zIndex={2} top={"0px"}>
@@ -59,16 +86,19 @@ class Header extends Component {
                 </Box>
                 <Spacer/>
                 <Box align='end'>
-                    <Link href="/register" _hover={false} pr={[1, 2, 4]}>
-                        <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]}>
+                    <Link  _hover={false} pr={[1, 2, 4]}>
+                        <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick = {this.openSignUpModal}>
                             Registrieren
                         </Button>
+                        
+
                     </Link>
-                    <Link href="/login" _hover={false} pr={[1, 2, 4]}>
-                        <Button colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]}>
+                    <Link  _hover={false} pr={[1, 2, 4]}>
+                        <Button colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick={this.openSignInModal}>
                             Anmelden
                         </Button>
                     </Link>
+                    <SignUpAndInModal openModal={this.state.openSignUpAndInModal} closeModal={this.closeSignUpAndInModal} entrySite={this.state.signUpAndInModalSite} />
                 </Box>
             </Flex>
         );
