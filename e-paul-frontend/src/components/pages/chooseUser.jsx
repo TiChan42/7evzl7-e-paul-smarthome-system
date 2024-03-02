@@ -1,53 +1,13 @@
 import React, { Component,useState, useEffect } from 'react';
-import {Box, Text, Center, Spinner,Wrap,WrapItem,Button} from "@chakra-ui/react";
+import {Box, Text, Center, Spinner,Wrap,WrapItem} from "@chakra-ui/react";
 import {Avatar} from "@chakra-ui/avatar";
 import { encryptString, decryptString } from '../../encryptionUtils';
 import UserPinRequestModal from '../userPinRequestModal';
 import AddUserModal from '../addUserModal';
 import {env} from '../../env';
 
-//local test presets (dont needed at server)
-sessionStorage.setItem('accountID', encryptString('7'));
 
-//Test Array für Benutzer
-const user = [
-  {
-    userImageName: "user_profile_1.jpg",
-    username: "Paul56789012",
-    id: 1
-  },
-  {
-    userImageName: "user_profile_2.jpg",
-    username: "WWWWWWWWWWWW",
-    id: 2
-  },
-  {
-    userImageName: "user_profile_3.jpg",
-    username: "XXXXXXXXXXXX",
-    id: 3
-  },
-  {
-    userImageName: "user_profile_4.jpg",
-    username: "YYYYYYYYYYYY",
-    id: 4
-  },
-  {
-    userImageName: "user_profile_5.jpg",
-    username: "ZZZZZZZZZZZZ",
-    id: 5
-  },
-  {
-    userImageName: "user_profile_6.jpg",
-    username: "AAAAAAAAAAAA",
-    id: 6
-  },
-  {
-    userImageName: "user_profile_0.jpg",
-    username: "BBBBBBBBBBBB",
-    id: 7
-  }
-]
-
+//Komponente für die Auswahl des Benutzers
 function Users() {
   const userImageFolder = "assets/img/user_profile_images/";
 
@@ -57,7 +17,7 @@ function Users() {
   //Referenzen auf die Pin-Modals Array
   const [pinModals, setPinModals] = useState([false,false,false,false,false,false,false]);
   const [userAdministrationPinModal, setUserAdministrationPinModal] = useState(false);
-  const [accountID,setAccountID] = useState(decryptString(('accountID').toString()));
+  const accountID = decryptString(sessionStorage.getItem("accountID"));
 
   //openModal for Create new User
   const [createUserModal, setCreateUserModal] = useState(false);
@@ -65,7 +25,7 @@ function Users() {
   //fetch users from backend
   function fetchUsers(accountID) {
     //fetch users from backend
-    const fetchPath = env()["api-path"] + "getUser/" + '7';
+    const fetchPath = env()["api-path"] + "getUser/" + accountID; 
     console.log(fetchPath);
     fetch(fetchPath, {method: "GET"})
       .then(response => {
@@ -82,17 +42,18 @@ function Users() {
       .catch(error => {
         console.log(error);
       });
-    return user;
-    }
+  }
 
   //Wird beim Laden der Komponente ausgeführt
   useEffect(() => {
+    console.log("AccountID: " + accountID);
     sessionStorage.setItem('userAuthorized', encryptString("false"));
     fetchUsers(accountID);
   }, [accountID]);
 
   //Managed das Array für die Pin-Modals (öffnen)
   function openPinModal(index) {
+    console.log("openPinModal: " + index);
     const nextPinModals = pinModals.map((c, i) => {
       if (i === index) {
         return true;
@@ -117,10 +78,28 @@ function Users() {
 
 
   //prüft ob ein Pin benötigt wird
-  const checkPinNeeded = (id) => {
-    //TODO: fetch user from backend
-    //if user needs pin, return true
-    //else return false
+  const checkPinNeeded = (id, index) => {
+    const fetchPath = env()["api-path"] + "pinRequired/" + id; 
+    console.log(fetchPath);
+    fetch(fetchPath, {method: "GET"})
+      .then(response => {
+        console.log(response); // HTTP-Response ausgeben
+        return response.json();
+      })
+      .then(data => {
+        console.log(data["Required"]);
+        if(data["Required"]){
+          console.log("Pin wird benötigt: " + id)
+          openPinModal(index);
+        }else{
+          console.log("Pin wird nicht benötigt: " + id)
+          sessionStorage.setItem('userAuthorized', encryptString("true"));
+          window.location.href = "/devices";
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
     return true;
   };
 
@@ -131,17 +110,10 @@ function Users() {
   };
 
   //wenn auf Benutzer geklickt wird
-  const openUser = (id,index) => {
+  const openUser = (id, index) => {
     const encryptedId = encryptString(id.toString());
     sessionStorage.setItem("executingUserID", encryptedId);
-    if(checkPinNeeded(id)){
-        console.log("PIN needed!");
-        openPinModal(index);
-    }else{
-        console.log("OPEN User without PIN");
-        sessionStorage.setItem('userAuthorized', encryptString("true"));
-        window.location.href = "/devices";
-    }
+    checkPinNeeded(id, index);
   };
 
   return (
@@ -154,7 +126,7 @@ function Users() {
       spacing='5px' 
       >
         
-        {users &&
+        {users && users[0] &&
 
           <React.Fragment>
           {Object.keys(users).map((key, index) => (
@@ -246,8 +218,7 @@ function Users() {
           </WrapItem>
         }
     </Wrap>
-    <Button onClick = {() => setCreateUserModal(true)}>Test AdUser</Button>
-    <AddUserModal openModal={createUserModal} closeModal={() => {setCreateUserModal(false); fetchUsers(accountID);}} accountID={accountID}/>        
+    <AddUserModal openModal={createUserModal} closeModal={() => {setCreateUserModal(false); fetchUsers(accountID);}} accountID={accountID} disableClose requireAdmin/>        
     </>
   );
 }

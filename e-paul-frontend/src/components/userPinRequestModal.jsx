@@ -113,7 +113,10 @@ const UserPinRequestModal = (props) => {
                             {requireUserSelection && props.users &&
                                 <FormControl>
                                     <FormLabel>ausführenden Benutzer auswählen</FormLabel>
-                                    <Select onChange={(event) => {setUserSelectValue(event.target.value)}} >
+                                    <Select 
+                                    focusBorderColor='teal.500'
+                                    onChange={(event) => {setUserSelectValue(event.target.value)}} 
+                                    >
                                         {props.users.map((user) => (
                                             <option key={user.id} value={user.id}>
                                                 {user.username}
@@ -132,6 +135,7 @@ const UserPinRequestModal = (props) => {
                                         placeholder='Hier Pin eingeben...'
                                         maxLength='32'
                                         onChange={tryToSubmitPin}
+                                        focusBorderColor='teal.500'
                                     />
                                     <InputRightElement width='4.5rem'>
                                         <Button h='1.75rem' size='sm' onClick={handlePinShowClick}>

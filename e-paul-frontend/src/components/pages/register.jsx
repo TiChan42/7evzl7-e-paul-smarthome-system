@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react';
+import React, { Component } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
 import { Center, Button, Input, Text, Card } from '@chakra-ui/react';
@@ -76,8 +76,19 @@ class Register extends Component {
                     }
 
                     fetch("http://epaul-smarthome.de:8000/api/signUp", requestOptions)
-                    .then(response => response.json())
-                    .then(data => console.log(data))
+                    .then(response => 
+                        {
+                            // Status 201 = Created
+                            if(response.status === 201){
+                                console.log("Registed successfully");
+                                this.setState({ emptyInputError: "" });
+                                window.location.href = "/login";
+                            }
+                            else{
+                                this.setState({ emptyInputError: "Registrierung fehlgeschlagen: Benutzer existiert schon oder Es gab Verarbeitungsprobleme, bitte erneut versuchen" });
+                                console.log("Registration failed");
+                            }
+                        })
                     .catch(error => console.log(error))
                 }   
             } 
@@ -141,6 +152,7 @@ class Register extends Component {
                         <Text color="red">{this.state.confirmPasswordError}</Text>
                         <Text color="red">{this.state.passwordError}</Text>
                         <Text color="red">{this.state.emptyInputError}</Text>
+
                         <ChakraLink as={ReactRouterLink} to={"/login"} color={'white'}> Bereits registriert? </ChakraLink>
                         <br />
                         <Center p={3}>

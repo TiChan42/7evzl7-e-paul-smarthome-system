@@ -1,30 +1,8 @@
 import React, { Component } from 'react';
 import { Link as ReactRouterLink } from 'react-router-dom'
 import { Link as ChakraLink } from '@chakra-ui/react'
-import { Center, Button, Card, Input, Text, InputGroup, InputRightElement } from '@chakra-ui/react';
-import { encryptString, decryptString } from '../../encryptionUtils';
-
-function PasswordInput() {
-    const [show, setShow] = React.useState(false)
-    const handleClick = () => setShow(!show)
-    
-    return (
-      <InputGroup size='md'>
-        <Input
-          pr='4.5rem'
-          type={show ? 'text' : 'password'}
-          placeholder='Passwort eingeben'
-          variant={"filled"}
-          size='md'
-        />
-        <InputRightElement width='4.5rem'>
-          <Button h='1.75rem' size='md' onClick={handleClick}>
-            {show ? 'Hide' : 'Show'}
-          </Button>
-        </InputRightElement>
-      </InputGroup>
-    )
-  }
+import { Center, Button, Card, Input, Text } from '@chakra-ui/react';
+import { encryptString } from '../../encryptionUtils';
 
 class Login extends Component {
 
@@ -79,17 +57,12 @@ class Login extends Component {
         }
 
         fetch("http://epaul-smarthome.de:8000/api/login", requestOptions)
-        .then(response => {
-          console.log(response); // HTTP-Response ausgeben
-          return response.json();})
+        .then(response => response.json())
         .then(data => {
-          console.log(data);
-          if(data["falseEmailPassword"] == 0){
+          if(data["falseEmailPassword"] === 0){
             this.setState({ passwordError: "Email oder Passwort ist falsch" });
           }else{
-            console.log(data["id"])
             sessionStorage.setItem('accountID', encryptString(data["id"].toString()));
-            console.log("Session: "+sessionStorage.getItem("accountID"))
             window.location.href = "/chooseuser";
           }
         })
