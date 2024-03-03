@@ -20,7 +20,6 @@ import {
 const SignUpAndInModal = (props) => {
 
     const initialRef = React.useRef();
-
     const signInRef = React.useRef();
 
     const switchToSignIn = () => {
@@ -47,10 +46,10 @@ const SignUpAndInModal = (props) => {
                 <ModalBody>
                     <TabPanels>
                         <TabPanel >
-                            <SignUpForm initialRef={initialRef} executeSuccessfulSignUp={() => {switchToSignIn()}}/>
+                            <SignUpForm initialRef={initialRef} executeSuccessfulSignUp={() => {switchToSignIn(); props.onSignUp();}}/>
                         </TabPanel>
                         <TabPanel >
-                            <SignInForm initialRef={initialRef}/>
+                            <SignInForm initialRef={initialRef} executeSuccessfulSignIn={() => {props.onSignIn();}}/>
 
                         </TabPanel>
                     </TabPanels>

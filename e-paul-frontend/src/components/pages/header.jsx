@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import { Box, Button, Text, Image, Link, Flex, Spacer } from '@chakra-ui/react';
+import { Box, Button, Text, Image, Link, Flex, Spacer} from '@chakra-ui/react';
 import { Route, Routes } from 'react-router-dom';
 import SignUpAndInModal from '../signUpAndInModal';
+import { env } from '../../env';
+import { decryptString } from '../../encryptionUtils';
 
 class Header extends Component {
     state = {  
         openSignUpAndInModal: false,
-        signUpAndInModalSite: 0
+        signUpAndInModalSite: 0,
+        accountLoggedIn: (sessionStorage.getItem('accountID') !== "" && sessionStorage.getItem('accountID') !== null)
     } 
     openSignUpAndInModal = () => {
         this.setState({ openSignUpAndInModal: true });
@@ -29,6 +32,44 @@ class Header extends Component {
     openSignInModal = () => {
         this.setSignUpAndInModalSiteToSignIn();
         this.openSignUpAndInModal();
+    }
+
+    signInAccount = () => {
+        console.log("Account signed in");
+        this.setState({ accountLoggedIn: true });
+        window.location.href = "/chooseuser";
+    }
+
+    signOutAccount = () => {
+        console.log("Account signed out: " + decryptString(sessionStorage.getItem('accountID')));
+        const data = { accountId : decryptString(sessionStorage.getItem('accountID')) };
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        }
+        fetch(env()["api-path"] + 'logout', requestOptions)
+        .then(response => {
+            if(response.status === 204){
+                this.setState({ accountLoggedIn: false });
+
+                sessionStorage.removeItem('accountID');
+                sessionStorage.removeItem('executingUserID');
+                sessionStorage.removeItem('userAuthorized');
+
+                window.location.href = "/";
+            }
+            else
+            {
+                console.log("Error while signing out");
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
     }
     
     render() { 
@@ -55,15 +96,7 @@ class Header extends Component {
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Benutzer</Text>}
                         />
                         <Route
-                            path="/register"
-                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Registrieren</Text>}
-                        />
-                        <Route
-                            path="/login"
-                            element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Anmelden</Text>}
-                        />
-                        <Route
-                            path="/impressum"
+                            path="/imprint"
                             element={<Text as={"b"} fontSize={['md','xl','3xl']} color={'white'}>Impressum</Text>}
                         />
                         <Route
@@ -86,19 +119,28 @@ class Header extends Component {
                 </Box>
                 <Spacer/>
                 <Box align='end'>
-                    <Link  _hover={false} pr={[1, 2, 4]}>
-                        <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick = {this.openSignUpModal}>
-                            Registrieren
-                        </Button>
-                        
-
-                    </Link>
-                    <Link  _hover={false} pr={[1, 2, 4]}>
-                        <Button colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick={this.openSignInModal}>
-                            Anmelden
-                        </Button>
-                    </Link>
-                    <SignUpAndInModal openModal={this.state.openSignUpAndInModal} closeModal={this.closeSignUpAndInModal} entrySite={this.state.signUpAndInModalSite} />
+                    {!this.state.accountLoggedIn ? (
+                        <>
+                            <Link  _hover={false} pr={[1, 2, 4]}>
+                                <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick = {this.openSignUpModal}>
+                                    Registrieren
+                                </Button>
+                            </Link>
+                            <Link  _hover={false} pr={[1, 2, 4]}>
+                                <Button colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick={this.openSignInModal}>
+                                    Anmelden
+                                </Button>
+                            </Link>
+                        </>
+                    ) : (
+                        <Link  _hover={false} pr={[1, 2, 4]}>
+                            <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} onClick = {this.signOutAccount}>
+                                Abmelden
+                            </Button>
+                        </Link>
+                    )
+                    }
+                    <SignUpAndInModal openModal={this.state.openSignUpAndInModal} closeModal={this.closeSignUpAndInModal} entrySite={this.state.signUpAndInModalSite} onSignIn = {()=>{this.signInAccount()}} onSignUp = {() =>{}}/>
                 </Box>
             </Flex>
         );

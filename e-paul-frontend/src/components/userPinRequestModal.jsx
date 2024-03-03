@@ -9,6 +9,7 @@ import {
     Button,
     FormControl,
     FormLabel,
+    FormHelperText,
     Select,
     Input,
     InputGroup,
@@ -79,12 +80,13 @@ const UserPinRequestModal = (props) => {
         }
     }, [props.users,props.openModal]);
 
-    
+    const startFocusRef = React.createRef();
     
     return (
         <Modal
         isOpen={props.openModal}
         onClose={props.closeModal}
+        initialFocusRef={startFocusRef}
         >
             <ModalOverlay />
             <ModalContent>
@@ -136,6 +138,7 @@ const UserPinRequestModal = (props) => {
                                         maxLength='32'
                                         onChange={tryToSubmitPin}
                                         focusBorderColor='teal.500'
+                                        ref={startFocusRef}
                                     />
                                     <InputRightElement width='4.5rem'>
                                         <Button h='1.75rem' size='sm' onClick={handlePinShowClick}>
@@ -143,6 +146,9 @@ const UserPinRequestModal = (props) => {
                                         </Button>
                                     </InputRightElement>
                                 </InputGroup>
+                                <FormHelperText>
+                                    Automatische Weiterleitung nach erfolgreicher Eingabe
+                                </FormHelperText>
                             </FormControl>
                         </ModalBody>
 

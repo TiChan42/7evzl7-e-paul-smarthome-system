@@ -26,14 +26,14 @@ function Users() {
   function fetchUsers(accountID) {
     //fetch users from backend
     const fetchPath = env()["api-path"] + "getUser/" + accountID; 
-    console.log(fetchPath);
+    
     fetch(fetchPath, {method: "GET"})
       .then(response => {
-        console.log(response); // HTTP-Response ausgeben
+        
         return response.json();
       })
       .then(data => {
-        console.log(data);
+        
         setUsers(data["user"]);
         if (data["user"][0] == null) {
           setCreateUserModal(true);
@@ -46,7 +46,7 @@ function Users() {
 
   //Wird beim Laden der Komponente ausgeführt
   useEffect(() => {
-    console.log("AccountID: " + accountID);
+    
     sessionStorage.setItem('userAuthorized', encryptString("false"));
     fetchUsers(accountID);
   }, [accountID]);

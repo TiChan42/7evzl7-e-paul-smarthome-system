@@ -104,8 +104,10 @@ const SignInForm = (props) => {
                     duration: 5000,
                     isClosable: true,
                 })
+
                 sessionStorage.setItem('accountID', encryptString(data["id"].toString()));
-                window.location.href = "/chooseuser";
+                props.executeSuccessfulSignIn();
+                
             }
         })
         .catch(error => {

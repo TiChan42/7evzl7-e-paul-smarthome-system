@@ -67,7 +67,6 @@ const SignUpForm = (props) => {
     //Überprüft ob die Eingaben korrekt sind und setzt die Flags
     useEffect(() => {
         setEmailWrongFormat(false);
-        setEmailAlreadyExists(false);
         setPasswordTooShort(false);
         setPasswordWrongFormat(false);
         setPasswordsNotEqual(false);
@@ -75,6 +74,7 @@ const SignUpForm = (props) => {
         if (email.length > 0) {
             if (checkEmail(email)) {
                 if (!emailAlreadyExists) {
+                    setEmailAlreadyExists(false);
                     if (password.length > 0) {
                         if (checkPasswordLength(password)) {
                             if (checkPasswordChars(password)) {
@@ -111,8 +111,7 @@ const SignUpForm = (props) => {
     const signUp = async () => {
         const data = {
             email: email,
-            password: password,
-            confirmPassword: passwordRepeat
+            password: password
         }
         const requestOptions = {
             method: "POST",
@@ -133,9 +132,8 @@ const SignUpForm = (props) => {
                 })
                 props.executeSuccessfulSignUp();
             }
-            else if(response.status === 400){
+            else if(response.status === 420){
                 console.log("Account already exists");
-                setEmailAlreadyExists(true);
                 toast({
                     title: 'Das Konto existiert bereits',
                     description: "Bitte melden Sie sich an oder verwenden Sie eine andere Email-Adresse",
@@ -143,6 +141,7 @@ const SignUpForm = (props) => {
                     duration: 5000,
                     isClosable: true,
                 })
+                setEmailAlreadyExists(true);
             }else{
                 console.log("Registration failed");
                 toast({

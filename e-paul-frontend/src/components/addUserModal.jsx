@@ -9,10 +9,12 @@ import {
     Button,
     FormControl,
     FormLabel,
+    FormErrorMessage,
     Input,
     InputGroup,
     InputRightElement,
-    Checkbox
+    Checkbox,
+    useToast
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
   import { decryptString } from '../encryptionUtils';
@@ -23,6 +25,9 @@ import {
 
 //Komponente für das Hinzufügen eines Benutzers (Modal)
 const AddUserModal = (props) => {
+
+    const toast = useToast();
+
     //Indikator ob der Pin angezeigt werden soll
     const [showPin, setShowPin] = React.useState(false)
     const handlePinShowClick = () => setShowPin(!showPin)
@@ -81,8 +86,19 @@ const AddUserModal = (props) => {
         }
         console.log(requestOptions);
         fetch(env()["api-path"] + "signUp/user", requestOptions)
-        .then(() => {
-            props.closeModal();
+        .then(response => {
+            if(response.status === 201){
+                props.closeModal();
+            }
+            else{
+                toast({
+                    title: "Benutzer konnte nicht erstellt werden",
+                    description: "Bitte versuchen Sie es erneut",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                })
+            }
         })
     }
 
@@ -100,7 +116,7 @@ const AddUserModal = (props) => {
                     <ModalCloseButton />
                 }
                 <ModalBody>
-                    <FormControl>
+                    <FormControl isInvalid={(userName.length === 0)} isRequired>
                         <FormLabel>Benutzername</FormLabel>
                         <InputGroup size='md'>
                             <Input
@@ -118,9 +134,14 @@ const AddUserModal = (props) => {
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
+                        {(userName.length === 0) &&
+                            <FormErrorMessage>
+                                Der Benutzername darf nicht leer sein
+                            </FormErrorMessage>
+                        }
                     </FormControl>
                     <br></br>
-                    <FormControl>
+                    <FormControl isInvalid={(isAdmin && (password.length < 6) && (userName.length !== 0))} isRequired = {isAdmin} isDisabled = {(userName.length === 0)}>
                         <FormLabel>Pin</FormLabel>
                         <InputGroup size='md'>
                             <Input
@@ -132,14 +153,19 @@ const AddUserModal = (props) => {
                                 onChange={e => setPassword(e.target.value)}
                             />
                             <InputRightElement width='4.5rem'>
-                                <Button h='1.75rem' size='sm' onClick={handlePinShowClick} >
+                                <Button h='1.75rem' size='sm' onClick={handlePinShowClick} isDisabled = {(userName.length === 0)}>
                                     {showPin ? <ViewIcon/> : <ViewOffIcon/>}
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
+                        {(isAdmin && (password.length < 6) && (userName.length !== 0)) &&
+                            <FormErrorMessage>
+                                Der Pin muss mindestens 6 Zeichen lang sein
+                            </FormErrorMessage>
+                        }
                     </FormControl>
                     <br></br>
-                    <FormControl>
+                    <FormControl isInvalid={(isAdmin && (password !== passwordRepeat)) || (password !== passwordRepeat)} isRequired = {isAdmin} isDisabled = {(userName.length === 0) || (isAdmin && (password.length < 6))}>
                         <FormLabel>Pin widerholen</FormLabel>
                         <InputGroup size='md'>
                             <Input
@@ -151,11 +177,16 @@ const AddUserModal = (props) => {
                                 onChange={e => setPasswordRepeat(e.target.value)}
                             />
                             <InputRightElement width='4.5rem'>
-                                <Button h='1.75rem' size='sm' onClick={handlePinShowClick} >
+                                <Button h='1.75rem' size='sm' onClick={handlePinShowClick} isDisabled = {(userName.length === 0) || (isAdmin && (password.length < 6))}>
                                     {showPin ? <ViewIcon/> : <ViewOffIcon/>}
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
+                        {(password !== passwordRepeat) &&
+                            <FormErrorMessage>
+                                Die Pins stimmen nicht überein
+                            </FormErrorMessage>
+                        }
                     </FormControl>
                     <br></br>
                     <FormControl display='flex' alignItems='center'>
@@ -175,9 +206,7 @@ const AddUserModal = (props) => {
                     {!props.disableClose &&
                         <Button mr={3} onClick={props.closeModal}>Schließen</Button>
                     }
-                    {showCreateButton &&
-                        <Button colorScheme='teal' onClick = {() => createUser()}>Erstellen</Button>
-                    }
+                    <Button colorScheme='teal' onClick = {() => createUser()} isDisabled={!showCreateButton}>Erstellen</Button>
                     
                 </ModalFooter>
                 
