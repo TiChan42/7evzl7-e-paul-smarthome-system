@@ -69,7 +69,13 @@ class Header extends Component {
         .catch((error) => {
             console.error('Error:', error);
         });
+    }
 
+    testStillLoggedIn = () => {
+        if (!this.state.accountLoggedIn) {
+            console.log("Account signed out");
+            window.location.href = "/";
+        }
     }
     
     render() { 

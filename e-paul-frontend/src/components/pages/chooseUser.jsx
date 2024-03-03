@@ -9,7 +9,12 @@ import {env} from '../../env';
 
 //Komponente für die Auswahl des Benutzers
 function Users() {
-  const userImageFolder = "assets/img/user_profile_images/";
+  //Auf die Startseite wenn nicht angemeldet
+  useEffect(() => {
+    if (sessionStorage.getItem("accountID") == null) {
+      window.location.href = "/";
+    }
+  }, []);
 
   //Benutzerliste
   const [users, setUsers] = useState(null);
@@ -142,7 +147,7 @@ function Users() {
                       borderBottomColor='Teal'
                       size='2xl'
                       name={users[key].username}
-                      src={userImageFolder + users[key].userImageName}
+                      src={env()["user-profile-images-path"] + users[key].userImageName}
                       _groupHover={{ border: '8px', borderColor: 'teal.300' }}
                     />
                   </Center>
@@ -174,7 +179,7 @@ function Users() {
                       borderTopColor='Teal'
                       borderBottomColor='Teal'
                       size='2xl'
-                      src={userImageFolder + 'user_settings.png'}
+                      src={env()["user-profile-images-path"] + 'user_settings.png'}
                       _groupHover={{ border: '8px', borderColor: 'teal.300' }}
                     />
                   </Center>

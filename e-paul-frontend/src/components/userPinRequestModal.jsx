@@ -120,9 +120,12 @@ const UserPinRequestModal = (props) => {
                                     onChange={(event) => {setUserSelectValue(event.target.value)}} 
                                     >
                                         {props.users.map((user) => (
-                                            <option key={user.id} value={user.id}>
-                                                {user.username}
-                                            </option>
+                                            <>
+                                            {(user.role === "admin" || user.role === "superuser") &&
+                                                <option key={user.id} value={user.id}>
+                                                    {user.username}
+                                                </option>
+                                            }</>
                                         ))}
                                     </Select>
                                     <br></br>
