@@ -28,13 +28,11 @@ class UserHomeSerializer(serializers.ModelSerializer):
     userImageName = serializers.SerializerMethodField("getUserImageName")
     class Meta:
         model = User
-        fields = ['id','username', 'userImageName']
-        #fields = ['username', 'pictureid', 'log']
+        fields = ['id','username', 'userImageName', 'role']
         
     def getUserImageName(self, obj):
         return obj.imageName
-    #log = LogSerializer(many=True)
-    # In doku nachschauen wie das genau geht
+
 
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
