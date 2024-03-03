@@ -17,7 +17,6 @@ class SignUp(APIView):
         data = request.data
         email = data["email"]
         password = data["password"]
-        wdhPassword = data["confirmPassword"]
 
         def accountExists(email):
             if Account.objects.filter(email=email):
@@ -25,7 +24,7 @@ class SignUp(APIView):
             else:
                 return 0
 
-        if(accountExists(email)==0 and password==wdhPassword):
+        if(accountExists(email)==0):
             password = password.encode("utf-8")
             passwordHash = hashpw(password, salt=gensalt())
             password = passwordHash.decode("utf-8")
@@ -33,14 +32,13 @@ class SignUp(APIView):
             account.save()
             return Response(status=201)
         else:
-            return Response(status=400)
+            return Response(status=420)
         
 """     
 for testing purposes    
 {
 "email" : "test",
-"password" : "435",
-"confirmPassword" : "435"
+"password" : "435"
 }
 """
 
@@ -142,6 +140,7 @@ class MicrocontrollerSignUp(APIView):
                 with open("/etc/mosquitto/auth", "a") as myfile:
                     myfile.write(str(microcontroller.id) + ":" + key + "\n")
                 system("mosquitto_passwd -U /etc/mosquitto/auth")
+                system("sudo systemctl restart mosquitto")
                 serializer = MicrocontrollerSerializer(microcontroller)
                 return Response(serializer.data, status=201)
             else:
