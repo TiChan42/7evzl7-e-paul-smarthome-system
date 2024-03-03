@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from bcrypt import hashpw, gensalt, checkpw
+from os import system
 
 class SignUp(APIView):
     queryset = Account.objects.all()
@@ -16,7 +17,6 @@ class SignUp(APIView):
         data = request.data
         email = data["email"]
         password = data["password"]
-        wdhPassword = data["confirmPassword"]
 
         def accountExists(email):
             if Account.objects.filter(email=email):
@@ -24,7 +24,7 @@ class SignUp(APIView):
             else:
                 return 0
 
-        if(accountExists(email)==0 and password==wdhPassword):
+        if(accountExists(email)==0):
             password = password.encode("utf-8")
             passwordHash = hashpw(password, salt=gensalt())
             password = passwordHash.decode("utf-8")
@@ -32,14 +32,13 @@ class SignUp(APIView):
             account.save()
             return Response(status=201)
         else:
-            return Response(status=400)
+            return Response(status=420)
         
 """     
 for testing purposes    
 {
 "email" : "test",
-"password" : "435",
-"confirmPassword" : "435"
+"password" : "435"
 }
 """
 
@@ -135,8 +134,13 @@ class MicrocontrollerSignUp(APIView):
             account = Account.objects.get(email=email)
             samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
             if samePassword == 1:
-                microcontroller = Microcontroller(name=name, account = account, key = id_generator())
+                key = id_generator()
+                microcontroller = Microcontroller(name=name, account = account, key = key)
                 microcontroller.save()
+                with open("/etc/mosquitto/auth", "a") as myfile:
+                    myfile.write(str(microcontroller.id) + ":" + key + "\n")
+                system("mosquitto_passwd -U /etc/mosquitto/auth")
+                system("sudo systemctl restart mosquitto")
                 serializer = MicrocontrollerSerializer(microcontroller)
                 return Response(serializer.data, status=201)
             else:
