@@ -1,5 +1,5 @@
-import { Button, Drawer, DrawerBody, DrawerHeader, DrawerContent, DrawerOverlay, useDisclosure } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { Button, Drawer, DrawerBody, DrawerHeader, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
 
 function OpenHistoryDrawer() {
     const { isOpen, onOpen, onClose } = useDisclosure()

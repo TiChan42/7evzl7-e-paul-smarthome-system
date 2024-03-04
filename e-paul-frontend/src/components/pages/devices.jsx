@@ -1,11 +1,16 @@
-import { Component } from "react";
-import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader} from "@chakra-ui/react";
+import { Component } from 'react';
+import { Heading, Grid, Box, GridItem, Card, Button, Flex, Spacer, Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, CardBody, Divider, VStack, CardHeader, Text} from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons'
-import AddGroupDialog from "./addGroupDialog"
-import AddDeviceDialog from "./addDeviceDialog";
-import OpenHistoryDrawer from "./openhistoryDrawer";
+import AddGroupDialog from '../addGroupDialog'
+import AddDeviceDialog from '../addDeviceDialog';
+import OpenHistoryDrawer from '../openhistoryDrawer';
+import { decryptString } from '../../encryptionUtils';
 
 class Devices extends Component {
+    userID = decryptString(sessionStorage.getItem('executingUserID').toString());
+    state = {  }
+    
+
     render() { 
         return (
             <Box>
@@ -26,6 +31,9 @@ class Devices extends Component {
                             <Card bg={"#218395"} w='100%' h='100%'>
                             <CardHeader>
                                 <Heading size='lg' color={"white"}>Statusmeldung</Heading>
+                                {this.userID}
+                                <Text color={"white"}></Text>
+
                             </CardHeader>
                             </Card>
                         </GridItem>
