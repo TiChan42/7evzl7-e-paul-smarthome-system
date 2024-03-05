@@ -1,14 +1,30 @@
 import { Heading, Box, Card, Button, VStack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
 import React, { Component } from 'react';
-import { ViewIcon, ViewOffIcon} from '@chakra-ui/icons'
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 
 
 function InitialFocus() {
+    const userID = sessionStorage.getItem('executingUserID');
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const deleteAccount = async () => {
+        console.log(userID)
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + userID, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: userID
+            })
+        })
+
+    };
 
     return (
         <>
@@ -25,13 +41,10 @@ function InitialFocus() {
                     <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <FormControl mt={4}>
-                            <FormLabel>Pin eingeben</FormLabel>
-                            <Input placeholder='Pin' ref={initialRef} />
-                        </FormControl>
+
                     </ModalBody>
                     <ModalFooter>
-                        {/*<Button colorScheme='blue' mr={3} onClick={deleteAccount}>Bestätigen</Button>*/}
+                        <Button colorScheme='red' variant='solid' onClick={deleteAccount}>Bestätigen</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
@@ -43,7 +56,7 @@ function InitialFocus() {
 
 
 class Settings extends Component {
-    state = { activeTab: 'profil', isModalOpen: false };
+    state = { activeTab: 'allgemein', isModalOpen: false };
     userID = sessionStorage.getItem('executingUserID');
     accountID = sessionStorage.getItem('accountID');
 
@@ -67,7 +80,6 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                    gender: "male",
                     username: this.state.newUsername
                 })
             })
@@ -76,50 +88,11 @@ class Settings extends Component {
             console.log(res.body);
 
         };
-        //funktioniert noch nicht, da keine Infos in Methoden gefunden
-        const updateBirthdate = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    accountId: this.accountID,
-                    gender: "male",
-                    username: this.username,
-                    birthdate: this.state.newBirthdate
-                })
-            })
-
-        };
-
-
-
-        const deleteAccount = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + this.userID, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: this.userID
-                })
-            })
-
-        };
-
 
         const updateGender = async () => {
+            console.log("Test")
+            console.log(this.userID,this.state.newGender, this.accountID)
 
-            console.log(this.userID, this.accountID)
-            console.log(JSON.stringify({
-                accountId: this.accountID,
-                userId: this.userID,
-                gender: "male",
-                username: this.username
-            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
                 headers: {
@@ -128,23 +101,19 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                    gender: this.state.newGender,
-                    username: this.state.newUsername
+                    gender: this.state.newGender
                 })
             })
-
-            //const data = await res.json();
-            console.log(res.body);
 
         };
 
 
 
-        if (activeTab === 'profil') {
+        if (activeTab === 'allgemein') {
             return (
                 <Card bg={"#218395"} w='100%' h='100%' >
                     <CardHeader>
-                        <Heading size='lg' color={"white"}>Profil</Heading>
+                        <Heading size='lg' color={"white"}>Allgemein</Heading>
                     </CardHeader>
                     <Box m={4}>
                         <p>Hier können Sie Ihren Benutzernamen ändern:</p>
@@ -166,16 +135,26 @@ class Settings extends Component {
 
                     <Box m={4}>
                         <p>Hier können Sie Ihr Geschlecht ändern:</p>
-                        <Select color={'white'} errorBorderColor='white' borderColor={'white'} focusBorderColor={'red'} placeholder='Geschlecht wählen' marginTop={'1em'}
-                            value={this.state.newGender}
-                            onChange={(e) => this.setState({ newGender: e.target.value })}>
-                            <option value='option1'>männlich</option>
-                            <option value='option2'>weiblich</option>
-                            <option value='option3'>divers</option>
+                        <Select color={'white'} 
+                        errorBorderColor='white' 
+                        borderColor={'white'} 
+                        focusBorderColor={'red'} 
+                        placeholder='Geschlecht wählen' 
+                        marginTop={'1em'}
+                        value={this.state.newGender}
+                        onChange={(e) => this.setState({ newGender: e.target.value })}
+                  >
+
+                            <option value='männlich'>männlich</option>
+                            <option value='weiblich'>weiblich</option>
+                            <option value='divers'>divers</option>
+                            
+                            
                         </Select>
                         <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
                         <br></br><br></br>
-                            <InitialFocus/>
+                        <p>Hier können Sie Ihren Account löschen:</p>
+                        <InitialFocus/>
                     </Box>
                 </Card>
             );
@@ -232,15 +211,15 @@ class Settings extends Component {
         }
 
 
-        else if (activeTab === 'sicherheit') {
+        else if (activeTab === 'pin') {
             return (
                 <Card bg={"#218395"} w='100%' h='100%'>
                     <CardHeader>
-                        <Heading size='lg' color={"white"}>Sicherheit</Heading>
+                        <Heading size='lg' color={"white"}>Pin</Heading>
                     </CardHeader>
                     <Box m={4} width={'80%'}>
                         <p>Hier können Sie Ihren Pin ändern:</p>
-                        
+
                         <HStack marginTop={'1em'}>
                             <PinInput mask variant={'filled'}>
                                 <PinInputField />
@@ -279,11 +258,11 @@ class Settings extends Component {
                 <Box width="25%" p={4}>
                     <VStack alignItems="center">
                         <Image src='../../assets/img/paul.png' />
-                        <Button onClick={() => this.setState({ activeTab: 'profil' })} colorScheme={activeTab === 'profil' ? "blue" : "gray"} width={'80%'}>
-                            Profil
+                        <Button onClick={() => this.setState({ activeTab: 'allgemein' })} colorScheme={activeTab === 'allgemein' ? "blue" : "gray"} width={'80%'}>
+                            Allgemein
                         </Button>
-                        <Button onClick={() => this.setState({ activeTab: 'sicherheit' })} colorScheme={activeTab === 'sicherheit' ? "blue" : "gray"} width={'80%'}>
-                            Sicherheit
+                        <Button onClick={() => this.setState({ activeTab: 'pin' })} colorScheme={activeTab === 'pin' ? "blue" : "gray"} width={'80%'}>
+                            Pin
                         </Button>
                         <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
                             Modus
