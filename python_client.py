@@ -41,6 +41,13 @@ class python_client:
         else:
             print(f"Failed to send message to topic {self.topic}")
 
+    def subscribe(self):
+        def on_message(client, userdata, msg):
+            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+
+        self.client.subscribe(self.topic)
+        self.client.on_message = on_message
+
 
     def disconnect(self):
         self.client.loop_stop()
@@ -48,4 +55,8 @@ class python_client:
 
 
 testcl = python_client("robbe0503@t-online.de")
+testcl.subscribe()
+testcl.publish("whatsup")
+time.sleep(2)
+
         
