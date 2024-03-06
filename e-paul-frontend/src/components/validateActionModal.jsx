@@ -34,7 +34,7 @@ const ValidateActionModal = (props) => {
                     <Button key={initialRef} colorScheme="teal" mr={3} onClick={()=>{props.closeModal(); props.execute();}}>
                         Bestätigen
                     </Button>
-                    <Button mr={3} onClick={props.closeModal}>
+                    <Button mr={3} onClick={()=>{props.closeModal()}}>
                         Abbrechen
                     </Button>
                 </ModalFooter>
