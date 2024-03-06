@@ -49,7 +49,7 @@ class About extends Component {
 		return (
 			<Center>
 				<Box width={{base: '100%', sm: '85%', xl: '80%', '2xl':'75%'}}>
-					<Heading textAlign={"center"} fontSize={'3xl'} pt={20}>Dürfen wir uns vorstellen?</Heading>
+					<Heading textAlign={"center"} fontSize={'3xl'} pt={20} textColor={'teal.900'}>Dürfen wir uns vorstellen?</Heading>
 					<br/>
 					
 					<SlideShow slides={slides}/>
