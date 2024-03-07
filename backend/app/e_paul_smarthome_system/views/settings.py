@@ -62,8 +62,17 @@ class SingleUserSettingsView(APIView):
         user = User.objects.get(pk = userId)
         #account = user.account
         accountId = request.data["accountId"]
-        gender = request.data["gender"]
-        newUsername = request.data["username"]    
+        
+        try: 
+            gender = request.data["gender"]
+        except KeyError:
+            gender = None
+        
+        try:
+            newUsername = request.data["username"]    
+        except KeyError:
+            newUsername = None
+            
         account = Account.objects.get(id=accountId)
 
         # check if new username is unique in given account
@@ -77,8 +86,16 @@ class SingleUserSettingsView(APIView):
             else:
                 return 0
             
-        if newUsername is not None and uniqueUsername(newUsername, account.id)==0:
+        if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
             user.username = newUsername
+            user.gender = gender
+            user.save()
+            return Response(status = 200)
+        elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
+            user.username = newUsername
+            user.save()
+            return Response(status = 200)
+        elif not newUsername and gender:
             user.gender = gender
             user.save()
             return Response(status = 200)
@@ -89,8 +106,8 @@ class SingleUserSettingsView(APIView):
 
 """
 {
-    "accountId" : "1",
-    "username" : "dnaiajvöio",
+    "accountId" : "5",
+    "username" : "testuser1",
     "gender" : "männlich"
 } 
 """

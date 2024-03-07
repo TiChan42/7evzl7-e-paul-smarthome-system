@@ -41,3 +41,27 @@ Teststring:
 }
 """
 
+class ValidateEmail(APIView):
+    queryset = Account.objects.all()
+    
+    def post(self, request):
+        key = request.data["key"].encode("utf-8")
+        id = request.data["accountId"]
+        try:
+            account = Account.objects.get(pk = id)
+        except Account.DoesNotExist:
+            return Response(status = 400)
+        if account.emailVerified == True:
+            return Response({"AlreadyVerified" : 1}, status = 400)
+        else:
+            try:
+                savedKey = account.key.encode("utf-8")
+                sameKey = checkpw(key, savedKey)
+            except ValueError:
+                return Response(status = 400)  
+            if sameKey == 1:
+                account.emailVerified = True
+                account.save()
+                return Response("Deine Email wurde erfolgreich verifiziert", status = 200)
+            else:
+                return Response({"WrongKey": 1}, status = 400)

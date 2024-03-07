@@ -4,11 +4,25 @@ from ..model.microcontroller import Microcontroller
 
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
 
+#from ..functions.sendMail import send_email
+from django.core.mail import BadHeaderError, send_mail
+from django.conf import settings
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from bcrypt import hashpw, gensalt, checkpw
 from os import system
+
+import string
+import random
+
+def id_generator(size=20, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+from django.core import mail
+from django.core.mail.backends.smtp import EmailBackend
+
 
 class SignUp(APIView):
     queryset = Account.objects.all()
@@ -41,6 +55,38 @@ for testing purposes
 "password" : "435"
 }
 """
+
+class EmailVerification(APIView):
+    queryset = Account.objects.all()
+    
+    def post(self, request):
+        data = request.data
+        email = data["email"]
+        key = id_generator(size=4, chars= string.digits)
+        data = {
+            "subject" : "Verification Code for ePaul SmartHome System",
+            "message" : "Your verification code is: " + key + "\n" + "Please enter this code to verify your email address. \n" + "If you did not request this code, please ignore this email.",
+            "receiver" : email
+        }
+        
+        try:
+            send_mail(data["subject"], data["message"],settings.EMAIL_HOST_USER  ,[data["receiver"]])
+        except BadHeaderError:
+            return Response("Invalid header found.", status = 400)
+        try:
+            account = Account.objects.get(email=email)
+            key = key.encode("utf-8")
+            keyHash = hashpw(key, salt=gensalt())
+            key = keyHash.decode("utf-8")
+            account.key = key
+            account.save()        
+        except Account.DoesNotExist:
+            return Response("Account does not exist",status=400)
+        return Response("Email sent successfully.", status = 204)
+
+
+
+
 
 class CreateUser(APIView):
     queryset = User.objects.all()
@@ -112,12 +158,6 @@ for testing purposes
 "pin" : "187"
 }
 """
-
-import string
-import random
-
-def id_generator(size=20, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
 
 class MicrocontrollerSignUp(APIView):
     queryset = User.objects.all()
