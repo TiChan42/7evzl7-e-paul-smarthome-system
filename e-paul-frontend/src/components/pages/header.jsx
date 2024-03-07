@@ -189,7 +189,7 @@ class Header extends Component {
                                     fontSize={["sm", "md", "xl"]}
                                     color={"white"}
                                 >
-                                    Geräteübersicht
+                                    Mein Smart-Home
                                 </Text>
                             }
                         />
