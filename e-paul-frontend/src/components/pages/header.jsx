@@ -229,6 +229,18 @@ class Header extends Component {
                                 </Text>
                             }
                         />
+                        <Route
+                            path="/settings"
+                            element={
+                                <Text 
+                                    as={"b"}
+                                    fontSize={['md','xl','3xl']} 
+                                    color={'white'}
+                                > 
+                                    Einstellungen
+                                </Text>
+                            }
+                        />
                     </Routes>
                 </Box>
                 <Spacer />
