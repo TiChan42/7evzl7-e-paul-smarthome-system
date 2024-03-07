@@ -3,8 +3,6 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 
 //components
 import About from "./components/pages/about"
-import Login from "./components/pages/login"
-import Register from "./components/pages/register"
 import RootLayout from "./Layouts/RootLayout"
 import Welcome from "./components/pages/welcome"
 import ChooseUser from "./components/pages/chooseUser"
@@ -16,9 +14,6 @@ import Settings from "./components/pages/settings"
 
 import Options from "./components/pages/options"
 import FAQ from "./components/pages/faq";
-//deleted
-//import SignIn from "./components/signIn";
-//import Impressum from "./components/impressum"
 
 import theme from "./theme";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -29,8 +24,6 @@ const router = createBrowserRouter (
         <Route exact path='/' element={<RootLayout/>}>
             <Route index element={<Welcome/>}/>
             <Route path="/about" element={<About/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/register" element={<Register/>}/>
             <Route path="/chooseUser" element={<ChooseUser/>}/>
             <Route path="/imprint" element={<Imprint/>}/>
             <Route path="/devices" element={<Devices/>}/>
