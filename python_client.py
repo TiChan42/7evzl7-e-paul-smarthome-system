@@ -1,6 +1,7 @@
 
 import random
 import time
+import json
 
 from paho.mqtt import client as mqtt_client
 
@@ -33,8 +34,18 @@ class python_client:
         client.connect(self.broker, self.port)
         return client
 
-    def publish(self, message):
-        result = self.client.publish(self.topic, message)
+    def publish(self, target, command, brightness, rgb):
+        message = {
+            "type": 1,
+            "target": target,
+            "command": command
+        }
+        if brightness:
+            message["brightness"] = brightness
+        if rgb:
+            message["rgb"] = rgb
+        messageJson = json.dumps(message)
+        result = self.client.publish(self.topic, messageJson)
         status = result[0]
         if status == 0:
             print(f"Send message to topic {self.topic}")
@@ -44,9 +55,17 @@ class python_client:
     def subscribe(self):
         def on_message(client, userdata, msg):
             print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+            message = msg.payload.decode()
+            data = json.loads(message)
+            if data["type"] == 2:
+                print(message)
+
 
         self.client.subscribe(self.topic)
         self.client.on_message = on_message
+        
+    def run(self):
+        self.client.loop_forever()
 
 
     def disconnect(self):
@@ -56,7 +75,8 @@ class python_client:
 
 testcl = python_client("robbe0503@t-online.de")
 testcl.subscribe()
-testcl.publish("whatsup")
+testcl.publish(45, "on", 100, [255, 255, 255])
 time.sleep(2)
+testcl.run()
 
         
