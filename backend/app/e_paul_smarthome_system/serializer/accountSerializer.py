@@ -1,6 +1,6 @@
 from ..model.account import Account
 from .userSerializer import  UserSerializer, UserHomeSerializer
-from .microcontrollerSerializer import MicrocontrollerSerializer
+from .microcontrollerSerializer import MicrocontrollerSerializer, MicrocontrollerPortSerializer
 from rest_framework import serializers
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -23,3 +23,10 @@ class AccountUserSerializer(serializers.ModelSerializer):
         fields = ['user']
 
     user = UserHomeSerializer(many = True)
+    
+class AccountPortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['microcontroller']
+    
+    microcontroller = MicrocontrollerPortSerializer(many = True)    

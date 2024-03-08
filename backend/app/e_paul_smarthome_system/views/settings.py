@@ -116,7 +116,7 @@ class ChangePin(APIView):
     queryset = User.objects.all()
 
     def put(self, request):
-        userid = request.data["id"]
+        userid = request.data["userId"]
         user = User.objects.get(pk = userid)
         pin = request.data["pin"]
         userPin = user.pin
@@ -148,7 +148,7 @@ class ChangePin(APIView):
 """
 Teststring:
 {
-    "id" : 16,
+    "userId" : 16,
     "pin" : "1234",
     "previousPin" : "1234"
 }

@@ -1,6 +1,8 @@
 from ..model.account import Account
 from ..model.user import User
 from ..model.microcontroller import Microcontroller
+from ..model.group import Group
+from ..model.port import Port
 
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
 
@@ -123,10 +125,16 @@ class CreateUser(APIView):
             else:
                 return 0
 
+    
         if(noUser == True):
             if(pin == None):
+                
                 user = User(username = username, account = account, role = 'superuser')
                 user.save()
+                group1 = Group(user = User.objects.get(username = username), groupType = 'Standard')
+                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1.save()
+                group2.save()
                 return Response(status = 201)
             else:
                 pin = pin.encode("utf-8")
@@ -134,11 +142,19 @@ class CreateUser(APIView):
                 pin = pinHash.decode("utf-8")
                 user = User(username = username, pin = pin, account = account, role = 'superuser')
                 user.save()
+                group1 = Group(user = User.objects.get(username = username), groupType = 'Standard')
+                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1.save()
+                group2.save()
                 return Response(status = 201)
         elif(userExists(accountId, username)==0):
             if(pin == None):
                 user = User(username = username, account = account, role = 'user')
                 user.save()
+                group1 = Group(user = User.objects.get(username = username), groupType = 'Standard')
+                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1.save()
+                group2.save()
                 return Response(status = 201)
             else:
                 pin = pin.encode("utf-8")
@@ -146,6 +162,10 @@ class CreateUser(APIView):
                 pin = pinHash.decode("utf-8")
                 user = User(username = username, pin = pin, account = account, role ='user')
                 user.save()
+                group1 = Group(user = User.objects.get(username = username), groupType = 'Standard')
+                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1.save()
+                group2.save()
                 return Response(status=201)
         else:
             return Response(status=400)
@@ -177,10 +197,17 @@ class MicrocontrollerSignUp(APIView):
                 key = id_generator()
                 microcontroller = Microcontroller(name=name, account = account, key = key)
                 microcontroller.save()
+                with open("/etc/mosquitto/authbuffer", "a") as myfile:
+                    myfile.write(str(microcontroller.id) + ":" + key)
+                system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
+                with open("/etc/mosquitto/authbuffer", "r+") as myfile:
+                    key = myfile.read()
+                    myfile.truncate(0)
                 with open("/etc/mosquitto/auth", "a") as myfile:
-                    myfile.write(str(microcontroller.id) + ":" + key + "\n")
-                system("mosquitto_passwd -U /etc/mosquitto/auth")
+                    myfile.write(str(key))
                 system("sudo systemctl restart mosquitto")
+                port = Port(type = "test", microcontroller = microcontroller)
+                port.save()
                 serializer = MicrocontrollerSerializer(microcontroller)
                 return Response(serializer.data, status=201)
             else:
