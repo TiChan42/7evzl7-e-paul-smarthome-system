@@ -1,0 +1,10 @@
+from ..model.port import Port
+
+from rest_framework import serializers
+
+class PortSerializer(serializers.ModelSerializer):
+        
+    class Meta:
+        model = Port
+        fields = ['id','type','inUse','groupPort']
+            
