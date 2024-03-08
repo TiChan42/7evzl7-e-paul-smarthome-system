@@ -1,4 +1,4 @@
-import { Heading, Box, Card, Button, VStack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField } from "@chakra-ui/react";
+import { Heading, Box, Card, Button, VStack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
 import React, { Component } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -44,7 +44,7 @@ function InitialFocus() {
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='red' variant='solid' onClick={deleteAccount}>Bestätigen</Button>
+                        <Button colorScheme='red' variant='solid' onClick={deleteAccount} marginRight={'1em'}>Bestätigen</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
@@ -59,6 +59,7 @@ class Settings extends Component {
     state = { activeTab: 'allgemein', isModalOpen: false };
     userID = sessionStorage.getItem('executingUserID');
     accountID = sessionStorage.getItem('accountID');
+
 
 
     renderContent() {
@@ -91,7 +92,7 @@ class Settings extends Component {
 
         const updateGender = async () => {
             console.log("Test")
-            console.log(this.userID,this.state.newGender, this.accountID)
+            console.log(this.userID, this.state.newGender, this.accountID)
 
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
@@ -121,7 +122,6 @@ class Settings extends Component {
                             isInvalid
                             type="text"
                             errorBorderColor='white'
-                            borderColor={'green'}
                             placeholder='Neuer Benutzername'
                             _placeholder={{ color: 'white' }}
                             focusBorderColor={'red'}
@@ -135,26 +135,26 @@ class Settings extends Component {
 
                     <Box m={4}>
                         <p>Hier können Sie Ihr Geschlecht ändern:</p>
-                        <Select color={'white'} 
-                        errorBorderColor='white' 
-                        borderColor={'white'} 
-                        focusBorderColor={'red'} 
-                        placeholder='Geschlecht wählen' 
-                        marginTop={'1em'}
-                        value={this.state.newGender}
-                        onChange={(e) => this.setState({ newGender: e.target.value })}
-                  >
+                        <Select color={'white'}
+                            errorBorderColor='white'
+                            borderColor={'white'}
+                            focusBorderColor={'red'}
+                            placeholder='Geschlecht wählen'
+                            marginTop={'1em'}
+                            value={this.state.newGender}
+                            onChange={(e) => this.setState({ newGender: e.target.value })}
+                        >
 
                             <option value='männlich'>männlich</option>
                             <option value='weiblich'>weiblich</option>
                             <option value='divers'>divers</option>
-                            
-                            
+
+
                         </Select>
                         <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
                         <br></br><br></br>
                         <p>Hier können Sie Ihren Account löschen:</p>
-                        <InitialFocus/>
+                        <InitialFocus />
                     </Box>
                 </Card>
             );
@@ -212,6 +212,7 @@ class Settings extends Component {
 
 
         else if (activeTab === 'pin') {
+
             return (
                 <Card bg={"#218395"} w='100%' h='100%'>
                     <CardHeader>
@@ -219,32 +220,44 @@ class Settings extends Component {
                     </CardHeader>
                     <Box m={4} width={'80%'}>
                         <p>Hier können Sie Ihren Pin ändern:</p>
+                        <InputGroup size='md'>
 
-                        <HStack marginTop={'1em'}>
-                            <PinInput mask variant={'filled'}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                            </PinInput>
-                        </HStack>
+                            <Input pr='4.5rem' placeholder='Aktueller Pin' margin={'3em'} errorBorderColor='white'
+                            borderColor={'white'}
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}/>
+                            <InputRightElement width='4.5rem'>
+                                <Button h='1.75rem' size='sm' >
+                                </Button>
+                            </InputRightElement>
 
-                        <HStack marginTop={'3em'}>
-                            <PinInput mask variant={'filled'}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                            </PinInput>
-                        </HStack>
+                            <Input pr='4.5rem' placeholder='Neuer Pin' margin={'3em'} errorBorderColor='white'
+                            borderColor={'white'}
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}/>
+                            <InputRightElement width='4.5rem'>
+                                <Button h='1.75rem' size='sm' >
+                                </Button>
+                            </InputRightElement>
 
+                            <Input pr='4.5rem' placeholder='Neuen Pin bestätigen' margin={'3em'} errorBorderColor='white'
+                            borderColor={'white'}
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}/>
+                            <InputRightElement width='4.5rem'>
+                                <Button h='1.75rem' size='sm' >
+                                </Button>
+                            </InputRightElement>
 
+                        </InputGroup>
                         <Button margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
-            );
 
+            );
         }
+
+
     }
 
     render() {
