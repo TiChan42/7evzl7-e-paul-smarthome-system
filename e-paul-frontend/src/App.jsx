@@ -10,18 +10,12 @@ import Imprint from './components/pages/imprint'
 import Devices from './components/pages/devices'
 import UserSettings from './components/pages/userSettings'
 import UserAdministration from './components/pages/userAdministration'
-import Options from './components/pages/options'
-import FAQ from './components/pages/faq';
 import theme from './theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import ModalTest from './components/pages/modalTest';
 import Settings from "./components/pages/settings"
-
 import Options from "./components/pages/options"
 import FAQ from "./components/pages/faq";
-
-import theme from "./theme";
-import { ChakraProvider } from "@chakra-ui/react";
 
 //router
 const router = createBrowserRouter (

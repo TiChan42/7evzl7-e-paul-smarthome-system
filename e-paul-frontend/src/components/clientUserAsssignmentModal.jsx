@@ -83,11 +83,12 @@ const ClientElement = (props) => {
                 }
                 {!props.state &&
                 <>
-                    {props.clientName.length <= 5 &&
+                    {props.clientName.toString().length <= 5 &&
                         <TagLabel >{props.clientName}</TagLabel>
                     }
-                    {props.clientName.length > 5 &&
+                    {props.clientName.toString().length > 5 &&
                         <TagLabel >{props.clientName.substring(0,3) + '...'}</TagLabel>
+                    
                 }
                 </>
             }
