@@ -17,23 +17,39 @@ import {
     CardBody,
     Divider,
     VStack,
+    useToast,
+    Tooltip,
     CardHeader,
     SimpleGrid,
-    AspectRatio,
     Text,
-    Square,
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import AddGroupDialog from "../addGroupDialog";
 import AddDeviceDialog from "../addDeviceDialog";
 import OpenHistoryDrawer from "../openhistoryDrawer";
-//import { decryptString } from '../../encryptionUtils';
+import { decryptString } from '../../encryptionUtils';
 import { LuLamp } from "react-icons/lu";
 import { MdArrowForwardIos } from "react-icons/md";
 import Clock from 'react-live-clock';
+import {env} from '../../env';
 
 function DeviceOverview() {
-    //userID = decryptString(sessionStorage.getItem('executingUserID').toString());
+    const userID = decryptString(sessionStorage.getItem('executingUserID'));
+    const accountID = decryptString(sessionStorage.getItem("accountID")); 
+    const current = new Date();
+    const date = `${current.getDate()}.${current.getMonth() + 1}.${current.getFullYear()}`;
+    const toast = useToast()
+    const [users, setUsers] = useState(null);
+    let username = "username";
+
+    // save username in variable
+    if (users) {
+        username = users.username;
+    }
+
+    useEffect(()=>{
+        fetchUsers(accountID)
+    },[accountID])
 
     /*Auf die Startseite wenn nicht angemeldet
     useEffect(() => {
@@ -43,15 +59,38 @@ function DeviceOverview() {
     }, []);
     */
 
-    const current = new Date();
-    const date = `${current.getDate()}.${current.getMonth() + 1}.${current.getFullYear()}`;
+    //fetch users from backend
+    function fetchUsers(accountID) {
+        //später auf 0 prüfen und dann nicht laden
+        const fetchPath = env()["api-path"] + "getUser/" + userID;
+        console.log(fetchPath);
+        fetch(fetchPath, {method: "GET"})
+        .then(response => {
+            console.log(response); // HTTP-Response ausgeben
+            return response.json();
+        })
+        .then(data => {
+        console.log(data);
+        setUsers(data["user"]);
+        if (data["user"][0] == null) {
+            console.log('Kein Benutzer vorhanden')
+        }
+        })
+        .catch(error => {
+        console.log('ausgeführt')
+        toast({
+            title: 'error',
+            status: 'error',
+            isClosable: true,
+        });
+        });
+    };
 
     return (
         <Box h={"100%"} w={["100%", "85%", "70%"]}>
             <Flex pt={4} pl={4} pr={4}>
-                <Heading>Hallo ''Name''!</Heading>
+                <Heading>Hallo {username}!</Heading>
                 <Spacer></Spacer>
-                
                 <OpenHistoryDrawer></OpenHistoryDrawer>
             </Flex>
 
@@ -67,11 +106,10 @@ function DeviceOverview() {
                                 <Heading size="lg" color={"white"}>
                                     Statusmeldung
                                 </Heading>
-                                <Text color={"white"} fontSize='lg'>
+                                <Text color={"white"} fontSize='lg' as={'b'}>
                                     Datum: {date} <br/>
                                     Uhrzeit: <Clock format={'HH:mm:ss'} ticking={true} timezone={'US/Pacific'} />
                                 </Text>
-                                
                             </CardHeader>
                         </Card>
                     </GridItem>
@@ -259,31 +297,54 @@ function DeviceOverview() {
                                 </Heading>
                             </CardHeader>
                             <CardBody>
-                                <SimpleGrid templateColumns="repeat(5, 1fr)" w={"100%"} gap={[1, 2, 4]}>
-                                    <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer"
->
+                                <SimpleGrid columns={[2, 3, 4]} w={"100%"} gap={[1, 2, 4]}>
+                                    <Tooltip label="Lampe1" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
-                                    </Card>
+                                    <Tooltip label="Lampe2" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer"
->
-                                            A
-                                    </Card>
+                                    <Tooltip label="Lampe3" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer"
->
-                                            A
-                                    </Card>
+                                    <Tooltip label="Lampe4" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer"
->
-                                            A
-                                    </Card>
+                                    <Tooltip label="Lampe5" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
-                                    <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer"
->
-                                            A
-                                    </Card>
+                                    <Tooltip label="Lampe6" aria-label='A tooltip'>
+                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                                            <Center>
+                                                <LuLamp size={"100%"}/>
+                                            </Center>
+                                        </Card>
+                                    </Tooltip>
 
                                 </SimpleGrid>
                             </CardBody>
