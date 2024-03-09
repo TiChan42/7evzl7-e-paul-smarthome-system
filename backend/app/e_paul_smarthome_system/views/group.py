@@ -11,24 +11,72 @@ from ..serializer.accountSerializer import AccountPortSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-class AddPortToGroup(APIView):
+class AddGroup(APIView):
     queryset = Group.objects.all()
     
-    def get(self, request, userId):
-        groupQueryset = User.objects.get(id = userId)
-        groupSerializer = UserGroupSerializer(groupQueryset)
-        
-        portQueryset = Account.objects.get(user = userId)
-        portSerializer = AccountPortSerializer(portQueryset)
-        
-        return Response({"Groups" : groupSerializer.data,
-                         "Ports" : portSerializer.data}, status = 200)
-    
-    
-    def post(self, request, userId):
+    def post(self, request):
         data = request.data
         
         try:
+            userId = data["userId"]
+            name = data["name"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            user = User.objects.get(id = userId)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        
+        group = Group(name = name, groupType = "Standard", user = user)
+        group.save()
+        
+        return Response(status = 201)
+
+"""
+teststring
+{
+"userId" : 1,
+"name" : "Test"
+}
+"""
+class DeleteGroup(APIView):
+    queryset = Group.objects.all()
+    
+    def post(self, request):
+        data = request.data
+        
+        try:
+            userId = data["userId"]
+            groupId = data["groupId"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            group = Group.objects.get(id = groupId, user__id = userId)
+        except Group.DoesNotExist:
+            return Response(status = 400)
+
+        if group.groupType == "Assignment" or group.groupType == "Favorite":
+            return Response("Assignment oder Favorite dürfen nicht gelöscht werden", status = 400)
+        group.delete()
+        return Response(status = 204)
+"""
+Teststring
+{
+"userId" : 1,
+"groupId" : 1
+}
+"""
+
+class AddPortToGroup(APIView):
+    queryset = Group.objects.all()
+    
+    def post(self, request):
+        data = request.data
+        
+        try:
+            userId = data["userId"]
             groupId = data["groupId"]
             portId = data["portId"]
         except KeyError:
@@ -57,3 +105,32 @@ class AddPortToGroup(APIView):
         groupPort = GroupPort(group = group, port = port)
         groupPort.save()
         return Response(status = 201)
+
+"""
+teststring
+{
+"userId" : 1,
+"groupId" : 2,
+"portId": 2
+}
+"""
+    
+class RemovePortFromGroup(APIView):
+    queryser = Group.objects.all()
+    def post(self, request):
+        data = request.data
+        
+        try:
+            userId = data["userId"]
+            groupId = data["groupId"]
+            portId = data["portId"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            groupPort = GroupPort.objects.get(group__id = groupId, port__id = portId)
+        except GroupPort.DoesNotExist:
+            return Response(status = 400)
+
+        groupPort.delete()
+        return Response(status = 204)

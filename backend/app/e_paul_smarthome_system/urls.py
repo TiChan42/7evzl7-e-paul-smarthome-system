@@ -9,13 +9,15 @@ from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView, AddPort
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
-from .views.getData import GetUser, GetVerified
-from .views.group import AddPortToGroup
+from .views.getData import GetUser, GetVerified, GetGroups, GetPorts
+from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup
 from django.urls import path
 
 
 urlpatterns = [
     path("user", UserView.as_view(), name = "user"),
+    path("user/addGroup", AddGroup.as_view(), name = "addGroup"),
+    path("user/deleteGroup", DeleteGroup.as_view(), name = "deleteGroup"),
     path("user/<userId>", SingleUserView.as_view(), name = "singleUser"),
     path("account", AccountView.as_view(), name = "group"),
     path("aboutUs", AboutUsView.as_view(), name="aboutUs"),
@@ -37,5 +39,8 @@ urlpatterns = [
     path("settings/<userId>", SingleUserSettingsView.as_view(), name = "userSettings"),
     path("getUser/<accountId>", GetUser.as_view(), name = "getUser"),
     path("getVerified/<accountId>", GetVerified.as_view(), name = "getVerified"),
-    path("group/addPort/<userId>", AddPortToGroup.as_view(), name = "addPortToGroup"),
+    path("getGroup/<type>/<userId>", GetGroups.as_view(), name = "getGroup"),
+    path("getPorts/<accountId>", GetPorts.as_view(), name = "getPorts"),
+    path("group/addPort", AddPortToGroup.as_view(), name = "addPortToGroup"),
+    path("group/removePort",RemovePortFromGroup.as_view(), name = "deletePortFromGroup"),
     ]
