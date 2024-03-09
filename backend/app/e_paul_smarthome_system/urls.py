@@ -8,7 +8,7 @@ from .views.signUp import SignUp, CreateUser, MicrocontrollerSignUp, EmailVerifi
 from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView, AddPort
-from .views.validate import ValidatePin, ValidateEmail
+from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
 from .views.getData import GetUser, GetVerified
 from .views.group import AddPortToGroup
 from django.urls import path
@@ -31,6 +31,7 @@ urlpatterns = [
     path("devices/addPort", AddPort.as_view(), name = "addPort"),
     path("validatePin", ValidatePin.as_view(), name = "validatePin"),
     path("validateEmail", ValidateEmail.as_view(), name = "validateEmail"),
+    path("pinRequired/<userid>", CheckPinRequired.as_view(), name = "pinRequired"),
     path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
     path("settings/pin", ChangePin.as_view(), name = "validatePin"),
     path("settings/<userId>", SingleUserSettingsView.as_view(), name = "userSettings"),
