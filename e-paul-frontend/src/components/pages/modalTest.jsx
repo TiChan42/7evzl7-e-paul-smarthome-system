@@ -3,14 +3,51 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import '../../style.css'
 import {Center,Box,Heading, Button} from '@chakra-ui/react'
 import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
+import { env } from '../../env'
+import { encryptString } from '../../encryptionUtils';
+
+function SignUpControllerButton(){
+	const signUpController = () => {
+		console.log("Sign Up Controller")
+		let url = 'signUp/microcontroller'
+		let data= {
+			"email": "user",
+			"password": "password",
+			"name": "name"
+		}
+		fetch(env()["api-path"] + url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
+
+	return (
+		<Button onClick={() => signUpController()}> Add Controller to account in Code</Button>
+	)
+}
 
 function Modals () {
 	const [userModuleModal, setUserModuleModal] = useState(false)
 
+	useEffect(() => {	
+		sessionStorage.setItem('accountID', encryptString('1'))
+	}, [])
+
 	return (
 		<>
 			<Button onClick={() => setUserModuleModal(true)}>Benutzer-Modul</Button>
-			<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} />
+			<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={1}/>
+			<SignUpControllerButton />
 		</>
 	)
 }

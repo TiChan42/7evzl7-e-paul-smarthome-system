@@ -17,89 +17,81 @@ import {
     Avatar,
     Tag,
     TagLabel,
-    TagLeftIcon,
-    TagRightIcon,
-    TagCloseButton,
     Center,
     Button,
     IconButton,
-    Square,
-    Grid, GridItem ,
-    HStack,
-    Container,
-    Wrap,
-    WrapItem,
+    Tooltip,
   } from '@chakra-ui/react'
   import React, {useState,useEffect} from 'react';
-  import env from '../env.js';
+  import {env} from '../env.js';
   import {clientIconPath} from '../clientIconPaths';
   import { ArrowForwardIcon, ArrowBackIcon} from '@chakra-ui/icons'
+import { decryptString, encryptString } from '../encryptionUtils.js';
 
-  //ClientData
-const accountClients = [
-    {
-        id: 1,
-        name: 'Client1',
-        type: 'lamp'
-    },
-    {
-        id: 2,
-        name: 'WWWWWWWWWW',
-        type: 'lamp'
-    },
-    {
-        id: 3,
-        name: 'Client3',
-        type: 'button'
-    },
-    {
-        id: 4,
-        name: 'Client4',
-        type: 'lamp1'
-    }
-]
-const userClientIDs = [1,3];
 //ClientElement
 const ClientElement = (props) => {
 
     
     return (
-        
-        <Tag size={{base:'sm',sm:'md', md:'lg'}} colorScheme='red' borderRadius='full'  >
-            {props.state &&
-                <>
-                    <Avatar
-                        size='sm'
-                        name={props.clientType}
-                        ml={-1}
-                        mr={2}
-                        background={'teal.40'}
-                        textColor={'teal.900'}
-                        src={clientIconPath()[props.clientType]}    
-                    />
-                        
-                    <TagLabel >{props.clientName}</TagLabel>
-                </>
-                }
-                {!props.state &&
-                <>
-                    {props.clientName.toString().length <= 5 &&
-                        <TagLabel >{props.clientName}</TagLabel>
-                    }
-                    {props.clientName.toString().length > 5 &&
-                        <TagLabel >{props.clientName.substring(0,3) + '...'}</TagLabel>
-                    
-                }
-                </>
-            }
-        </Tag>
+        <Tooltip label={props.clientName} aria-label="A tooltip" hasArrow background={'teal.650'} color={'teal.10'}>
+            <Tag size={{base:'sm',sm:'md', md:'lg'}} colorScheme='teal' borderRadius='full' defaultValue={' '} >
+                {props.state ? (
+                    <>
+                        {!props.variant ? (
+                            <Avatar
+                                size='sm'
+                                name={props.clientType}
+                                ml={-1}
+                                mr={2}
+                                background={'teal.40'}
+                                textColor={'teal.900'}
+                                src={clientIconPath()[props.clientType]}    
+                            />
+                        ):null}
+
+                        {props.clientName.toString().length <= 10 ? (   
+                            <TagLabel >{props.clientName}</TagLabel>
+                        ):(
+                            <TagLabel >{props.clientName.toString().substring(0,9)}...</TagLabel>
+                        )}
+
+                        {props.variant ? (
+                            <Avatar
+                                size='sm'
+                                name={props.clientType}
+                                ml={2}
+                                mr={-1}
+                                background={'teal.40'}
+                                textColor={'teal.900'}
+                                src={clientIconPath()[props.clientType]}    
+                            />
+                        ):null}
+                    </>
+                
+                ):(
+                    <>
+                        {(props.clientName.toString().length <= 5 && !props.clientName.toString().includes('W')) ? (
+                            <>
+                            <TagLabel >{props.clientName}</TagLabel>
+                            </>
+                        ):(
+                            <>
+                                {props.clientName.toString().substring(0,2).includes('W') ? (
+                                    <TagLabel >{props.clientName.toString().substring(0,Math.min(2,props.clientName.toString().length))}...</TagLabel>
+                                ):(
+                                    <TagLabel >{props.clientName.toString().substring(0,3)}...</TagLabel>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </Tag>
+        </Tooltip>
     )
 }
 
 //ClientListElement
 const ClientListElement = (props) => {
-
-    
     return (
         <>
         <Center >
@@ -114,14 +106,15 @@ const ClientListElement = (props) => {
                                 fontSize='20px'
                                 size='sm'
                                 icon={<ArrowBackIcon />}
+                                onClick={()=>{props.onUserIDChange()}}
                             />
                         </Center>
                         <Spacer />
                         </>
                     }   
                     <Box   alignSelf={'center'} >
-                        <Box background={'tomato'}>
-                            <ClientElement clientName={props.clientName} clientType={props.clientType} state={props.state} />
+                        <Box >
+                            <ClientElement clientName={props.clientName} clientType={props.clientType} state={props.state} variant={props.variant}/>
                         </Box>
                     </Box>
                     {!props.variant &&
@@ -135,6 +128,7 @@ const ClientListElement = (props) => {
                                 fontSize='20px'
                                 size='sm'
                                 icon={<ArrowForwardIcon />}
+                                onClick={()=>{props.onUserIDChange()}}
                             />
                     </Center>
                     </>
@@ -149,20 +143,55 @@ const ClientListElement = (props) => {
 //ClientList
 const ClientList = (props) => {
     const [elementsToShow, setElementsToShow] = useState([]);
+    const [largerSide, setLargerSide] = useState(false);
+
     useEffect(() => {
         if(props.variant){
-            setElementsToShow(props.clients.filter(client => props.userClientIDs.includes(client.id)));
+            var temp = [];
+            if(props.clients && props.userClientIDs && props.clients[0] && props.userClientIDs[0]){
+                props.userClientIDs.forEach((id) => {
+                    temp.push(props.clients.find(client => client.id === id));
+                });
+            }
+            setElementsToShow(temp);
         }else{
-            setElementsToShow(props.clients.filter(client => !props.userClientIDs.includes(client.id)));
+            if(props.clients && props.userClientIDs && props.clients[0] && props.userClientIDs[0]){
+                setElementsToShow(props.clients.filter(client => !props.userClientIDs.includes(client.id)));
+            }else if(props.clients && props.clients[0]){
+                setElementsToShow(props.clients);
+            }
         }
-    }, [props.clients, props.variant]);
+
+
+    }, [props.clients, props.variant, props.userClientIDs, props.triggerRender]);
+
+    useEffect(() => {
+        if((Object.keys(props.clients).length - props.userClientIDs.length) > props.userClientIDs.length){
+            setLargerSide(true);
+        }else{
+            setLargerSide(false);
+        }
+    }, [props.userClientIDs, props.clients, props.triggerRender]);
+
+    const generateNameOutOfID = (id) => {
+        let temp = (id*2345+id*856+id*71)/id*id
+        //More complex function to generate a name out of the id
+        temp = (temp*2345+temp*856+temp*71)/temp*temp*temp;
+        return 'Client_'+temp.toString();
+    }
+
+    
     return (
-        <Box borderLeft={props.variant?'1px':'0px'}>
-        {elementsToShow.map((client, index) => {
+        <Box borderRight={(largerSide && !props.variant)?'1px':'0px'} borderLeft={(!largerSide && props.variant)?'1px':'0px'} borderColor={'teal.500'} height = {props.height}>
+        {(elementsToShow && elementsToShow[0])? (
+        <>
+        {elementsToShow.map((client) => {
             return (
-                <ClientListElement key={index} clientName={client.name} clientType={client.type} state={props.state} variant={props.variant}/>
+                <ClientListElement key={encryptString(client.id.toString())}  clientName={client.name?client.name:generateNameOutOfID(client.id)} clientType={client.type} state={props.state} variant={props.variant} onUserIDChange={() => {props.onUserIDChange(client.id)}}/>
             )
         })}
+        </>
+        ):(null)}
         </Box>
     )
 }
@@ -174,12 +203,160 @@ const ClientUserAssignmentModal = (props) => {
     const userClientsRef = React.useRef();
     const allClientsRef = React.useRef();
 
-    const [siteState, setSiteState] = useState(1);
+    const [userID, setUserID] = useState(props.userID);
+    const [accountID, setAccountID] = useState(decryptString(sessionStorage.getItem('accountID')));
+    const [groupID, setGroupID] = useState();
 
+    const [accountClients, setAccountClients] = useState([]);
+    const [userClientIDs, setUserClientIDs] = useState([]);
+    const [triggerRender, setTriggerRender] = useState(false);
+    
+    
+
+
+
+
+    const fetchAccountClients = () => {
+        fetch(env()["api-path"] + 'getPorts/'+ accountID , {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            setAccountClients(data);
+        })
+        .catch((error) => {
+            console.error('Error(fetchAccountClients):', error);
+            setAccountClients([]);
+        });
+    }
+
+    const fetchUserClientIDs = () => {
+        fetch(env()["api-path"] + 'getGroup/Assignment/' + userID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setGroupID(data[0].id);
+            setUserClientIDs(data[1]);
+            
+        })
+        .catch((error) => {
+            console.error('Error(fetchUserClientIDs):', error);
+            setGroupID(null);
+            setUserClientIDs([]);
+        });
+    }
+
+    const addClientToUser = (clientID) => {
+        let data = {
+            userId: userID,
+            portId: clientID,
+            groupId: groupID
+        }
+
+        fetch(env()["api-path"] + 'group/addPort', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if(response.status === 201){
+                reloadClients();
+            }
+        })
+        .catch((error) => {
+            console.error('Error(addClientToUser):', error);
+        });
+    }
+
+    const removeClientFromUser = (clientID) => {
+        let data = {
+            userId: userID,
+            portId: clientID,
+            groupId: groupID
+        }
+
+        fetch(env()["api-path"] + 'group/removePort', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if(response.status === 204){
+                reloadClients();
+            }
+        })
+        .catch((error) => {
+            console.error('Error(removeClientFromUser):', error);
+        });
+    }
+    
+    //Initialisierung der ModalStates
+    const [siteState, setSiteState] = useState(1);
     useEffect(() => {
         setSiteState(1);
     }, [props.openModal]);
-    
+
+    useEffect(() => {
+        if(userClientsRef.current && allClientsRef.current){
+            if(siteState === 1){
+                userClientsRef.current.focus();
+            }else{
+                allClientsRef.current.focus();
+            }
+        }
+    },[siteState]);
+
+
+
+    //Status ob der Bildschirm kleiner als 768px(md) ist
+    const [displayState, setDisplayState] = useState(false);
+    useEffect(() => {
+        const handleResize = () => {
+          // Perform actions on window resize
+            if(window.innerWidth <= 768){
+                setDisplayState(true);
+            }else{
+                setDisplayState(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+
+    //Beim Öffnen des Modals asynchron die Daten laden
+    useEffect( () => {
+        if(props.openModal){
+             reloadClients();
+        }
+    }, [props.openModal]);
+
+    const reloadClients = async () => {
+        await setUserID(props.userID);
+        await setAccountID(decryptString(sessionStorage.getItem('accountID')));
+        await fetchUserClientIDs();
+        await fetchAccountClients();
+
+        if(accountClients && userClientIDs && groupID && userID && accountID){
+            setTriggerRender(!triggerRender);
+        }
+    }
+
 
     return (
         <>
@@ -187,34 +364,48 @@ const ClientUserAssignmentModal = (props) => {
         isOpen={props.openModal}
         onClose={props.closeModal}
         initialFocusRef={initialRef}
-        >
+        scrollBehavior={'inside'}
+        size={{base:'full',sm:'md',md:'2xl'}}
+        >   
+            
             <ModalOverlay />
+            {(accountClients && userClientIDs && groupID && userID && accountID) ? (
             <ModalContent>
-            <Tabs align='start' variant='enclosed' colorScheme='teal' >
-                <ModalHeader>
-                    <TabList>
-                        <Tab ref={userClientsRef} onClick={()=>{setSiteState(1)}}>Alle</Tab>
-                        <Tab ref={allClientsRef} onClick={()=>{setSiteState(0)}}>Zugewiesen</Tab>
-                    </TabList>
-                </ModalHeader>
-            </Tabs>
-            <ModalCloseButton />
-            <ModalBody>
-                <Text>Weisen Sie dem Benutzer Clients zu</Text>
-                <Flex>
-                    <Box  w={siteState?'70%':'30%'} height={'auto'}>
-                        <Heading size={'sm'} textAlign={'left'} p={1}>Alle</Heading>
-                        <ClientList clients={accountClients} userClientIDs={userClientIDs} state={siteState} variant={false}/>
-                    </Box>
-                    <Box w={!siteState?'70%':'30%'} height={'auto'}>
-                        <Heading size={'sm'} textAlign={'right'} p={1} >Zugewiesen</Heading>
-                        <ClientList clients={accountClients} userClientIDs={userClientIDs} state={!siteState} variant={true}/>
-                    </Box>
-                </Flex>
-            </ModalBody>
-            <ModalFooter></ModalFooter>
-                
+                <Tabs align='start' variant='enclosed' colorScheme='teal' >
+                    <ModalHeader>
+                        <TabList display={{base:'flex', md:'none'}}>
+                            <Tab ref={userClientsRef} onClick={()=>{setSiteState(1)} }>Alle</Tab>
+                            <Tab ref={allClientsRef} onClick={()=>{setSiteState(0)}}>Zugewiesen</Tab>
+                        </TabList>
+                    <Heading size={'md'} display={{base:'none', md:'flex'}}>Weisen Sie dem Benutzer Clients zu</Heading>
+                    </ModalHeader>
+                </Tabs>
+                <ModalCloseButton />
+                <ModalBody>
+                    <Text display={{base:'flex', md:'none'}}>Weisen Sie dem Benutzer Clients zu</Text>
+                    <Flex height={'100%'}>
+                        <Box  w={{base: siteState?'70%':'30%' ,md:'50%'}} height={'100%'}>
+                            <Heading size={{base:'xs', sm:'sm'}} textAlign={'left'} p={1} onClick={()=>{setSiteState(1)}}>Alle</Heading>
+                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?siteState:1} variant={false} height={'100%'} onUserIDChange={(changedID) => {addClientToUser(changedID)}} triggerRender={triggerRender} />
+                        </Box>
+
+                        <Box w={{base: !siteState?'70%':'30%' ,md:'50%'}} height={'100%'}>
+                            <Heading size={{base:'xs', sm:'sm'}} textAlign={'right'} p={1} onClick={()=>{setSiteState(0)}}>Zugewiesen</Heading>
+                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?(!siteState):1} variant={true}  height={'100%'} onUserIDChange={(changedID) => {removeClientFromUser(changedID)}} triggerRender={triggerRender}/>
+                        </Box>
+                    </Flex>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="outline" onClick={props.closeModal}>Schließen</Button>
+                </ModalFooter>
             </ModalContent>
+            ):(
+                <ModalContent>
+                    <ModalHeader>Wird geladen...</ModalHeader>
+                    <ModalCloseButton />
+                </ModalContent>
+            )}
+            
         </Modal>
         </>
     )
