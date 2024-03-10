@@ -3,18 +3,18 @@ import { Heading, Grid, GridItem, CloseButton, Button, ButtonGroup, useToast, Bo
 import { Link } from 'react-router-dom';
 import {env} from '../../env';
 import { encryptString, decryptString } from '../../encryptionUtils';
-import {DeleteIcon, EditIcon} from '@chakra-ui/icons';
+import {DeleteIcon, EditIcon, AddIcon} from '@chakra-ui/icons';
 import { Avatar } from "@chakra-ui/avatar";
 import ValidateActionModal from '../validateActionModal';
 import AddUserModal from '../addUserModal';
+import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
 
-//YOOO benutz später toast für benachrichtigungen
 
 function Header() {
 return <header>
 <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}> 
 <h1>Benutzerverwaltung</h1> 
-<Link to="/chooseuser"><CloseButton /></Link>
+<Link to="/chooseuser"><CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false'))}}/></Link>
 </Box>
 </header>;
 }
@@ -22,8 +22,50 @@ return <header>
 function UserCol(props) {
     const[isAdmin,setIsAdmin] = useState(true) //zum testen
     const[edit,makeEdit] = useState()
-    const[isdelete,setdelete] = useState()
+    const[isdelete,setdelete] = useState(false)
     const[userClient, setUserClientModal] = useState() 
+	const [userModuleModal, setUserModuleModal] = useState(false)
+	const toast = useToast()
+
+	function deleteUser() {
+		if (decryptString(sessionStorage.getItem('userAuthorized'))=='false'){
+			return
+		}
+		var executingUser = decryptString(sessionStorage.getItem('executingUserID'))
+		const deletePath = env()["api-path"] + "user/" + props.user.id;
+		fetch(deletePath, {method: "DELETE"})
+		  .then(response => {
+				console.log(response); // HTTP-Response ausgeben
+				if (response.status >= 400){
+					toast({
+						title: 'Löschen fehlgeschlagen',
+						status: 'Du hast keine Berechtigung diesen Nutzer zu löschen',
+						isClosable: true,
+					});
+				}
+		  })
+		  .catch(error => {
+			  console.log('ausgeführt')
+			  toast({
+				  title: 'error',
+				  status: 'error',
+				  isClosable: true,
+			  });
+		  });
+	  };
+
+    const deleteUserModal = () => {
+        props.openValidateModal('Nutzer löschen?',
+        'Sind Sie sich sicher, dass Sie diesen Benutzer löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
+        ()=>{
+          setdelete(true)
+		  console.log('hier')
+          //User im Backend löschen
+		  deleteUser();
+		  window.location.reload();
+      })
+    }
+
     const handleAdminSwitch = () => {
 		if (isAdmin) {
 			props.openValidateModal('Adminstatus ändern?',
@@ -59,8 +101,9 @@ function UserCol(props) {
 						Admin
 					</Button>
 					<IconButton icon={<EditIcon/>}></IconButton>
-					<IconButton icon={<DeleteIcon/>}></IconButton>
-					<Button>Clientrechte</Button>
+					<IconButton icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
+					<Button onClick={() => setUserModuleModal(true)}>Clientrechte</Button>
+					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id}/>
 				</ButtonGroup>
 			</Box>
 		</Flex>
@@ -117,6 +160,32 @@ function UserAdministration() {
 			});
         });
     };
+	 function fetchUsers(accountID) {
+      //fetch users from backend
+      //später auf 0 prüfen und dann nicht laden
+      const fetchPath = env()["api-path"] + "getUser/" + accountID;
+      console.log(fetchPath);
+      fetch(fetchPath, {method: "GET"})
+        .then(response => {
+          	console.log(response); // HTTP-Response ausgeben
+          	return response.json();
+        })
+        .then(data => {
+          	console.log(data);
+          	setUsers(data["user"]);
+			if (data["user"][0] == null) {
+				console.log('Kein Benutzer vorhanden')
+			}
+        })
+        .catch(error => {
+			console.log('ausgeführt')
+			toast({
+				title: 'error',
+				status: 'error',
+				isClosable: true,
+			});
+        });
+    };
 
     return (
 		<> 
@@ -145,18 +214,19 @@ function UserAdministration() {
 		{users && users[0] &&
 		<>
 			{Object.keys(users).map((key, index) => (
-			<UserCol openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]}/>
+			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]}/>
 			))}
 		</>
 		}
 		</VStack>
 		</GridItem>
 		</Grid>
-		<Button onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
+		<Button rightIcon={<AddIcon/>}
+            colorScheme="teal"
+            onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
 		<AddUserModal openModal = {addUserModal} closeModal = {()=>{setAddUserModal(false)}} accountID = {decryptString(sessionStorage.getItem("accountID"))}/>
 		
-		
-		<ValidateActionModal openModal = {validationModal} closeModal = {()=>{setValidationModal(false)}} title = {validationModalTitle} content = {validationModalText} execute = {()=>{validationModalAction()}}/>
+	<ValidateActionModal openModal = {validationModal} closeModal = {()=>{setValidationModal(false)}} title = {validationModalTitle} content = {validationModalText} execute = {()=>{validationModalAction()}}/>
 		</>
     );
 }
