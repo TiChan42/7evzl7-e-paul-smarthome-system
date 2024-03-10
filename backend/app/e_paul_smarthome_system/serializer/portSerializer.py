@@ -6,5 +6,10 @@ class PortSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Port
-        fields = ['id','type','inUse','groupPort']
-            
+        fields = ['id','type', 'name']
+
+
+class PortIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Port
+        fields = ['id']             
