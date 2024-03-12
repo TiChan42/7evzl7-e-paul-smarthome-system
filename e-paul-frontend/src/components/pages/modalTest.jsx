@@ -4,7 +4,7 @@ import '../../style.css'
 import {Center,Box,Heading, Button} from '@chakra-ui/react'
 import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
 import { env } from '../../env'
-import { encryptString } from '../../encryptionUtils';
+import { encryptString, decryptString } from '../../encryptionUtils';
 import AccountSettingsModal from '../accountSettingsModal';
 
 function SignUpControllerButton(){
@@ -58,6 +58,36 @@ function Modals () {
 	)
 }
 
+// form zum Editieren der AccountID und der Benutzerid für den Executing benutzer
+function AccountIDForm(){
+	const [newAccountID, setNewAccountID] = useState(decryptString(sessionStorage.getItem('accountID')))
+	const [newExecutingUserID, setNewExecutingUserID] = useState(decryptString(sessionStorage.getItem('executingUserID')))
+
+	const submitHandler = (e) => {
+		e.preventDefault()
+		sessionStorage.setItem('accountID', encryptString(newAccountID))
+		sessionStorage.setItem('executingUserID', encryptString(newExecutingUserID))
+	}
+
+	return (
+		<form onSubmit={submitHandler}>
+			<label>
+				AccountID:
+				<input type="text" value={newAccountID} onChange={(e) => setNewAccountID(e.target.value)} />
+			</label>
+			<br/>
+			<br/>
+			<label>
+				ExecutingUserID:
+				<input type="text" value={newExecutingUserID} onChange={(e) => setNewExecutingUserID(e.target.value)} />
+			</label>
+			<br/>
+			<br/>
+			<Button type="submit" value="Submit" colorScheme='teal'>Submit</Button>
+		</form>
+	)
+}
+
 
 class ModalTest extends Component {
 	render() {
@@ -65,6 +95,8 @@ class ModalTest extends Component {
 			<Center>
 				<Box width={{base: '100%', sm: '85%', xl: '80%', '2xl':'75%'}}>
 					<Heading textAlign={"center"} fontSize={'3xl'} pt={20} textColor={'teal.900'}>Hier werden die Modals getestet</Heading>
+					<br/>
+					<AccountIDForm />
 					<br/>
 					<Modals />
 				</Box>
