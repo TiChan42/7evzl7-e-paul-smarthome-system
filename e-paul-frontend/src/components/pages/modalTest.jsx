@@ -5,6 +5,7 @@ import {Center,Box,Heading, Button} from '@chakra-ui/react'
 import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
 import { env } from '../../env'
 import { encryptString } from '../../encryptionUtils';
+import AccountSettingsModal from '../accountSettingsModal';
 
 function SignUpControllerButton(){
 	const signUpController = () => {
@@ -38,6 +39,9 @@ function SignUpControllerButton(){
 
 function Modals () {
 	const [userModuleModal, setUserModuleModal] = useState(false)
+	const [userRightsModal, setUserRightsModal] = useState(false)
+	const [accountSettingsModal, setAccountSettingsModal] = useState(false)
+
 
 	useEffect(() => {	
 		sessionStorage.setItem('accountID', encryptString('1'))
@@ -48,6 +52,8 @@ function Modals () {
 			<Button onClick={() => setUserModuleModal(true)}>Benutzer-Modul</Button>
 			<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={1}/>
 			<SignUpControllerButton />
+			<Button variant='outline' colorScheme='teal' onClick={() => setAccountSettingsModal(true)}>Account einstellungen</Button>
+			<AccountSettingsModal openModal={accountSettingsModal} closeModal={() => setAccountSettingsModal(false)}/>
 		</>
 	)
 }
