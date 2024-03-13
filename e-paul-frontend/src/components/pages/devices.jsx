@@ -221,59 +221,10 @@ function DeviceOverview() {
                                             </Box>
                                         </AccordionPanel>
                                     </AccordionItem>
-
-                                    <AccordionItem>
-                                        {({ isExpanded }) => (
-                                            <>
-                                                <h2>
-                                                    <AccordionButton
-                                                        background={"#3e5f74"}
-                                                        _hover={{
-                                                            bg: "#536f82",
-                                                        }}
-                                                    >
-                                                        <Box
-                                                            as="span"
-                                                            flex="1"
-                                                            textAlign="left"
-                                                            fontWeight={"bold"}
-                                                        >
-                                                            Gruppe2
-                                                        </Box>
-                                                        <AccordionIcon />
-                                                    </AccordionButton>
-                                                </h2>
-                                                <AccordionPanel
-                                                    pb={4}
-                                                    background={"#91a3af"}
-                                                >
-                                                    <Button mr={4}>
-                                                        Szene1
-                                                    </Button>
-                                                    <Button mr={4}>
-                                                        Szene2
-                                                    </Button>
-                                                    <Divider
-                                                        mt={4}
-                                                        mb={4}
-                                                        orientation="horizontal"
-                                                    />
-                                                    <Box align="end">
-                                                        <Button ml={4}>
-                                                            <EditIcon
-                                                                mr={2}
-                                                            ></EditIcon>
-                                                            Bearbeiten{" "}
-                                                        </Button>
-                                                    </Box>
-                                                </AccordionPanel>
-                                            </>
-                                        )}
-                                    </AccordionItem>
                                 </Accordion>
                             </CardBody>
                             <Box align="end" m={4}>
-                                <AddGroupDialog />
+                                <AddGroupDialog devices={devices}/>
                             </Box>
                         </Card>
                     </GridItem>
@@ -302,46 +253,6 @@ function DeviceOverview() {
                             <CardBody>
                                 <SimpleGrid columns={[2, 3, 4]} w={"100%"} gap={[1, 2, 4]}>
                                     <Tooltip label="Lampe1" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                    <Tooltip label="Lampe2" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                    <Tooltip label="Lampe3" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                    <Tooltip label="Lampe4" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                    <Tooltip label="Lampe5" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                    <Tooltip label="Lampe6" aria-label='A tooltip'>
                                         <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
                                             <Center>
                                                 <LuLamp size={"100%"}/>
