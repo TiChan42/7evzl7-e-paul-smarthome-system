@@ -198,6 +198,7 @@ for testing purposes
 "accountId" : 2,
 "username" : "Zelda",
 "pin" : "187"
+"isAdmin" : true
 }
 """
 
