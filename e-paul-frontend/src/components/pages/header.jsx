@@ -40,7 +40,7 @@ class Header extends Component {
         // Prüfen, ob der Benutzer nicht angemeldet ist
         if (!this.state.accountLoggedIn && !acceptedPath.includes(window.location.pathname)) {
             window.location.href = "/";
-        }else if (this.state.accountLoggedIn &&  (decryptString(sessionStorage.getItem("executingUserID")) === "" || decryptString(sessionStorage.getItem("executingUserID")) === null) && window.location.pathname !== "/chooseuser"){
+        }else if (this.state.accountLoggedIn &&  (decryptString(sessionStorage.getItem("executingUserID")) === "" || decryptString(sessionStorage.getItem("executingUserID")) === null) && window.location.pathname !== "/chooseuser" && !acceptedPath.includes(window.location.pathname)){
             window.location.href = "/chooseuser";
         }
     }

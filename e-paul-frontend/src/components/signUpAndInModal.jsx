@@ -38,8 +38,8 @@ const SignUpAndInModal = (props) => {
             <Tabs align='start' variant='enclosed' colorScheme='teal' defaultIndex={props.entrySite} isLazy={true} >
                 <ModalHeader>
                     <TabList>
-                        <Tab>Registrieren</Tab>
-                        <Tab ref={signInRef}>Anmelden</Tab>
+                        <Tab onMouseDown={(e) => e.preventDefault()}>Registrieren</Tab>
+                        <Tab ref={signInRef} onMouseDown={(e) => e.preventDefault()}>Anmelden</Tab>
                     </TabList>
                 </ModalHeader>
                 <ModalCloseButton />
