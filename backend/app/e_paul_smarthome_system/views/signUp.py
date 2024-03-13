@@ -3,6 +3,7 @@ from ..model.user import User
 from ..model.microcontroller import Microcontroller
 from ..model.group import Group
 from ..model.port import Port
+from ..model.groupPort import GroupPort
 
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
 
@@ -152,9 +153,18 @@ class CreateUser(APIView):
                     user.save()
                 group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
                 group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                
                 group1.save()
                 group2.save()
-                return Response(status = 201)
+                
+                if user.role == 'admin':
+                    ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                    for port in ports:
+                        groupPort = GroupPort(group = group1, port = port)
+                        groupPort.save()
+                    return Response(status = 201)
+                else:
+                    return Response(status = 201)
             else:
                 pin = pin.encode("utf-8")
                 pinHash = hashpw(pin, salt=gensalt())
@@ -167,9 +177,18 @@ class CreateUser(APIView):
                     user.save()
                 group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
                 group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                
                 group1.save()
                 group2.save()
-                return Response(status=201)
+                
+                if user.role == 'admin':
+                    ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                    for port in ports:
+                        groupPort = GroupPort(group = group1, port = port)
+                        groupPort.save()
+                    return Response(status = 201)
+                else:
+                    return Response(status = 201)
         else:
             return Response(status=400)
         
