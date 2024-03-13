@@ -6,6 +6,7 @@ import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
 import { env } from '../../env'
 import { encryptString, decryptString } from '../../encryptionUtils';
 import AccountSettingsModal from '../accountSettingsModal';
+import UserRightSettingsModal from '../userRightSettingsModal';
 
 function SignUpControllerButton(){
 	const signUpController = () => {
@@ -54,6 +55,8 @@ function Modals () {
 			<SignUpControllerButton />
 			<Button variant='outline' colorScheme='teal' onClick={() => setAccountSettingsModal(true)}>Account einstellungen</Button>
 			<AccountSettingsModal openModal={accountSettingsModal} closeModal={() => setAccountSettingsModal(false)}/>
+			<Button onClick={() => setUserRightsModal(true)}>Benutzer-Rechte</Button>
+			<UserRightSettingsModal openModal={userRightsModal} closeModal={() => setUserRightsModal(false)} userID = {'4'} userRole={'admin'}/>
 		</>
 	)
 }
