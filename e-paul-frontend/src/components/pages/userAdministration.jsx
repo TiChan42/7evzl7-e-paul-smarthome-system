@@ -48,6 +48,7 @@ function UserCol(props) {
     const[isdelete,setdelete] = useState(false)
 	const [userModuleModal, setUserModuleModal] = useState(false)
 	const [userRightModal, setUserRightModal] = useState(false)
+
 	const toast = useToast()
 
 	function deleteUser() {
@@ -58,19 +59,18 @@ function UserCol(props) {
 		const deletePath = env()["api-path"] + "user/" + props.user.id;
 		fetch(deletePath, {method: "DELETE"})
 		  .then(response => {
-				console.log(response); // HTTP-Response ausgeben
 				if (response.status >= 400){
 					toast({
 						title: 'Löschen fehlgeschlagen',
 						status: 'Du hast keine Berechtigung diesen Nutzer zu löschen',
-						duration: 5000,
+						duration: 7000,
 						isClosable: true,
 					});
 				} else {
 					toast({
 						title: 'Löschen erfolgreich',
 						status: 'success',
-						duration: 2000,
+						duration: 5000,
 						isClosable: true,
 					});
 					props.refresh()
@@ -80,7 +80,7 @@ function UserCol(props) {
 			  toast({
 				  title: 'error',
 				  status: 'error',
-				  duration: 5000,
+				  duration: 7000,
 				  isClosable: true,
 			  });
 		  });
@@ -91,13 +91,59 @@ function UserCol(props) {
         'Sind Sie sich sicher, dass Sie diesen Benutzer löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
         ()=>{
           setdelete(true)
-          //User im Backend löschen
 		  deleteUser();
       }) 
     }
 
-	const updateAdminStatus = (userID, isAdmin) => {
-		let url = env()["api-path"] + 'user/' + userID + '/role' //API path noch ändern
+	const updateAdminStatus = (userID, admin) => {
+		let url = env()["api-path"] + 'user/changeRole'
+		let adminData = 'user'
+		if (admin){
+			adminData = 'admin'
+		}
+		let data = {
+			userId: userID,
+			role: adminData,
+			executingUserId: decryptString(sessionStorage.getItem('executingUserID'))
+		}
+		fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if(response.status === 204){
+				toast({
+					title: 'Erfolgreich',
+					description: 'Der Adminstatus wurde erfolgreich geändert',
+					status: 'success',
+					isClosable: true,
+					duration: 5000
+				})
+				setIsAdmin(admin)
+				props.refresh()
+			}else{
+				toast({
+					title: 'Fehler',
+					description: 'Während der Verarbeitung ist ein Fehler aufgetreten, versuchen Sie es erneut',
+					status: 'error',
+					isClosable: true,
+					duration: 7000
+				})
+			}
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+			toast({
+				title: 'Fehler',
+				description: 'Während der Verarbeitung ist ein Fehler aufgetreten, versuchen Sie es erneut',
+				status: 'error',
+				isClosable: true,
+				duration: 7000
+			})
+		});
 	}
 
     const handleAdminSwitch = () => {
@@ -105,15 +151,13 @@ function UserCol(props) {
 			props.openValidateModal('Adminstatus ändern?',
 			'Sind Sie sich sicher, dass Sie diesen Admin zu einem Standardbenutzer degradieren möchten?',
 			()=>{
-			setIsAdmin(false) 
-			// Status in Backend ändern
+				updateAdminStatus(props.user.id, false)
 			})
 		}else{
 			props.openValidateModal('Adminstatus ändern?',
 			'Sind Sie sich sicher, dass Sie diesen Benutzer zu einem Administrator ernennen möchten?',
 			()=>{
-			setIsAdmin(true) 
-			// Status in Backend ändern
+				updateAdminStatus(props.user.id, true)
 			})
 		}
     }
@@ -137,7 +181,7 @@ function UserCol(props) {
 			<Box>
 				<ButtonGroup variant='outline' gap='2'>
 
-					<Button isDisabled={!editRights['mayChangeUserType'] || props.user.role==='superuser'} colorScheme='teal' variant={isAdmin?'solid':'outline'} onClick={()=>{handleAdminSwitch(); console.log(props.user.role)}}>
+					<Button isDisabled={!editRights['mayChangeUserType'] || props.user.role==='superuser'} colorScheme='teal' variant={isAdmin?'solid':'outline'} onClick={()=>{handleAdminSwitch()}}>
 						Admin
 					</Button>
 					
@@ -168,7 +212,6 @@ function UserAdministration() {
 
 	const triggerRefresh = () => {
 		fetchUsers(accountID)
-		console.log('refreshed')
 	}
 
     const toast = useToast()
@@ -194,14 +237,11 @@ function UserAdministration() {
       //fetch users from backend
       //später auf 0 prüfen und dann nicht laden
       const fetchPath = env()["api-path"] + "getUsers/" + accountID;
-      console.log(fetchPath);
       fetch(fetchPath, {method: "GET"})
         .then(response => {
-          	console.log(response); // HTTP-Response ausgeben
           	return response.json();
         })
         .then(data => {
-          	console.log(data);
           	setUsers(data["user"]);
 			if (data["user"][0] == null) {
 				console.log('Kein Benutzer vorhanden')
@@ -219,14 +259,11 @@ function UserAdministration() {
       //fetch users from backend
       //später auf 0 prüfen und dann nicht laden
       const fetchPath = env()["api-path"] + "getUsers/" + accountID;
-      console.log(fetchPath);
       fetch(fetchPath, {method: "GET"})
         .then(response => {
-          	console.log(response); // HTTP-Response ausgeben
           	return response.json();
         })
         .then(data => {
-          	console.log(data);
           	setUsers(data["user"]);
 			if (data["user"][0] == null) {
 				console.log('Kein Benutzer vorhanden')
@@ -292,7 +329,7 @@ function UserAdministration() {
 					description: 'Während der Verarbeitung ist ein Fehler aufgetreten, versuchen Sie es erneut',
 					status: 'error',
 					isClosable: true,
-					duration: 5000
+					duration: 7000
 				})
 			});
 			
