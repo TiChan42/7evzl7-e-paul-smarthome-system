@@ -33,6 +33,40 @@ import { MdArrowForwardIos } from "react-icons/md";
 import Clock from 'react-live-clock';
 import {env} from '../../env';
 
+const DeviceCard = ({ device }) => (
+    <Card
+      direction={{
+        base: "column",
+        sm: "row",
+      }}
+      overflow="hidden"
+      bg={"#3e5f74"}
+      color={"white"}
+      cursor="pointer"
+    >
+      <Center p={1} h={"100%"} w={"100%"}>
+        <LuLamp size={"30px"} />
+        <CardBody p={0}>
+          <Text pl={2} fontSize={"xl"} fontWeight={"bold"}>
+            {device.name}
+          </Text>
+        </CardBody>
+        <MdArrowForwardIos align="end" size={"30px"} />
+      </Center>
+    </Card>
+  );
+
+const DeviceList = ({ data }) => (
+    <VStack spacing={2} align="stretch">
+      {data.map(device => (
+        <DeviceCard key={device.id} device={device} />
+      ))}
+      if(data.length === 0) {
+        <Text fontSize={"xl"} fontWeight={"bold"}>Keine Geräte vorhanden</Text>
+        }
+    </VStack>
+  );
+
 function DeviceOverview() {
     const userID = decryptString(sessionStorage.getItem('executingUserID'));
     const accountID = decryptString(sessionStorage.getItem("accountID")); 
@@ -40,6 +74,7 @@ function DeviceOverview() {
     const date = `${current.getDate()}.${current.getMonth() + 1}.${current.getFullYear()}`;
     const toast = useToast()
     const [users, setUsers] = useState(null);
+    const [devices, setDevices] = useState([]);
     let username = "username";
 
     // save username in variable
@@ -49,6 +84,7 @@ function DeviceOverview() {
 
     useEffect(()=>{
         fetchUsers(accountID)
+        fetchDevices(accountID);
     },[accountID])
 
     /*Auf die Startseite wenn nicht angemeldet
@@ -56,8 +92,34 @@ function DeviceOverview() {
         if (sessionStorage.getItem("accountID") == null) {
         window.location.href = "/";
         }
-    }, []);
-    */
+    }, []); */
+
+    function fetchDevices(accountID) {
+    const fetchPath = env()["api-path"] + "devices/" + accountID;
+    console.log(fetchPath);
+    fetch(fetchPath, { method: "POST" })
+      .then(response => {
+        console.log(response); // HTTP-Response ausgeben
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        if (data["devices"].length === 0) {
+          console.log('Kein Gerät vorhanden')
+        } else {
+          setDevices(data["devices"]);
+        }
+      })
+      .catch(error => {
+        console.log('Geräte konnten nicht geladen werden')
+        toast({
+          title: 'Geräte konnten nicht geladen werden',
+          status: 'error',
+          duration: 10000,
+          isClosable: true,
+        });
+        });
+    };
 
     //fetch users from backend
     function fetchUsers(accountID) {
@@ -77,10 +139,11 @@ function DeviceOverview() {
         }
         })
         .catch(error => {
-        console.log('ausgeführt')
+        console.log('Benuzterdaten konnten nicht geladen werden')
         toast({
-            title: 'error',
+            title: 'Benuzterdaten konnten nicht geladen werden',
             status: 'error',
+            duration: 10000,
             isClosable: true,
         });
         });
@@ -222,67 +285,7 @@ function DeviceOverview() {
                                 </Heading>
                             </CardHeader>
                             <CardBody>
-                                <VStack spacing={2} align="stretch">
-                                    <Card
-                                        direction={{
-                                            base: "column",
-                                            sm: "row",
-                                        }}
-                                        overflow="hidden"
-                                        bg={"#3e5f74"}
-                                        color={"white"}
-                                        cursor="pointer"
-
-                                    >
-                                        <Center p={1} h={"100%"} w={"100%"}>
-                                            <LuLamp size={"30px"} />
-
-                                            <CardBody p={0}>
-                                                <Text
-                                                    pl={2}
-                                                    fontSize={"xl"}
-                                                    fontWeight={"bold"}
-                                                >
-                                                    Lampe1
-                                                </Text>
-                                            </CardBody>
-                                            <MdArrowForwardIos
-                                                align="end"
-                                                size={"30px"}
-                                            />
-                                        </Center>
-                                    </Card>
-
-                                    <Card
-                                        direction={{
-                                            base: "column",
-                                            sm: "row",
-                                        }}
-                                        overflow="hidden"
-                                        bg={"#3e5f74"}
-                                        color={"white"}
-                                        cursor="pointer"
-
-                                    >
-                                        <Center p={1} h={"100%"} w={"100%"}>
-                                            <LuLamp size={"30px"} />
-
-                                            <CardBody p={0}>
-                                                <Text
-                                                    pl={2}
-                                                    fontSize={"xl"}
-                                                    fontWeight={"bold"}
-                                                >
-                                                    Lampe2
-                                                </Text>
-                                            </CardBody>
-                                            <MdArrowForwardIos
-                                                align="end"
-                                                size={"30px"}
-                                            />
-                                        </Center>
-                                    </Card>
-                                </VStack>
+                                <DeviceList data={devices} />
                             </CardBody>
                             <Box align="end" m={4}>
                                 <AddDeviceDialog />
