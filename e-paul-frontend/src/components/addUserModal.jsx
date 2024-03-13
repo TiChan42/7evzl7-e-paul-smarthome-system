@@ -99,7 +99,7 @@ const AddUserModal = (props) => {
                 toast({
                     title: 'Benutzer erfolgreich erstellt',
                     status: 'success',
-                    duration: 2000,
+                    duration: 5000,
                     isClosable: true,
                 });
             }
@@ -108,7 +108,7 @@ const AddUserModal = (props) => {
                     title: "Benutzer konnte nicht erstellt werden",
                     description: "Bitte versuchen Sie es erneut",
                     status: "error",
-                    duration: 5000,
+                    duration: 7000,
                     isClosable: true,
                 })
             }
