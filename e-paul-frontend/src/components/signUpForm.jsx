@@ -194,6 +194,7 @@ const SignUpForm = (props) => {
 
     useEffect(() => {
         references[0].current.focus();
+        // eslint-disable-next-line
     }, []);
 
     
