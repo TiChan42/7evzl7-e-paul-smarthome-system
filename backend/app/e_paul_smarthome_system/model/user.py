@@ -24,21 +24,22 @@ class User(models.Model):
     
     def changeRights(self, rights):
         self.rights = { 
-                    "userSettings" : rights["userSettings"],
-                    "adduser" : rights["adduser"],
-                    "deleteuser" : rights["deleteuser"],
-                    "userManagement" : rights["userManagement"],
-                    "deviceManagement" : rights["deviceManagement"],
-                    "deviceSettings" : rights["deviceSettings"],
-                    "addDevice" : rights["addDevice"],
-                    "deleteDevice" : rights["deleteDevice"],
-                    "addRightsController" : rights["addRightsController"],
-                    "promoteUser" : rights["promoteUser"],
-                    "demoteUser" : rights["demoteUser"]
+                    "mayChangeUserSettings" : rights["mayChangeUserSettings"],
+                    "mayDeleteUser" : rights["mayDeleteUser"],
+                    "mayAssignController" : rights["mayAssignController"],
+                    "mayChangeUserType" : rights["mayChangeUserType"],
+                    "mayChangeUserRights" : rights["mayChangeUserRights"],
+                    
+                    "mayAddUser" : rights["mayAddUser"],
+                    "mayChangeAccountSettings" : rights["mayChangeAccountSettings"],
+                    
+                    "mayChangeOwnUserSettings" : rights["mayChangeOwnUserSettings"],
+                    "mayDeleteSelf" : rights["mayDeleteSelf"],
+                    
+                    "mayEditControllers" : rights["mayEditControllers"],
+                    "mayDeleteControllers" : rights["mayDeleteControllers"]
                     }
-        print(self)
         self.save()
-        
         
     def save(self, *args, **kwargs):
         self.username = self.username
@@ -57,47 +58,56 @@ class User(models.Model):
         if self.rights == None:
             match self.role:
                 case 'user':
-                    self.rights = { 
-                        "userSettings" : 1,
-                        "adduser" : 0,
-                        "deleteuser" : 0,
-                        "userManagement" : 0,
-                        "deviceManagement" : 0,
-                        "deviceSettings" : 0,
-                        "addDevice" : 0,
-                        "deleteDevice" : 0,
-                        "addRightsController" : 0,
-                        "promoteUser" : 0,
-                        "demoteUser" : 0,
+                    self.rights = {
+                        "mayChangeUserSettings": 0,
+                        "mayDeleteUser": 0,
+                        "mayAssignController": 0,
+                        "mayChangeUserType": 0,
+                        "mayChangeUserRights": 0,
+
+                        "mayAddUser": 0,
+                        "mayChangeAccountSettings": 0,
+
+                        "mayChangeOwnUserSettings": 1,
+                        "mayDeleteSelf": 1,
+
+                        "mayEditControllers": 0,
+                        "mayDeleteControllers": 0
                         }
                 case 'admin':
-                    self.rights = {   
-                        "userSettings" : 1,
-                        "adduser" : 1,
-                        "deleteuser" : 1,
-                        "userManagement" : 1,
-                        "deviceManagement" : 1,
-                        "deviceSettings" : 1,
-                        "addDevice" : 1,
-                        "deleteDevice" : 1,
-                        "addRightsController" : 1,
-                        "promoteUser" : 1,
-                        "demoteUser" : 1,
+                    self.rights = {
+                        "mayChangeUserSettings": 1,
+                        "mayDeleteUser": 1,
+                        "mayAssignController": 1,
+                        "mayChangeUserType": 1,
+                        "mayChangeUserRights": 1,
+
+                        "mayAddUser": 1,
+                        "mayChangeAccountSettings": 0,
+
+                        "mayChangeOwnUserSettings": 1,
+                        "mayDeleteSelf": 1,
+
+                        "mayEditControllers": 1,
+                        "mayDeleteControllers": 1
                         }
                 case 'superuser':
-                    self.rights = {   
-                        "userSettings" : 1,
-                        "adduser" : 1,
-                        "deleteuser" : 1,
-                        "userManagement" : 1,
-                        "deviceManagement" : 1,
-                        "deviceSettings" : 1,
-                        "addDevice" : 1,
-                        "deleteDevice" : 1,
-                        "addRightsController" : 1,
-                        "promoteUser" : 1,
-                        "demoteUser" : 1,
-                    }
+                    self.rights = {
+                        "mayChangeUserSettings": 1,
+                        "mayDeleteUser": 1,
+                        "mayAssignController": 1,
+                        "mayChangeUserType": 1,
+                        "mayChangeUserRights": 1,
+
+                        "mayAddUser": 1,
+                        "mayChangeAccountSettings": 1,
+
+                        "mayChangeOwnUserSettings": 1,
+                        "mayDeleteSelf": 1,
+
+                        "mayEditControllers": 1,
+                        "mayDeleteControllers": 1
+                        }
         else:
             self.rights = self.rights
         super().save(*args, **kwargs)
