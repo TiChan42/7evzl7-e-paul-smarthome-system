@@ -95,7 +95,12 @@ class CreateUser(APIView):
     
     def post(self, request):
         data = request.data
-        username = data["username"]
+        try:
+            username = data["username"]
+            isAdmin = data["isAdmin"]
+        except KeyError:
+            return Response(status=400)
+        
         try:
             pin = data["pin"]
         except KeyError:
@@ -127,30 +132,24 @@ class CreateUser(APIView):
 
     
         if(noUser == True):
-            if(pin == None):
-                
-                user = User(username = username, account = account, role = 'superuser')
-                user.save()
-                group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
-                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
-                group1.save()
-                group2.save()
-                return Response(status = 201)
-            else:
-                pin = pin.encode("utf-8")
-                pinHash = hashpw(pin, salt=gensalt())
-                pin = pinHash.decode("utf-8")
-                user = User(username = username, pin = pin, account = account, role = 'superuser')
-                user.save()
-                group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
-                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
-                group1.save()
-                group2.save()
-                return Response(status = 201)
+            pin = pin.encode("utf-8")
+            pinHash = hashpw(pin, salt=gensalt())
+            pin = pinHash.decode("utf-8")
+            user = User(username = username, pin = pin, account = account, role = 'superuser')
+            user.save()
+            group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
+            group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+            group1.save()
+            group2.save()
+            return Response(status = 201)
         elif(userExists(accountId, username)==0):
             if(pin == None):
-                user = User(username = username, account = account, role = 'user')
-                user.save()
+                if  isAdmin == True:
+                    user = User(username = username, account = account, role = 'admin')
+                    user.save()
+                else:
+                    user = User(username = username, account = account, role = 'user')
+                    user.save()
                 group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
                 group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
                 group1.save()
@@ -160,8 +159,12 @@ class CreateUser(APIView):
                 pin = pin.encode("utf-8")
                 pinHash = hashpw(pin, salt=gensalt())
                 pin = pinHash.decode("utf-8")
-                user = User(username = username, pin = pin, account = account, role ='user')
-                user.save()
+                if  isAdmin == True:
+                    user = User(username = username, pin = pin, account = account, role ='admin')
+                    user.save()
+                else:
+                    user = User(username = username, pin = pin, account = account, role ='user')
+                    user.save()
                 group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
                 group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
                 group1.save()
@@ -197,15 +200,15 @@ class MicrocontrollerSignUp(APIView):
                 key = id_generator()
                 microcontroller = Microcontroller(name=name, account = account, key = key)
                 microcontroller.save()
-                #with open("/etc/mosquitto/authbuffer", "a") as myfile:
-                #    myfile.write(str(microcontroller.id) + ":" + key)
-                #system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
-                #with open("/etc/mosquitto/authbuffer", "r+") as myfile:
-                #    key = myfile.read()
-                #    myfile.truncate(0)
-                #with open("/etc/mosquitto/auth", "a") as myfile:
-                #    myfile.write(str(key))
-                #system("sudo systemctl restart mosquitto")
+                with open("/etc/mosquitto/authbuffer", "a") as myfile:
+                    myfile.write(str(microcontroller.id) + ":" + key)
+                system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
+                with open("/etc/mosquitto/authbuffer", "r+") as myfile:
+                    key = myfile.read()
+                    myfile.truncate(0)
+                with open("/etc/mosquitto/auth", "a") as myfile:
+                    myfile.write(str(key))
+                system("sudo systemctl restart mosquitto")
                 port = Port(type = "test", microcontroller = microcontroller)
                 port.save()
                 serializer = MicrocontrollerSerializer(microcontroller)

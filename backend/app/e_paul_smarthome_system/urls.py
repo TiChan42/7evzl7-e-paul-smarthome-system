@@ -1,5 +1,5 @@
 from django import urls
-from .views.settings import RightsSettings, SingleUserSettingsView, ChangePin
+from .views.settings import RightsSettings, SingleUserSettingsView, ChangePin, ChangeRole
 from .views.userView import UserView, SingleUserView
 from .views.accountView import AccountView
 from .views.about_us import AboutUsView
@@ -9,7 +9,7 @@ from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView, AddPort
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
-from .views.getData import GetUser, GetVerified, GetGroups, GetPorts
+from .views.getData import GetUser, GetVerified, GetGroups, GetPorts, GetUserRights
 from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup
 from django.urls import path
 
@@ -18,7 +18,8 @@ urlpatterns = [
     path("user", UserView.as_view(), name = "user"),
     path("user/addGroup", AddGroup.as_view(), name = "addGroup"),
     path("user/deleteGroup", DeleteGroup.as_view(), name = "deleteGroup"),
-    path("user/<userId>", SingleUserView.as_view(), name = "singleUser"),
+    path("user/changeRole", ChangeRole.as_view(), name = "changeRole"), 
+    path("user/<userId>", SingleUserView.as_view(), name = "singleUser"), 
     path("account", AccountView.as_view(), name = "group"),
     path("aboutUs", AboutUsView.as_view(), name="aboutUs"),
     path("signUp", SignUp.as_view(), name="signUp"),
@@ -41,6 +42,7 @@ urlpatterns = [
     path("getVerified/<accountId>", GetVerified.as_view(), name = "getVerified"),
     path("getGroup/<type>/<userId>", GetGroups.as_view(), name = "getGroup"),
     path("getPorts/<accountId>", GetPorts.as_view(), name = "getPorts"),
+    path("getUserRights/<userId>/<executingUserId>", GetUserRights.as_view(), name = "getUserRights"),
     path("group/addPort", AddPortToGroup.as_view(), name = "addPortToGroup"),
     path("group/removePort",RemovePortFromGroup.as_view(), name = "deletePortFromGroup"),
     ]

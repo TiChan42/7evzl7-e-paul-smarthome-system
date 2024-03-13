@@ -1,5 +1,9 @@
 from ..model.user import User
 from ..model.account import Account
+from ..model.group import Group
+from ..model.port import Port
+from ..model.groupPort import GroupPort
+
 from ..serializer.userSerializer import UserDetailSerializer, UserSerializer
 
 from rest_framework.views import APIView
@@ -36,16 +40,21 @@ Teststring:
 {
     "superUserId" : 3,
     "userId" : 1,
-    "rights" : {"userSettings" : 1, 
-        "adduser" : 1, "deleteuser" : 1, 
-        "userManagement" : 1, 
-        "deviceManagement" : 1, 
-        "deviceSettings" : 1, 
-        "addDevice" : 1, 
-        "deleteDevice" : 1, 
-        "addRightsController" : 1, 
-        "promoteUser" : 1, 
-        "demoteUser" : 1
+    "rights" : { 
+        "mayChangeUserSettings" : 1,
+        "mayDeleteUser" : 1,
+        "mayAssignController" : 1,
+        "mayChangeUserType" : 1,
+        "mayChangeUserRights" : 1,
+        
+        "mayAddUser" : 1,
+        "mayChangeAccountSettings" : 1,
+        
+        "mayChangeOwnUserSettings" : 1,
+        "mayDeleteSelf" : 1,
+        
+        "mayEditControllers" : 1,
+        "mayDeleteControllers" : 1
         }
 }
 """
@@ -151,5 +160,57 @@ Teststring:
     "userId" : 16,
     "pin" : "1234",
     "previousPin" : "1234"
+}
+"""
+
+class ChangeRole(APIView):
+    queryset = User.objects.all()
+
+    def put(self, request):
+        try:
+            userId = request.data["userId"] 
+            executingUserId = request.data["executingUserId"]
+            role = request.data["role"]
+        except KeyError:
+            return Response(status = 400)
+        
+        if role == "superuser":
+            return Response('Es kann nur einen Superuser geben', status=400)
+        
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk = executingUserId)
+        except User.DoesNotExist:
+            return Response(status = 400)
+
+        if executingUser == user or user.role == "superuser":
+            return Response(status = 400)
+        
+        if executingUser.rights["mayChangeUserType"] == 1:
+            if role == "admin":
+                user.role = role
+                user.save()
+                group = Group.objects.get(user__id = user.id, groupType = "Assignment")
+                
+                ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                for port in ports:
+                    groupPort = GroupPort(group = group, port = port)
+                    groupPort.save()
+                return Response(status = 204)
+            elif role == "user":
+                user.role = role
+                user.save()
+                return Response(status = 204)
+            else:
+                return Response(status = 400)
+        else:
+            return Response(status = 400)
+        
+"""
+teststring
+{
+"userId" : 1,
+"executingUserId" : 2,
+"role" : "admin"
 }
 """

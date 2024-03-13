@@ -1,6 +1,7 @@
 from ..model.account import Account
 from ..model.group import Group
 from ..model.port import Port
+from ..model.user import User
 
 from ..serializer.accountSerializer import AccountUserSerializer, AccountPortSerializer
 from ..serializer.groupSerializer import GroupSerializer
@@ -78,5 +79,23 @@ class GetPorts(APIView):
         if port:
             serializer = PortSerializer(port, many = True)
             return Response(serializer.data, status = 200)
+        else:
+            return Response(status = 400)
+        
+
+class GetUserRights(APIView):
+    queryset = Account.objects.all()
+    
+    def get(self, request, userId, executingUserId):
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk = executingUserId)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        
+        if user == executingUser: 
+            return Response(user.rights, status = 200)
+        elif executingUser.rights["mayChangeUserRights"] == 1:
+            return Response(user.rights, status = 200)
         else:
             return Response(status = 400)
