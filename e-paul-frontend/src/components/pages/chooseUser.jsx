@@ -30,11 +30,11 @@ function Users() {
   //fetch users from backend
   function fetchUsers(accountID) {
     //fetch users from backend
-    const fetchPath = env()["api-path"] + "getUser/" + accountID; 
+    const fetchPath = env()["api-path"] + "getUsers/" + accountID; 
     
     fetch(fetchPath, {method: "GET"})
       .then(response => {
-        
+        console.log(response); // HTTP-Response ausgeben
         return response.json();
       })
       .then(data => {

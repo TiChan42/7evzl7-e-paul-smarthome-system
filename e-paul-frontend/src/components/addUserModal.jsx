@@ -96,13 +96,19 @@ const AddUserModal = (props) => {
         .then(response => {
             if(response.status === 201){
                 props.closeModal();
+                toast({
+                    title: 'Benutzer erfolgreich erstellt',
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true,
+                });
             }
             else{
                 toast({
                     title: "Benutzer konnte nicht erstellt werden",
                     description: "Bitte versuchen Sie es erneut",
                     status: "error",
-                    duration: 9000,
+                    duration: 5000,
                     isClosable: true,
                 })
             }

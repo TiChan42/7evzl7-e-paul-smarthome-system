@@ -8,8 +8,30 @@ import { Avatar } from "@chakra-ui/avatar";
 import ValidateActionModal from '../validateActionModal';
 import AddUserModal from '../addUserModal';
 import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
-import { HiOutlineCpuChip } from "react-icons/hi2";
+import { FaMicrochip } from "react-icons/fa6";
+import { ImSection } from "react-icons/im";
+import UserRightSettingsModal from '../userRightSettingsModal';
+import AccountSettingsModal from '../accountSettingsModal';
 
+var userRightsTest = [
+    {
+        "mayChangeUserSettings": 1,
+        "mayDeleteUser": 1,
+        "mayAssignController": 1,
+        "mayChangeUserType": 0,
+        "mayChangeUserRights": 1,
+
+        "mayAddUser": 1,
+        "mayChangeAccountSettings": 1,
+
+        "mayChangeOwnUserSettings": 0,
+        "mayDeleteSelf": 1,
+
+        "mayEditControllers": 1,
+        "mayDeleteControllers": 1
+
+    }
+]
 
 function Header() {
 return <header>
@@ -21,11 +43,11 @@ return <header>
 }
   
 function UserCol(props) {
-    const[isAdmin,setIsAdmin] = useState(true) //zum testen
-    const[edit,makeEdit] = useState()
+	const[editRights, setEditRights] = useState(props.editRights)
+    const[isAdmin,setIsAdmin] = useState(props.user.role==='admin'||props.user.role==='superuser')
     const[isdelete,setdelete] = useState(false)
-    const[userClient, setUserClientModal] = useState() 
 	const [userModuleModal, setUserModuleModal] = useState(false)
+	const [userRightModal, setUserRightModal] = useState(false)
 	const toast = useToast()
 
 	function deleteUser() {
@@ -41,15 +63,24 @@ function UserCol(props) {
 					toast({
 						title: 'Löschen fehlgeschlagen',
 						status: 'Du hast keine Berechtigung diesen Nutzer zu löschen',
+						duration: 5000,
 						isClosable: true,
 					});
-				}
+				} else {
+					toast({
+						title: 'Löschen erfolgreich',
+						status: 'success',
+						duration: 2000,
+						isClosable: true,
+					});
+					props.refresh()
+				}	
 		  })
 		  .catch(error => {
-			  console.log('ausgeführt')
 			  toast({
 				  title: 'error',
 				  status: 'error',
+				  duration: 5000,
 				  isClosable: true,
 			  });
 		  });
@@ -60,12 +91,14 @@ function UserCol(props) {
         'Sind Sie sich sicher, dass Sie diesen Benutzer löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
         ()=>{
           setdelete(true)
-		  console.log('hier')
           //User im Backend löschen
 		  deleteUser();
-		  window.location.reload();
-      })
+      }) 
     }
+
+	const updateAdminStatus = (userID, isAdmin) => {
+		let url = env()["api-path"] + 'user/' + userID + '/role' //API path noch ändern
+	}
 
     const handleAdminSwitch = () => {
 		if (isAdmin) {
@@ -85,6 +118,11 @@ function UserCol(props) {
 		}
     }
 
+	const handleUserSettingClick = (id) => {
+		sessionStorage.setItem('userToEdit',encryptString(id.toString()))
+		window.location.href = '/userSettings'
+	}
+
     return (
     	<Flex minWidth='max-content' alignItems='center' gap='2'>
 			<HStack p='2'>
@@ -98,12 +136,17 @@ function UserCol(props) {
 			<Spacer />
 			<Box>
 				<ButtonGroup variant='outline' gap='2'>
-					<Button colorScheme='teal' variant={isAdmin?'solid':'outline'} onClick={()=>{handleAdminSwitch()}}>
+
+					<Button isDisabled={!editRights['mayChangeUserType'] || props.user.role==='superuser'} colorScheme='teal' variant={isAdmin?'solid':'outline'} onClick={()=>{handleAdminSwitch(); console.log(props.user.role)}}>
 						Admin
 					</Button>
-					<IconButton icon={<EditIcon/>}></IconButton>
-					<IconButton icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
-					<IconButton icon={<HiOutlineCpuChip size='xs'/>}onClick={() => setUserModuleModal(true)}></IconButton>
+					
+					<IconButton isDisabled={!editRights['mayChangeUserSettings'] || props.user.role==='superuser'} icon={<EditIcon/>} onClick={()=>{handleUserSettingClick(props.user.id)}}></IconButton>
+					<IconButton isDisabled={!editRights['mayDeleteUser'] || props.user.role==='superuser'} icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
+					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)}></IconButton>
+					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)}></IconButton>
+
+					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role}/>
 					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id}/>
 				</ButtonGroup>
 			</Box>
@@ -115,6 +158,18 @@ function UserCol(props) {
 function UserAdministration() {
     const accountID = decryptString(sessionStorage.getItem("accountID")); 
     const [addUserModal, setAddUserModal] = useState(false);
+	const [accountSettingModal, setAccountSettingModal] = useState(false);
+	const [editRights, setEditRights] = useState(userRightsTest[0]); //zum testen
+
+	const handleUserSettingClick = () => {
+		sessionStorage.setItem('userToEdit',sessionStorage.getItem('executingUserID'))
+		window.location.href = '/userSettings'
+	}
+
+	const triggerRefresh = () => {
+		fetchUsers(accountID)
+		console.log('refreshed')
+	}
 
     const toast = useToast()
     const [users, setUsers] = useState(null);
@@ -138,7 +193,7 @@ function UserAdministration() {
     function fetchUsers(accountID) {
       //fetch users from backend
       //später auf 0 prüfen und dann nicht laden
-      const fetchPath = env()["api-path"] + "getUser/" + accountID;
+      const fetchPath = env()["api-path"] + "getUsers/" + accountID;
       console.log(fetchPath);
       fetch(fetchPath, {method: "GET"})
         .then(response => {
@@ -153,7 +208,6 @@ function UserAdministration() {
 			}
         })
         .catch(error => {
-			console.log('ausgeführt')
 			toast({
 				title: 'error',
 				status: 'error',
@@ -164,7 +218,7 @@ function UserAdministration() {
 	 function fetchUsers(accountID) {
       //fetch users from backend
       //später auf 0 prüfen und dann nicht laden
-      const fetchPath = env()["api-path"] + "getUser/" + accountID;
+      const fetchPath = env()["api-path"] + "getUsers/" + accountID;
       console.log(fetchPath);
       fetch(fetchPath, {method: "GET"})
         .then(response => {
@@ -187,6 +241,66 @@ function UserAdministration() {
 			});
         });
     };
+
+	const getUserRights = async () => {
+	
+		let executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
+
+		if (executingUserID != null){
+
+			//setEditRights(userRightsTest[0]) //rauslöschen sobald es im backend steht
+			
+			let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
+			await fetch(url, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			})
+			.then(response => {
+				if(response.status === 200){
+					return response.json()
+				}
+				else if (response.status === 403){
+					toast({
+						title: 'Nicht berechtigt',
+						description: 'Sie sind nicht berechtigt, die Benutzerrechte dieses Benutzers zu bearbeiten',
+						status: 'error',
+						isClosable: true,
+						duration: 5000
+					})
+					return null
+				}
+				toast({
+					title: 'Fehler',
+					description: 'Während der Verarbeitung ist ein Fehler aufgetreten, versuchen Sie es erneut',
+					status: 'error',
+					isClosable: true,
+					duration: 5000
+				})
+				return null
+			})
+			.then(data => {
+				if(data != null){
+					setEditRights(data)
+				}
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+				toast({
+					title: 'Fehler',
+					description: 'Während der Verarbeitung ist ein Fehler aufgetreten, versuchen Sie es erneut',
+					status: 'error',
+					isClosable: true,
+					duration: 5000
+				})
+			});
+			
+		}
+	}
+	useEffect(() => {getUserRights()}, [])
+
+
 
     return (
 		<> 
@@ -215,7 +329,7 @@ function UserAdministration() {
 		{users && users[0] &&
 		<>
 			{Object.keys(users).map((key, index) => (
-			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]}/>
+			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]} editRights={editRights} refresh={() => {triggerRefresh()}}/>
 			))}
 		</>
 		}
@@ -224,8 +338,17 @@ function UserAdministration() {
 		</Grid>
 		<Button rightIcon={<AddIcon/>}
             colorScheme="teal"
+			isDisabled={!editRights['mayAddUser']}
             onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
-		<AddUserModal openModal = {addUserModal} closeModal = {()=>{setAddUserModal(false)}} accountID = {decryptString(sessionStorage.getItem("accountID"))}/>
+		<Button colorScheme="teal" m='1'
+		isDisabled={!editRights['mayChangeAccountSettings']}
+		onClick={()=>{setAccountSettingModal(true)}}>Kontoeinstellungen</Button>
+		<Button colorScheme="teal" m='1'
+		isDisabled={!editRights['mayChangeOwnUserSettings']}
+		onClick={()=>{handleUserSettingClick()}}>Eigene Benutzereinstellungen öffnen</Button>
+
+		<AccountSettingsModal openModal = {accountSettingModal} closeModal = {()=>{setAccountSettingModal(false)}}/>
+		<AddUserModal openModal = {addUserModal} closeModal = {()=>{setAddUserModal(false); triggerRefresh()}} accountID = {decryptString(sessionStorage.getItem("accountID"))}/>
 		
 	<ValidateActionModal openModal = {validationModal} closeModal = {()=>{setValidationModal(false)}} title = {validationModalTitle} content = {validationModalText} execute = {()=>{validationModalAction()}}/>
 		</>
