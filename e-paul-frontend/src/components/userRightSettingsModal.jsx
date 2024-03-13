@@ -19,44 +19,7 @@ import React from 'react';
 import { decryptString } from '../encryptionUtils';
 import { env } from '../env';
 
-var userRightsTest = [
-    {
-        "mayChangeUserSettings": 1,
-        "mayDeleteUser": 1,
-        "mayAssignController": 1,
-        "mayChangeUserType": 1,
-        "mayChangeUserRights": 1,
 
-        "mayAddUser": 1,
-        "mayChangeAccountSettings": 1,
-
-        "mayChangeOwnUserSettings": 0,
-        "mayDeleteSelf": 1,
-
-        "mayEditControllers": 1,
-        "mayDeleteControllers": 1
-
-    }
-]
-const userRightsTest2 = [
-    {
-        "mayChangeUserSettings": 1,
-        "mayDeleteUser": 1,
-        "mayAssignController": 1,
-        "mayChangeUserType": 1,
-        "mayChangeUserRights": 0,
-
-        "mayAddUser": 1,
-        "mayChangeAccountSettings": 1,
-
-        "mayChangeOwnUserSettings": 1,
-        "mayDeleteSelf": 0,
-
-        "mayEditControllers": 1,
-        "mayDeleteControllers": 1
-
-    }
-]
 //Column for the user rights
 const UserRightColumn = (props) => {
     return (
@@ -89,8 +52,8 @@ const UserRightColumn = (props) => {
 //Modal for signing up and in
 const UserRightSettingsModal = (props) => {
     const toast = useToast()
-    const [userRights, setUserRights] = React.useState(userRightsTest[0])
-    const [ownUserRights, setOwnUserRights] = React.useState(userRightsTest2[0])
+    const [userRights, setUserRights] = React.useState([])
+    const [ownUserRights, setOwnUserRights] = React.useState([])
     const [updateFlag, setUpdateFlag] = React.useState(false)
     const updateModal = () => setUpdateFlag(!updateFlag)
 
@@ -100,14 +63,9 @@ const UserRightSettingsModal = (props) => {
 
         if (userID != null && executingUserID != null){
 
-            if (userID.toString() === executingUserID.toString()){
-                setOwnUserRights(userRightsTest2[0])
-            }
-            else{
-                setUserRights(userRightsTest[0])
-            }
-            /*
-            let url = env()["api-path"] + 'userRights/' + userID + '/' + executingUserID
+           
+            
+            let url = env()["api-path"] + 'getUserRights/' + userID + '/' + executingUserID
             await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -140,10 +98,10 @@ const UserRightSettingsModal = (props) => {
             .then(data => {
                 if(data != null){
                     if (userID.toString() === executingUserID.toString()){
-                        setOwnUserRights(userRightsTest2[0])
+                        setOwnUserRights(data)
                     }
                     else{
-                        setUserRights(userRightsTest[0])
+                        setUserRights(data)
                     }
                 }
             })
@@ -157,16 +115,16 @@ const UserRightSettingsModal = (props) => {
                     duration: 5000
                 })
             });
-            */
+            
         }
     }
 
     const setUserRight = async (userID, userRightKey, value) => {
-        userRightsTest[0][userRightKey] = value
-        /* 
+       
+        
         let executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
         if (userID != null && executingUserID != null){
-            let url = env()["api-path"] + 'userRights'
+            let url = env()["api-path"] + 'settings/rights'
             let data = {
                 userRightKey: userRightKey,
                 value: value,
@@ -174,7 +132,7 @@ const UserRightSettingsModal = (props) => {
                 executingUserId: executingUserID
             }
             await fetch(url, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -183,7 +141,7 @@ const UserRightSettingsModal = (props) => {
             .then(response => {
                 if(response.status === 202){
                     toast({
-                        title: 'Erfolgreich',
+                        title: 'Erfolgreich geändert',
                         description: 'Die Benutzerrechte wurden erfolgreich geändert',
                         status: 'success',
                         isClosable: true,
@@ -218,7 +176,7 @@ const UserRightSettingsModal = (props) => {
                 })
             });
         }
-        */
+        
     }
 
     
