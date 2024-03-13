@@ -214,3 +214,31 @@ teststring
 "role" : "admin"
 }
 """
+
+class ChangeMail(APIView):
+    queryset = Account.objects.all()
+
+    def put(self, request):
+        try:
+            userId = request.data["userId"]
+            accountId = request.data["accountId"]
+            mail = request.data["mail"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            account = Account.objects.get(pk = accountId)
+        except Account.DoesNotExist:
+            return Response(status = 400)
+        
+        try:
+            user = User.objects.get(pk = userId)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        
+        if user.rights["mayChangeAccountSettings"] == 1:
+            account.mail = mail
+            account.save()
+            return Response(status = 204)
+        else:
+            return Response(status = 400)

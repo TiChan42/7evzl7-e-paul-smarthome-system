@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-class GetUser(APIView):
+class GetUsers(APIView):
     queryset = Account.objects.all()
     
     def get(self, request, accountId):
