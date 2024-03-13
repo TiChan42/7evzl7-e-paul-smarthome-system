@@ -40,7 +40,7 @@ const AddUserModal = (props) => {
     const [userName, setUserName] = useState(generatedName);
     const [password, setPassword] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    const [isAdmin, setIsAdmin] = useState(props.requireAdmin);
+    const [isAdmin, setIsAdmin] = useState(props.requireAdmin ? true : false);
 
     //Updater für den Benutzernamen
     useEffect(() => {
