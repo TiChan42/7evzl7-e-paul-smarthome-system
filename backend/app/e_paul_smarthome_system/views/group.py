@@ -128,6 +128,10 @@ class RemovePortFromGroup(APIView):
             return Response(status = 400)
         
         try:
+            group = Group.objects.get(user__id = userId, id = groupId)
+        except Group.DoesNotExist:
+            return Response(status = 400)
+        try:
             groupPort = GroupPort.objects.get(group__id = groupId, port__id = portId)
         except GroupPort.DoesNotExist:
             return Response(status = 400)
