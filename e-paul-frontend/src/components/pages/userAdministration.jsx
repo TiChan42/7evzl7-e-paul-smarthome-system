@@ -8,6 +8,7 @@ import { Avatar } from "@chakra-ui/avatar";
 import ValidateActionModal from '../validateActionModal';
 import AddUserModal from '../addUserModal';
 import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
+import { HiOutlineCpuChip } from "react-icons/hi2";
 
 
 function Header() {
@@ -102,7 +103,7 @@ function UserCol(props) {
 					</Button>
 					<IconButton icon={<EditIcon/>}></IconButton>
 					<IconButton icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
-					<Button onClick={() => setUserModuleModal(true)}>Clientrechte</Button>
+					<IconButton icon={<HiOutlineCpuChip size='xs'/>}onClick={() => setUserModuleModal(true)}></IconButton>
 					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id}/>
 				</ButtonGroup>
 			</Box>
@@ -204,7 +205,7 @@ function UserAdministration() {
 
 		{/* Main*/}
 		
-		<GridItem pl='2' bg='white' area={'main'}>
+		<GridItem pl='2' bg='Powderblue' area={'main'}>
 
 		<VStack
 		divider={<StackDivider borderColor='gray.200' />}
