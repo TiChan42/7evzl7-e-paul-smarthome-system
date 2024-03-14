@@ -43,7 +43,7 @@ return <header>
 }
   
 function UserCol(props) {
-	const[editRights, setEditRights] = useState(props.editRights)
+	const editRights = props.editRights
     const[isAdmin,setIsAdmin] = useState(props.user.role==='admin'||props.user.role==='superuser')
     const[isdelete,setdelete] = useState(false)
 	const [userModuleModal, setUserModuleModal] = useState(false)
@@ -164,7 +164,7 @@ function UserCol(props) {
 
 	const handleUserSettingClick = (id) => {
 		sessionStorage.setItem('userToEdit',encryptString(id.toString()))
-		window.location.href = '/userSettings'
+		window.location.href = '/settings'
 	}
 
     return (
