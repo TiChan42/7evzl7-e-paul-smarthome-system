@@ -9,7 +9,7 @@ function InitialFocus() {
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const deleteAccount = async () => {
+    const deleteUser = async () => {
         console.log(userID)
         const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + userID, {
             method: 'DELETE',
@@ -26,7 +26,7 @@ function InitialFocus() {
 
     return (
         <>
-            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>Account löschen</Button>
+            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>User löschen</Button>
 
             <Modal
                 initialFocusRef={initialRef}
@@ -36,13 +36,13 @@ function InitialFocus() {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
+                    <ModalHeader>Möchten sie ihren User wirklich löschen?</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='red' variant='solid' onClick={deleteAccount} marginRight={'1em'}>Bestätigen</Button>
+                        <Button colorScheme='red' variant='solid' onClick={deleteUser} marginRight={'1em'}>Bestätigen</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
@@ -186,7 +186,7 @@ class Settings extends Component {
                         </Select>
                         <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
                         <br></br><br></br>
-                        <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
+                        <Text color={"white"}>Hier können Sie Ihren User löschen:</Text>
                         <InitialFocus />
                     </Box>
                 </Card>
