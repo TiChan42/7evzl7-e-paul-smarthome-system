@@ -1,28 +1,32 @@
-import { Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function InitialFocus() {
-    const userID = sessionStorage.getItem('executingUserID');
+    const executingUserID = sessionStorage.getItem('executingUserID');
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const deleteUser = async () => {
-        console.log(userID)
-        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + userID, {
+        console.log(executingUserID)
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: userID
+                userId: executingUserID
             })
         })
 
     };
+
+    useEffect(()=>{
+        decryptString(sessionStorage.getItem('userToEdit'))
+    },[])
 
     return (
         <>
@@ -52,11 +56,64 @@ function InitialFocus() {
 }
 
 
+function DeleteAcc() {
+    const executingUserID = sessionStorage.getItem('executingUserID');
+    const initialRef = React.useRef(null);
+    const finalRef = React.useRef(null);
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const deleteAccount = async () => {
+        console.log(executingUserID)
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: executingUserID
+            })
+        })
+
+    };
+
+    useEffect(()=>{
+        decryptString(sessionStorage.getItem('userToEdit'))
+    },[])
+
+    return (
+        <>
+            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>Account löschen</Button>
+
+            <Modal
+                initialFocusRef={initialRef}
+                finalFocusRef={finalRef}
+                isOpen={isOpen}
+                onClose={onClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='red' variant='solid' onClick={deleteAccount} marginRight={'1em'}>Bestätigen</Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
+    );
+}
+
 
 class Settings extends Component {
-    state = { activeTab: 'allgemein', isModalOpen: false };
-    userID = sessionStorage.getItem('executingUserID');
+    state = { activeTab: 'allgemein', isModalOpen: false};
+    executingUserID = sessionStorage.getItem('executingUserID');
     accountID = sessionStorage.getItem('accountID');
+    userID = decryptString(sessionStorage.getItem('userToEdit'));
 
 
 
@@ -91,7 +148,7 @@ class Settings extends Component {
         };
 
         const validatePin = async () => {
-            console.log(this.accountID, this.userID, this.state.oldPin);
+            console.log(this.accountID, this.executingUserID, this.state.oldPin);
             console.log(JSON.stringify({
                 accountId: this.accountID,
                 userId: this.userID,
@@ -135,14 +192,75 @@ class Settings extends Component {
                         })
                     })
                 }
-                else{
+                else {
                     // Invalid Old Pin
+
+                    <Alert status='error'>
+                        <AlertIcon />
+                        <AlertTitle>Deine alte Pin ist falsch!</AlertTitle>
+                        <AlertDescription>Bitte versuchen sie es erneut.</AlertDescription>
+                    </Alert>
                     console.log("old pin is not valid")
                 }
             }
-            else{
+            else {
                 // Pins are different
+                <Alert status='error'>
+                        <AlertIcon />
+                        <AlertTitle>Die Pins stimmen nicht überein!</AlertTitle>
+                        <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
+                </Alert>
                 console.log("new pins are different")
+
+                
+            }
+        };
+
+
+        const validateEmail = async () => {
+            const res = await fetch('http://epaul-smarthome.de:8000/api/validateEmail', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    key: this.key,
+                    accountId: this.accountID,
+
+                })
+            });
+            return res;
+        };
+
+
+        const updateEmail = async () => {
+            var validated = await validateEmail();
+            // try catch
+            validated = await validated.json()
+            // end
+            if (validated == 1) {
+                const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeMail', {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: this.executingUserID,
+                        accountId: this.accountID,
+                        mail: this.state.mail
+                    })
+                })
+            }
+            else {
+                // Invalid Old Pin
+                <Alert status='error'>
+                        <AlertIcon />
+                        <AlertTitle>Die alte Email ist falsch!</AlertTitle>
+                        <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
+                </Alert>
+                console.log("Old Email isn't correct")
             }
         };
 
@@ -236,7 +354,10 @@ class Settings extends Component {
                             marginTop={'2em'}
                         />
 
-                        <Button margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                        <Button onClick={updateEmail} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                        <br></br><br></br>
+                        <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
+                        <DeleteAcc/>
                     </Box>
                 </Card>
             );
