@@ -377,12 +377,12 @@ const ClientUserAssignmentModal = (props) => {
                             <Tab ref={userClientsRef} onClick={()=>{setSiteState(1)} }>Alle</Tab>
                             <Tab ref={allClientsRef} onClick={()=>{setSiteState(0)}}>Zugewiesen</Tab>
                         </TabList>
-                    <Heading size={'md'} display={{base:'none', md:'flex'}}>Weisen Sie dem Benutzer Clients zu</Heading>
+                    <Heading size={'md'} display={{base:'none', md:'flex'}}>Weisen Sie {props.userName?(<>{props.userName}</>):(<>dem Benutzer</>)} Clients zu</Heading>
                     </ModalHeader>
                 </Tabs>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Text display={{base:'flex', md:'none'}}>Weisen Sie dem Benutzer Clients zu</Text>
+                    <Text display={{base:'flex', md:'none'}}>Weisen Sie {props.userName?(<>{props.userName}</>):(<>dem Benutzer</>)} Clients zu</Text>
                     <Flex height={'100%'}>
                         <Box  w={{base: siteState?'70%':'30%' ,md:'50%'}} height={'100%'}>
                             <Heading size={{base:'xs', sm:'sm'}} textAlign={'left'} p={1} onClick={()=>{setSiteState(1)}}>Alle</Heading>

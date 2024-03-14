@@ -32,7 +32,7 @@ const UserRightColumn = (props) => {
                     <Spacer />
                     <Center w={'30%'}>
                         <Button
-                            onClick={() => {props.onChangeRequest(props.value.toString() === '0' ? 1 : 0); console.log('muted: '+props.muted.toString() );}}
+                            onClick={() => {props.onChangeRequest(props.value.toString() === '0' ? 1 : 0)}}
                             variant={props.value.toString() === '0' ? "outline" : "solid"}
                             colorScheme="teal"
                             isDisabled={props.muted}
@@ -217,7 +217,7 @@ const UserRightSettingsModal = (props) => {
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader >
-                    Benutzerberechtigungen
+                    Benutzerberechtigungen {props.userName?(<>von {props.userName}</>):(null)}
                 </ModalHeader>
                 <ModalCloseButton />
                 {userRights != null && ownUserRights != null && Object.keys(userRights).length > 0 && Object.keys(ownUserRights).length > 0 ?(
@@ -235,14 +235,14 @@ const UserRightSettingsModal = (props) => {
                                         update={updateFlag} 
                                         text='Kann Profileinstellung des eigenen Profils Bearbeiten' 
                                         value={userRights["mayChangeOwnUserSettings"]} 
-                                        onChangeRequest={(newValue) => {console.log(newValue);updateUserRight(props.userID,'mayChangeOwnUserSettings', newValue)}}
+                                        onChangeRequest={(newValue) => {updateUserRight(props.userID,'mayChangeOwnUserSettings', newValue)}}
                                     />
                                     <UserRightColumn 
                                         muted={(ownUserRights["mayDeleteSelf"] === 0)} 
                                         update={updateFlag} 
                                         text='Kann eigenes Profil löschen' 
                                         value={userRights["mayDeleteSelf"]} 
-                                        onChangeRequest={(newValue) => {console.log(newValue);updateUserRight(props.userID,'mayDeleteSelf', newValue)}}
+                                        onChangeRequest={(newValue) => {updateUserRight(props.userID,'mayDeleteSelf', newValue)}}
                                     />
                                 </Box>
                             ):(
@@ -278,7 +278,7 @@ const UserRightSettingsModal = (props) => {
                                     <UserRightColumn 
                                         muted={(ownUserRights["mayChangeUserType"] === 0)} 
                                         update={updateFlag} 
-                                        text='Kann Benutzertyp ändern' 
+                                        text='Kann Adminstatus ändern' 
                                         value={userRights["mayChangeUserType"]} 
                                         onChangeRequest={(newValue) => {updateUserRight(props.userID,'mayChangeUserType', newValue)}}
                                     />
