@@ -1,6 +1,6 @@
-import { Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertTitle, AlertDescription, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogContent, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function InitialFocus() {
@@ -24,9 +24,9 @@ function InitialFocus() {
 
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         decryptString(sessionStorage.getItem('userToEdit'))
-    },[])
+    }, [])
 
     return (
         <>
@@ -77,9 +77,9 @@ function DeleteAcc() {
 
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         decryptString(sessionStorage.getItem('userToEdit'))
-    },[])
+    }, [])
 
     return (
         <>
@@ -112,13 +112,14 @@ function DeleteAcc() {
 class Settings extends Component {
     state = { activeTab: 'allgemein', isModalOpen: false};
     executingUserID = sessionStorage.getItem('executingUserID');
-    accountID = sessionStorage.getItem('accountID');
+    accountID = decryptString(sessionStorage.getItem('accountID'));
     userID = decryptString(sessionStorage.getItem('userToEdit'));
 
 
 
     renderContent() {
         const { activeTab } = this.state;
+
         const updateUsername = async () => {
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
@@ -148,12 +149,6 @@ class Settings extends Component {
         };
 
         const validatePin = async () => {
-            console.log(this.accountID, this.executingUserID, this.state.oldPin);
-            console.log(JSON.stringify({
-                accountId: this.accountID,
-                userId: this.userID,
-                pin: this.state.oldPin
-            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/validatePin', {
                 method: 'POST',
                 headers: {
@@ -175,10 +170,9 @@ class Settings extends Component {
             validated = await validated.json()
             // end
             validated = validated["valid"]
-            console.log(typeof validated)
-            console.log(this.state.newPin, this.state.newPinRepeat)
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
+                    this.setState({wrongPinOpen : false})
                     const res = await fetch('http://epaul-smarthome.de:8000/api/settings/pin', {
                         method: 'PUT',
                         headers: {
@@ -194,25 +188,26 @@ class Settings extends Component {
                 }
                 else {
                     // Invalid Old Pin
-
-                    <Alert status='error'>
+                    /*<Alert status='error'>
                         <AlertIcon />
                         <AlertTitle>Deine alte Pin ist falsch!</AlertTitle>
                         <AlertDescription>Bitte versuchen sie es erneut.</AlertDescription>
                     </Alert>
+                    */
+                    this.setState({wrongPinOpen : true})
                     console.log("old pin is not valid")
                 }
             }
             else {
                 // Pins are different
                 <Alert status='error'>
-                        <AlertIcon />
-                        <AlertTitle>Die Pins stimmen nicht überein!</AlertTitle>
-                        <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
+                    <AlertIcon />
+                    <AlertTitle>Die Pins stimmen nicht überein!</AlertTitle>
+                    <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
                 </Alert>
                 console.log("new pins are different")
 
-                
+
             }
         };
 
@@ -256,9 +251,9 @@ class Settings extends Component {
             else {
                 // Invalid Old Pin
                 <Alert status='error'>
-                        <AlertIcon />
-                        <AlertTitle>Die alte Email ist falsch!</AlertTitle>
-                        <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
+                    <AlertIcon />
+                    <AlertTitle>Die alte Email ist falsch!</AlertTitle>
+                    <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
                 </Alert>
                 console.log("Old Email isn't correct")
             }
@@ -267,6 +262,7 @@ class Settings extends Component {
         if (activeTab === 'allgemein') {
             return (
                 <Card bg={"#218395"} w='100%' h='100%' >
+
                     <CardHeader>
                         <Heading size='lg' color={"white"}>Allgemein</Heading>
                     </CardHeader>
@@ -357,7 +353,7 @@ class Settings extends Component {
                         <Button onClick={updateEmail} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                         <br></br><br></br>
                         <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
-                        <DeleteAcc/>
+                        <DeleteAcc />
                     </Box>
                 </Card>
             );
@@ -380,6 +376,7 @@ class Settings extends Component {
                             <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
                             <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
                         </Stack>
+                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Deine alte Pin ist falsch!"} AlertDescription={"Bitte versuchen sie es erneut."}/>
                         <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
@@ -451,3 +448,18 @@ function PasswordInput(props) {
     )
 }
 
+
+function AlertDialogExample(props) {
+    var openvar = props.open
+    return (
+        <>
+        {openvar ? 
+            <Alert status={props.alertStatus} >
+                <AlertIcon />
+                <AlertTitle>{props.alertTitle}</AlertTitle>
+                <AlertDescription>{props.AlertDescription}</AlertDescription>
+            </Alert>
+        : <></> }
+        </>
+    )
+}
