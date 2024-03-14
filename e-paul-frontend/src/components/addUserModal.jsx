@@ -42,6 +42,9 @@ const AddUserModal = (props) => {
     const [passwordRepeat, setPasswordRepeat] = useState("");
     const [isAdmin, setIsAdmin] = useState(props.requireAdmin ? true : false);
 
+    //Executing User Rights
+    const [showMakeAdmin, setShowMakeAdmin] = useState(false);
+
     //Updater für den Benutzernamen
     useEffect(() => {
         setUserName(generatedName);
@@ -72,26 +75,21 @@ const AddUserModal = (props) => {
         }
     }, [password, passwordRepeat, isAdmin, userName]);
 
-    useEffect(() => {
-        console.log("Admin: " + isAdmin);
-    }, [isAdmin]);
-
     //Erstellt den Benutzer basierend auf den Eingaben
-    function createUser(){
+    const createUser = () => {
         const data = {
+            executingUserId: decryptString(sessionStorage.getItem('executingUserID')),  
             username: userName,
             pin: password,
             isAdmin: isAdmin,
             accountId: decryptString(sessionStorage.getItem('accountID')),
             userImageName: "user_profile_0.jpg"
         }
-        console.log(data);
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
-        console.log(requestOptions);
         fetch(env()["api-path"] + "signUp/user", requestOptions)
         .then(response => {
             if(response.status === 201){
@@ -113,7 +111,47 @@ const AddUserModal = (props) => {
                 })
             }
         })
+        .catch(error => {
+            console.log(error);
+            toast({
+                title: "Benutzer konnte nicht erstellt werden",
+                description: "Bitte versuchen Sie es erneut",
+                status: "error",
+                duration: 7000,
+                isClosable: true,
+            })
+        })
     }
+
+    const getExecutingUserRights = () => {
+        const executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
+        let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+        fetch(url, requestOptions)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if(data["mayChangeUserType"] === 1){
+                setShowMakeAdmin(true);
+            } else {
+                setShowMakeAdmin(false);
+            }
+        })
+        .catch((error) => {
+            console.error('Error(getExecutingUserRights):', error);
+        });
+    }
+
+    useEffect(() => {
+        getExecutingUserRights();
+    }, []);
+
 
     return (
         <>
@@ -204,7 +242,7 @@ const AddUserModal = (props) => {
                     <br></br>
                     <FormControl display='flex' alignItems='center'>
                         <Checkbox 
-                        isDisabled={props.requireAdmin} 
+                        isDisabled={props.requireAdmin || !showMakeAdmin} 
                         defaultChecked={props.requireAdmin} 
                         size='lg' 
                         colorScheme='teal' 
