@@ -18,7 +18,7 @@ class DeleteAccount(APIView):
     def post(self, request):
         try:
             accountId = request.data["accountId"]
-            executinguserId = request.data["executingUserId"]
+            executingUserId = request.data["executingUserId"]
         except KeyError:
             return Response(status = 400)
         
@@ -28,12 +28,12 @@ class DeleteAccount(APIView):
             return Response(status = 400)
         
         try:
-            executingUser = Account.objects.get(id = executinguserId)
+            executingUser = Account.objects.get(id = executingUserId)
         except Account.DoesNotExist:
             return Response(status = 400)
         
         if executingUser.rights["mayChangeAccountSettings"] == 1:
             account.delete()
-            return Response(status = 202)
+            return Response(status = 204)
         else:
             return Response(status = 400)
