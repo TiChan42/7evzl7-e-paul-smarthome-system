@@ -29,8 +29,9 @@ const UserPinRequestModal = (props) => {
     const handlePinShowClick = () => setShowPin(!showPin)
 
     //Versuch den Pin zu validieren 
-    const tryToSubmitPin = (event) => {
-        const pin = event.target.value;
+    const tryToSubmitPin = (target) => {
+        if(target == null) return;
+        const pin = target.value;
         const userID = (requireUserSelection) ? userSelectValue : decryptString(sessionStorage.getItem('executingUserID'));
         const data = {
             pin: pin,
@@ -47,12 +48,12 @@ const UserPinRequestModal = (props) => {
         console.log(env()["api-path"] + "validatePin");
         fetch(env()["api-path"] + "validatePin", requestOptions)
         .then(response => {
-            console.log(response); // HTTP-Response ausgeben
+            //console.log(response); // HTTP-Response ausgeben
             return response.json();
         })
         .then(data => {
             if(data.valid){
-                event.target.value = "";
+                target.value = "";
                 sessionStorage.setItem('executingUserID', encryptString(userID.toString()));
                 sessionStorage.setItem('userAuthorized', encryptString("true"));
                 props.closeModal();
@@ -61,7 +62,7 @@ const UserPinRequestModal = (props) => {
         })
         .catch(error => {
             console.log(error);
-            event.target.value = "";
+            target.value = "";
         })
     }
 
@@ -78,15 +79,16 @@ const UserPinRequestModal = (props) => {
         {
             setRequireUserSelection(false);
         }
+        tryToSubmitPin(inputRef.current)
     }, [props.users,props.openModal]);
 
-    const startFocusRef = React.createRef();
+    const inputRef = React.createRef();
     
     return (
         <Modal
         isOpen={props.openModal}
         onClose={props.closeModal}
-        initialFocusRef={startFocusRef}
+        initialFocusRef={inputRef}
         >
             <ModalOverlay />
             <ModalContent>
@@ -120,12 +122,13 @@ const UserPinRequestModal = (props) => {
                                     onChange={(event) => {setUserSelectValue(event.target.value)}} 
                                     >
                                         {props.users.map((user) => (
-                                            <>
+                                            <React.Fragment key={user.id+"UserPinRequestModal"}>
                                             {(user.role === "admin" || user.role === "superuser") &&
-                                                <option key={user.id} value={user.id}>
+                                                <option value={user.id}>
                                                     {user.username}
                                                 </option>
-                                            }</>
+                                            }
+                                            </React.Fragment>
                                         ))}
                                     </Select>
                                     <br></br>
@@ -139,9 +142,9 @@ const UserPinRequestModal = (props) => {
                                         type={showPin ? 'text' : 'password'}
                                         placeholder='Hier Pin eingeben...'
                                         maxLength='32'
-                                        onChange={tryToSubmitPin}
+                                        onChange={(event) => tryToSubmitPin(event.target)}
                                         focusBorderColor='teal.500'
-                                        ref={startFocusRef}
+                                        ref={inputRef}
                                     />
                                     <InputRightElement width='4.5rem'>
                                         <Button h='1.75rem' size='sm' onClick={handlePinShowClick}>
@@ -156,6 +159,7 @@ const UserPinRequestModal = (props) => {
                         </ModalBody>
 
                         <ModalFooter>
+                            <Button colorScheme='teal' mr={2} onClick={() => {tryToSubmitPin(inputRef.current)}}>Anmelden</Button>
                             <Button onClick={props.closeModal}>Schließen</Button>
                         </ModalFooter>
                     </React.Fragment>
