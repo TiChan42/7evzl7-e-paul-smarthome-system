@@ -14,7 +14,7 @@ import { AddIcon } from '@chakra-ui/icons'
 import MultiSelect from './multiselect'
 
 
-function AddGroupDialog() {
+function AddGroupDialog({devices}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
       <>
@@ -32,7 +32,7 @@ function AddGroupDialog() {
                 <Input placeholder='Gruppenname'>
                 </Input>
                 <br/> <br/>
-                <MultiSelect></MultiSelect>
+                <MultiSelect Bezeichnung="Geräte" groupOptions={[devices]}></MultiSelect>
             </ModalBody>
   
             <ModalFooter>

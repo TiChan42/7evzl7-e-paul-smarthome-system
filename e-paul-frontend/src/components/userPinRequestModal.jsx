@@ -28,7 +28,7 @@ const UserPinRequestModal = (props) => {
     const [userSelectValue, setUserSelectValue] = useState(props.users[0].id)
     const handlePinShowClick = () => setShowPin(!showPin)
 
-    //Versuch den Pin zu validieren
+    //Versuch den Pin zu validieren 
     const tryToSubmitPin = (event) => {
         const pin = event.target.value;
         const userID = (requireUserSelection) ? userSelectValue : decryptString(sessionStorage.getItem('executingUserID'));

@@ -40,7 +40,7 @@ const AddUserModal = (props) => {
     const [userName, setUserName] = useState(generatedName);
     const [password, setPassword] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    const [isAdmin, setIsAdmin] = useState(props.requireAdmin);
+    const [isAdmin, setIsAdmin] = useState(props.requireAdmin ? true : false);
 
     //Updater für den Benutzernamen
     useEffect(() => {
@@ -54,12 +54,15 @@ const AddUserModal = (props) => {
     useEffect(() => {
         if (userName.length > 0) {
             if (password === passwordRepeat) {
-                if (password.length >= 6) {
-                    setShowCreateButton(true);
-                }else if(!isAdmin){
-                    setShowCreateButton(true);
+                if (isAdmin) {
+                    if(password.length >= 6){
+                        setShowCreateButton(true);
+                    }else{
+                        setShowCreateButton(false);
+                    }
+                    
                 }else{
-                    setShowCreateButton(false);
+                    setShowCreateButton(true);
                 }
             } else {
                 setShowCreateButton(false);
@@ -68,6 +71,10 @@ const AddUserModal = (props) => {
             setShowCreateButton(false);
         }
     }, [password, passwordRepeat, isAdmin, userName]);
+
+    useEffect(() => {
+        console.log("Admin: " + isAdmin);
+    }, [isAdmin]);
 
     //Erstellt den Benutzer basierend auf den Eingaben
     function createUser(){
@@ -89,13 +96,19 @@ const AddUserModal = (props) => {
         .then(response => {
             if(response.status === 201){
                 props.closeModal();
+                toast({
+                    title: 'Benutzer erfolgreich erstellt',
+                    status: 'success',
+                    duration: 5000,
+                    isClosable: true,
+                });
             }
             else{
                 toast({
                     title: "Benutzer konnte nicht erstellt werden",
                     description: "Bitte versuchen Sie es erneut",
                     status: "error",
-                    duration: 9000,
+                    duration: 7000,
                     isClosable: true,
                 })
             }
@@ -190,16 +203,15 @@ const AddUserModal = (props) => {
                     </FormControl>
                     <br></br>
                     <FormControl display='flex' alignItems='center'>
-                        {props.requireAdmin &&
-                            <Checkbox isDisabled defaultChecked size='lg' colorScheme='teal' onChange={e=> setIsAdmin(e.target.value)}>
-                                Soll der Benutzer ein Admin sein?
-                            </Checkbox>
-                        }
-                        {!props.requireAdmin &&
-                            <Checkbox size='lg' colorScheme='teal' onChange={e=> setIsAdmin(e.target.value)}>
-                                Soll der Benutzer ein Admin sein?
-                            </Checkbox>
-                        }
+                        <Checkbox 
+                        isDisabled={props.requireAdmin} 
+                        defaultChecked={props.requireAdmin} 
+                        size='lg' 
+                        colorScheme='teal' 
+                        onChange={e=> setIsAdmin(e.target.checked)}
+                        >
+                            Soll der Benutzer ein Admin sein?
+                        </Checkbox>
                     </FormControl>
                 </ModalBody>
                 <ModalFooter>

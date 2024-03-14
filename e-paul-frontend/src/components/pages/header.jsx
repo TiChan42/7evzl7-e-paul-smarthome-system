@@ -12,7 +12,7 @@ import {
 import { Route, Routes } from "react-router-dom";
 import SignUpAndInModal from "../signUpAndInModal";
 import { env } from "../../env";
-import { decryptString } from "../../encryptionUtils";
+import { decryptString, encryptString } from "../../encryptionUtils";
 
 class Header extends Component {
     state = {
@@ -22,6 +22,32 @@ class Header extends Component {
             sessionStorage.getItem("accountID") !== "" &&
             sessionStorage.getItem("accountID") !== null,
     };
+
+
+    //Handeln von Logouts
+    componentDidMount() {
+        this.checkIfAccessAllowed();
+        window.addEventListener('pageshow', this.handlePageShow);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('pageshow', this.handlePageShow);
+    }
+    handlePageShow = (event) => {
+        this.checkIfAccessAllowed();
+    }
+    checkIfAccessAllowed() {
+        let acceptedPath = env()["non-SignedIn-accessible-Pages"];
+        // Prüfen, ob der Benutzer nicht angemeldet ist
+        if (!this.state.accountLoggedIn && !acceptedPath.includes(window.location.pathname)) {
+            window.location.href = "/";
+        }else if (this.state.accountLoggedIn &&  (decryptString(sessionStorage.getItem("executingUserID")) === "" || decryptString(sessionStorage.getItem("executingUserID")) === null) && window.location.pathname !== "/chooseuser" && !acceptedPath.includes(window.location.pathname)){
+            window.location.href = "/chooseuser";
+        }
+    }
+
+
+
+
     openSignUpAndInModal = () => {
         this.setState({ openSignUpAndInModal: true });
     };
@@ -48,6 +74,7 @@ class Header extends Component {
     signInAccount = () => {
         console.log("Account signed in");
         this.setState({ accountLoggedIn: true });
+        sessionStorage.setItem("historyLengthBeforeSignIn", encryptString(window.history.length.toString()));
         window.location.href = "/chooseuser";
     };
 
@@ -85,14 +112,35 @@ class Header extends Component {
             });
     };
 
-    testStillLoggedIn = () => {
-        if (!this.state.accountLoggedIn) {
-            console.log("Account signed out");
-            window.location.href = "/";
+    signOutUser = () => {
+        sessionStorage.removeItem("executingUserID");
+        sessionStorage.removeItem("userAuthorized");
+        window.location.href = "/chooseuser";
+    }
+
+    signOut= () => {
+        if (decryptString(sessionStorage.getItem("executingUserID")) !== "" && decryptString(sessionStorage.getItem("executingUserID")) !== null){
+            this.signOutUser();
+        }else{
+            this.signOutAccount();
         }
-    };
+    }
+
+        
+
+
+
+    openDashboard = () => {
+        console.log(decryptString(sessionStorage.getItem("userAuthorized")));
+        if (decryptString(sessionStorage.getItem("userAuthorized")) === "true" && sessionStorage.getItem("executingUserID") !== "" && sessionStorage.getItem("executingUserID") !== null){
+            window.location.href = "/devices";
+        }else{
+            window.location.href = "/chooseuser";
+        }
+    }
 
     render() {
+        
         return (
             <Flex
                 bg={"#00697B"}
@@ -189,7 +237,7 @@ class Header extends Component {
                                     fontSize={["sm", "md", "xl"]}
                                     color={"white"}
                                 >
-                                    Geräteübersicht
+                                    Mein Smart-Home
                                 </Text>
                             }
                         />
@@ -273,15 +321,28 @@ class Header extends Component {
                             </Button>
                         </>
                     ) : (
-                        <Button
-                            colorScheme="teal"
-                            variant="solid"
-                            fontSize={{ base: "sm", lg: "md" }}
-                            padding={{ base: [2, 4], lg: [1, 4] }}
-                            onClick={this.signOutAccount}
-                        >
-                            Abmelden
-                        </Button>
+                        <>
+                            <Button
+                                colorScheme="teal"
+                                variant="solid"
+                                fontSize={{ base: "sm", lg: "md" }}
+                                padding={{ base: [1, 2], lg: [1, 4] }}
+                                mr={{ base: 2, lg: 4 }}
+                                onClick={this.openDashboard}
+                            >
+                                Dashboard
+                            </Button>
+                            <Button
+                                colorScheme="whiteAlpha"
+                                variant="solid"
+                                fontSize={{ base: "sm", lg: "md" }}
+                                padding={{ base: [1, 2], lg: [1, 4] }}
+                                mr={{ base: 2, lg: 4 }}
+                                onClick={this.signOut}
+                            >
+                                Abmelden
+                            </Button>
+                        </>
                     )}
                     <SignUpAndInModal
                         openModal={this.state.openSignUpAndInModal}
