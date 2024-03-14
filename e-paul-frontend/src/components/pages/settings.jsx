@@ -1,9 +1,7 @@
-import { Heading, Box, Card, Button, VStack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField } from "@chakra-ui/react";
+import { Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
 import React, { Component } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-
-
 
 function InitialFocus() {
     const userID = sessionStorage.getItem('executingUserID');
@@ -11,7 +9,7 @@ function InitialFocus() {
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const deleteAccount = async () => {
+    const deleteUser = async () => {
         console.log(userID)
         const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + userID, {
             method: 'DELETE',
@@ -28,7 +26,7 @@ function InitialFocus() {
 
     return (
         <>
-            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>Account löschen</Button>
+            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>User löschen</Button>
 
             <Modal
                 initialFocusRef={initialRef}
@@ -38,13 +36,13 @@ function InitialFocus() {
             >
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
+                    <ModalHeader>Möchten sie ihren User wirklich löschen?</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='red' variant='solid' onClick={deleteAccount}>Bestätigen</Button>
+                        <Button colorScheme='red' variant='solid' onClick={deleteUser} marginRight={'1em'}>Bestätigen</Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalFooter>
                 </ModalContent>
@@ -61,17 +59,10 @@ class Settings extends Component {
     accountID = sessionStorage.getItem('accountID');
 
 
+
     renderContent() {
         const { activeTab } = this.state;
         const updateUsername = async () => {
-
-            console.log(this.userID, this.accountID)
-            console.log(JSON.stringify({
-                accountId: this.accountID,
-                userId: this.userID,
-                gender: "male",
-                username: "TestUser"
-            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
                 headers: {
@@ -83,16 +74,9 @@ class Settings extends Component {
                     username: this.state.newUsername
                 })
             })
-
-            //const data = await res.json();
-            console.log(res.body);
-
         };
 
         const updateGender = async () => {
-            console.log("Test")
-            console.log(this.userID,this.state.newGender, this.accountID)
-
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
                 headers: {
@@ -104,10 +88,63 @@ class Settings extends Component {
                     gender: this.state.newGender
                 })
             })
-
         };
 
+        const validatePin = async () => {
+            console.log(this.accountID, this.userID, this.state.oldPin);
+            console.log(JSON.stringify({
+                accountId: this.accountID,
+                userId: this.userID,
+                pin: this.state.oldPin
+            }))
+            const res = await fetch('http://epaul-smarthome.de:8000/api/validatePin', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    accountId: this.accountID,
+                    userId: this.userID,
+                    pin: this.state.oldPin,
+                })
+            });
+            return res;
+        };
 
+        const updatePin = async () => {
+            var validated = await validatePin();
+            // try catch
+            validated = await validated.json()
+            // end
+            validated = validated["valid"]
+            console.log(typeof validated)
+            console.log(this.state.newPin, this.state.newPinRepeat)
+            if (this.state.newPin == this.state.newPinRepeat) {
+                if (validated == 1) {
+                    const res = await fetch('http://epaul-smarthome.de:8000/api/settings/pin', {
+                        method: 'PUT',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: this.userID,
+                            pin: this.state.newPin,
+                            previousPin: this.state.oldPin
+                        })
+                    })
+                }
+                else{
+                    // Invalid Old Pin
+                    console.log("old pin is not valid")
+                }
+            }
+            else{
+                // Pins are different
+                console.log("new pins are different")
+            }
+        };
 
         if (activeTab === 'allgemein') {
             return (
@@ -116,12 +153,11 @@ class Settings extends Component {
                         <Heading size='lg' color={"white"}>Allgemein</Heading>
                     </CardHeader>
                     <Box m={4}>
-                        <p>Hier können Sie Ihren Benutzernamen ändern:</p>
+                        <Text color={"white"}>Hier können Sie Ihren Benutzernamen ändern:</Text>
                         <Input
                             isInvalid
                             type="text"
                             errorBorderColor='white'
-                            borderColor={'green'}
                             placeholder='Neuer Benutzername'
                             _placeholder={{ color: 'white' }}
                             focusBorderColor={'red'}
@@ -130,31 +166,28 @@ class Settings extends Component {
                             value={this.state.newUsername}
                             onChange={(e) => this.setState({ newUsername: e.target.value })}
                         />
-                        <Button onClick={updateUsername} margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Benutzernamen aktualisieren</Button>
+                        <Button onClick={updateUsername} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Benutzernamen aktualisieren</Button>
                     </Box>
 
                     <Box m={4}>
-                        <p>Hier können Sie Ihr Geschlecht ändern:</p>
-                        <Select color={'white'} 
-                        errorBorderColor='white' 
-                        borderColor={'white'} 
-                        focusBorderColor={'red'} 
-                        placeholder='Geschlecht wählen' 
-                        marginTop={'1em'}
-                        value={this.state.newGender}
-                        onChange={(e) => this.setState({ newGender: e.target.value })}
-                  >
-
+                        <Text color={"white"}>Hier können Sie Ihr Geschlecht ändern:</Text>
+                        <Select
+                            errorBorderColor='white'
+                            borderColor={'white'}
+                            focusBorderColor={'red'}
+                            placeholder='Geschlecht wählen'
+                            marginTop={'1em'}
+                            value={this.state.newGender}
+                            onChange={(e) => this.setState({ newGender: e.target.value })}
+                        >
                             <option value='männlich'>männlich</option>
                             <option value='weiblich'>weiblich</option>
                             <option value='divers'>divers</option>
-                            
-                            
                         </Select>
-                        <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
+                        <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
                         <br></br><br></br>
-                        <p>Hier können Sie Ihren Account löschen:</p>
-                        <InitialFocus/>
+                        <Text color={"white"}>Hier können Sie Ihren User löschen:</Text>
+                        <InitialFocus />
                     </Box>
                 </Card>
             );
@@ -178,7 +211,7 @@ class Settings extends Component {
                         <Heading size='lg' color={"white"}>Konto</Heading>
                     </CardHeader>
                     <Box m={4} width={'80%'}>
-                        <p>Hier können Sie Ihre Email-Adresse ändern:</p>
+                        <Text color={"white"}>Hier können Sie Ihre Email-Adresse ändern:</Text>
                         <Input
                             isInvalid
                             type="text"
@@ -203,7 +236,7 @@ class Settings extends Component {
                             marginTop={'2em'}
                         />
 
-                        <Button margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                        <Button margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
             );
@@ -212,39 +245,28 @@ class Settings extends Component {
 
 
         else if (activeTab === 'pin') {
+
             return (
                 <Card bg={"#218395"} w='100%' h='100%'>
                     <CardHeader>
-                        <Heading size='lg' color={"white"}>Pin</Heading>
+                        <Heading size='lg' color={"white"}>PIN</Heading>
                     </CardHeader>
-                    <Box m={4} width={'80%'}>
-                        <p>Hier können Sie Ihren Pin ändern:</p>
-
-                        <HStack marginTop={'1em'}>
-                            <PinInput mask variant={'filled'}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                            </PinInput>
-                        </HStack>
-
-                        <HStack marginTop={'3em'}>
-                            <PinInput mask variant={'filled'}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                            </PinInput>
-                        </HStack>
-
-
-                        <Button margin={'2em'} align={'left'} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                    <Box m={"4"} width={'80%'}>
+                        <Text color={"white"}>Hier können Sie Ihren PIN ändern:</Text>
+                        <Stack spacing={"3"} pt={"3"}>
+                            <PasswordInput text="Alter PIN" pinName="oldPin" class={this} />
+                            <Text color={"white"}>Hier nun den neuen gewünschten PIN eingeben</Text>
+                            <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
+                            <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
+                        </Stack>
+                        <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
-            );
 
+            );
         }
+
+
     }
 
     render() {
@@ -262,7 +284,7 @@ class Settings extends Component {
                             Allgemein
                         </Button>
                         <Button onClick={() => this.setState({ activeTab: 'pin' })} colorScheme={activeTab === 'pin' ? "blue" : "gray"} width={'80%'}>
-                            Pin
+                            PIN
                         </Button>
                         <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
                             Modus
@@ -279,11 +301,32 @@ class Settings extends Component {
         );
     }
 
-
-
-
-
-
 }
 
 export default Settings;
+
+
+
+function PasswordInput(props) {
+    const [show, setShow] = React.useState(false)
+    const handleClick = () => setShow(!show)
+
+    return (
+        <InputGroup size='md'>
+            <Input
+                onChange={(e) => props.class.setState({ [props.pinName]: e.target.value })}
+                pr='4.5rem'
+                type={show ? 'text' : 'password'}
+                placeholder={props.text}
+                _placeholder={{ color: 'white' }}
+                focusBorderColor="black"
+            />
+            <InputRightElement width='4.5rem'>
+                <Button h='1.75rem' size='sm' onClick={handleClick}>
+                    {show ? 'Hide' : 'Show'}
+                </Button>
+            </InputRightElement>
+        </InputGroup>
+    )
+}
+
