@@ -99,8 +99,14 @@ class CreateUser(APIView):
         try:
             username = data["username"]
             isAdmin = data["isAdmin"]
+            executingUserId = data["executingUserId"]
         except KeyError:
             return Response(status=400)
+        
+        try: 
+            executingUser = User.objects.get(id=executingUserId)
+        except User.DoesNotExist:
+            executingUser = None
         
         try:
             pin = data["pin"]
@@ -130,9 +136,9 @@ class CreateUser(APIView):
                 return 1
             else:
                 return 0
-
-    
-        if(noUser == True):
+        
+        
+        if(noUser == True and executingUser == None):
             pin = pin.encode("utf-8")
             pinHash = hashpw(pin, salt=gensalt())
             pin = pinHash.decode("utf-8")
@@ -144,9 +150,13 @@ class CreateUser(APIView):
             group2.save()
             return Response(status = 201)
         elif(userExists(accountId, username)==0):
+            if executingUser.rights["mayAddUser"] == 0:
+                return Response(status=400)
             if(pin == None):
                 if  isAdmin == True:
-                    user = User(username = username, account = account, role = 'admin')
+                    rights = executingUser.rights
+                    rights["mayChangeAccountSettings"] = 0
+                    user = User(username = username, account = account, rights = rights, role = 'admin')
                     user.save()
                 else:
                     user = User(username = username, account = account, role = 'user')
@@ -158,7 +168,8 @@ class CreateUser(APIView):
                 group2.save()
                 
                 if user.role == 'admin':
-                    ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                    ports = Port.objects.filter(groupPort__group__user__id = executingUser.id, groupPort__group__groupType = 'Assignment')
+                    
                     for port in ports:
                         groupPort = GroupPort(group = group1, port = port)
                         groupPort.save()
@@ -170,7 +181,9 @@ class CreateUser(APIView):
                 pinHash = hashpw(pin, salt=gensalt())
                 pin = pinHash.decode("utf-8")
                 if  isAdmin == True:
-                    user = User(username = username, pin = pin, account = account, role ='admin')
+                    rights = executingUser.rights
+                    rights["mayChangeAccountSettings"] = 0
+                    user = User(username = username, pin = pin, rights = rights, account = account, role ='admin')
                     user.save()
                 else:
                     user = User(username = username, pin = pin, account = account, role ='user')
@@ -182,7 +195,8 @@ class CreateUser(APIView):
                 group2.save()
                 
                 if user.role == 'admin':
-                    ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                    ports = Port.objects.filter(groupPort__group__user__id = executingUser.id, groupPort__group__groupType = 'Assignment')
+                    
                     for port in ports:
                         groupPort = GroupPort(group = group1, port = port)
                         groupPort.save()
@@ -197,8 +211,9 @@ for testing purposes
 {
 "accountId" : 2,
 "username" : "Zelda",
-"pin" : "187"
-"isAdmin" : true
+"pin" : "187",
+"isAdmin" : true,
+"executingUserId" : 1
 }
 """
 
