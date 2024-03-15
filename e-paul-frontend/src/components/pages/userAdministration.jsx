@@ -187,10 +187,10 @@ function UserCol(props) {
 						Admin
 					</Button>
 					
-					<IconButton isDisabled={!editRights['mayChangeUserSettings'] || props.user.role==='superuser'} icon={<EditIcon/>} onClick={()=>{handleUserSettingClick(props.user.id)}}></IconButton>
-					<IconButton isDisabled={!editRights['mayDeleteUser'] || props.user.role==='superuser'} icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
-					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)}></IconButton>
-					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)}></IconButton>
+					<IconButton isDisabled={!editRights['mayChangeUserSettings'] || props.user.role==='superuser'} icon={<EditIcon/>} onClick={()=>{handleUserSettingClick(props.user.id)}} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayDeleteUser'] || props.user.role==='superuser'} icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)} colorScheme="teal" variant="solid"></IconButton>
 
 					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role} userName={props.user.username}/>
 					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id} userName={props.user.username}/>
@@ -358,7 +358,7 @@ function UserAdministration() {
 
 		{/* Main*/}
 		
-		<GridItem pl='2' bg='Powderblue' area={'main'}>
+		<GridItem pl='2' area={'main'}>
 
 		<VStack
 		divider={<StackDivider borderColor='gray.200' />}
@@ -368,7 +368,9 @@ function UserAdministration() {
 		{users && users[0] &&
 		<>
 			{Object.keys(users).map((key, index) => (
+				<Box width={'100%'} borderRadius={'xl'} background={'teal.50'} m={1} mb={2} p={2}>
 			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]} editRights={editRights} refresh={() => {triggerRefresh()}}/>
+			</Box>
 			))}
 		</>
 		}
@@ -376,7 +378,7 @@ function UserAdministration() {
 		</GridItem>
 		</Grid>
 		<Button rightIcon={<AddIcon/>}
-            colorScheme="teal"
+            colorScheme="teal" m='3'
 			isDisabled={!editRights['mayAddUser']}
             onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
 		<Button colorScheme="teal" m='1'
