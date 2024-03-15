@@ -2,7 +2,7 @@ import React from "react"
 import { ColorModeScript } from '@chakra-ui/react'
 import ReactDom from "react-dom/client"
 import App from "./App";
-import theme from './theme'
+import theme from '@/styles/theme'
 
 const rootElement = document.getElementById('root')
 ReactDom.createRoot(rootElement).render(

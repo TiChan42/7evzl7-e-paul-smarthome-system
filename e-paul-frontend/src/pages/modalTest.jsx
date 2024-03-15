@@ -1,12 +1,12 @@
 import React, { Component, useState, useEffect } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import '../../style.css'
+import '@/styles/style.css'
 import {Center,Box,Heading, Button} from '@chakra-ui/react'
-import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
-import { env } from '../../env'
-import { encryptString, decryptString } from '../../encryptionUtils';
-import AccountSettingsModal from '../accountSettingsModal';
-import UserRightSettingsModal from '../userRightSettingsModal';
+import ClientUserAssignmentModal from '@/components/clientUserAsssignmentModal';
+import { env } from '@/utils/env'
+import { encryptString, decryptString } from '@/utils/encryptionUtils';
+import AccountSettingsModal from '@/components/accountSettingsModal';
+import UserRightSettingsModal from '@/components/userRightSettingsModal';
 
 function SignUpControllerButton(){
 	const signUpController = () => {

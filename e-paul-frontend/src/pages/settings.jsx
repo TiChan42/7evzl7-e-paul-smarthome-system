@@ -1,5 +1,5 @@
 import { Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { decryptString } from '../../encryptionUtils';
+import { decryptString } from '@/utils/encryptionUtils';
 import React, { Component } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 

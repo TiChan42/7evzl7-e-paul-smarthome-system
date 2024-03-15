@@ -11,7 +11,7 @@ Button,
 Input
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
-import MultiSelect from './multiselect'
+import MultiSelect from '@/components/multiselect'
 
 
 function AddGroupDialog({devices}) {

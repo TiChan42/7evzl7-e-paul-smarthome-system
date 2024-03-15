@@ -9,7 +9,7 @@ import {
     Button,
   } from '@chakra-ui/react'
   import React from 'react';
-import { decryptString } from '../encryptionUtils';
+import { decryptString } from '@/utils/encryptionUtils';
 
 //Modal for signing up and in
 const AccountSettingsModal = (props) => {

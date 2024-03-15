@@ -1,5 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
-import { accordionTheme } from './components/accordion';
+import { accordionTheme } from '@/components/accordion';
 
 const config = {
 	initialColorMode: 'light',
