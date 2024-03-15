@@ -38,7 +38,6 @@ class AddPort(APIView):
         data = request.data
         try:
             id = data["microcontrollerId"]
-            type = data["type"]
         except KeyError:
             return Response(status = 400)
         
@@ -47,10 +46,15 @@ class AddPort(APIView):
         except Microcontroller.DoesNotExist:
             return Response(status = 404)
         
-        port = Port(type = type, microcontroller = microcontroller)
-        port.save()
-        return Response(status = 201)
-    
+        if data["type"]:
+            type = data["type"]
+            port = Port(type = type, microcontroller = microcontroller)
+            port.save()
+            return Response(status = 201)
+        else: 
+            port = Port(type = "controller", microcontroller = microcontroller)
+            port.save()
+            return Response({"message":"Der Port wurde automatisch auf controller gesetzt"} ,status = 201)
 """
 teststring
 {
