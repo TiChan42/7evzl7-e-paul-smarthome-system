@@ -55,10 +55,28 @@ function UserCol(props) {
 		if (decryptString(sessionStorage.getItem('userAuthorized'))=='false'){
 			return
 		}
-		var executingUser = decryptString(sessionStorage.getItem('executingUserID'))
-		const deletePath = env()["api-path"] + "user/" + props.user.id;
-		fetch(deletePath, {method: "DELETE"})
+		let executingUser = decryptString(sessionStorage.getItem('executingUserID'))
+		let accountID = decryptString(sessionStorage.getItem('accountID'))
+		let deletePath = env()["api-path"] + "user/deleteUser";
+
+		let data = {
+			userId: props.user.id,
+			executingUserId: executingUser,
+			accountId: accountID
+		}
+
+		let requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data)
+		}
+		
+
+		fetch(deletePath, requestOptions)
 		  .then(response => {
+			console.log(response.status)
 				if (response.status >= 400){
 					toast({
 						title: 'Löschen fehlgeschlagen',

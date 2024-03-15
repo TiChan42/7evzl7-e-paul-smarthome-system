@@ -267,10 +267,12 @@ const ClientUserAssignmentModal = (props) => {
     }
 
     const addClientToUser = (clientID) => {
+        let executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
         let data = {
             userId: userID,
             portId: clientID,
-            groupId: groupID
+            groupId: groupID,
+            executingUserId: executingUserID
         }
 
         fetch(env()["api-path"] + 'group/addPort', {
@@ -291,10 +293,13 @@ const ClientUserAssignmentModal = (props) => {
     }
 
     const removeClientFromUser = (clientID) => {
+        let executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
+
         let data = {
             userId: userID,
             portId: clientID,
-            groupId: groupID
+            groupId: groupID,
+            executingUserId: executingUserID
         }
 
 

@@ -94,6 +94,7 @@ const AddUserModal = (props) => {
         .then(response => {
             if(response.status === 201){
                 props.closeModal();
+                setGeneratedName(generateRandomUsername());
                 toast({
                     title: 'Benutzer erfolgreich erstellt',
                     status: 'success',
