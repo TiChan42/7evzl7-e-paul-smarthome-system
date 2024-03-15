@@ -78,7 +78,7 @@ const AddUserModal = (props) => {
     //Erstellt den Benutzer basierend auf den Eingaben
     const createUser = () => {
         const data = {
-            executingUserId: decryptString(sessionStorage.getItem('executingUserID')),  
+            executingUserId: sessionStorage.getItem('executingUserID')?decryptString(sessionStorage.getItem('executingUserID')):null,  
             username: userName,
             pin: password,
             isAdmin: isAdmin,
@@ -125,27 +125,29 @@ const AddUserModal = (props) => {
 
     const getExecutingUserRights = () => {
         const executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
-        let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
+        if(executingUserID != null && executingUserID != "" && executingUserID != undefined){
+            let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             }
+            fetch(url, requestOptions)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if(data["mayChangeUserType"] === 1){
+                    setShowMakeAdmin(true);
+                } else {
+                    setShowMakeAdmin(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error(getExecutingUserRights):', error);
+            });
         }
-        fetch(url, requestOptions)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            if(data["mayChangeUserType"] === 1){
-                setShowMakeAdmin(true);
-            } else {
-                setShowMakeAdmin(false);
-            }
-        })
-        .catch((error) => {
-            console.error('Error(getExecutingUserRights):', error);
-        });
     }
 
     useEffect(() => {
