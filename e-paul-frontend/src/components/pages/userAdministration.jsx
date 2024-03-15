@@ -34,10 +34,11 @@ var userRightsTest = [
 ]
 
 function Header() {
+	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
 return <header>
 <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}> 
 <h1>Benutzerverwaltung</h1> 
-<Link to="/chooseuser"><CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false'))}}/></Link>
+<CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false')); window.history.go(siteBefore-window.history.length)}}/>
 </Box>
 </header>;
 }
@@ -207,7 +208,7 @@ function UserAdministration() {
 
 	const handleUserSettingClick = () => {
 		sessionStorage.setItem('userToEdit',sessionStorage.getItem('executingUserID'))
-		window.location.href = '/userSettings'
+		window.location.href = '/settings'
 	}
 
 	const triggerRefresh = () => {
