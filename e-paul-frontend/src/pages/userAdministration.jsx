@@ -13,6 +13,7 @@ import { ImSection } from "react-icons/im";
 import UserRightSettingsModal from '@/components/userRightSettingsModal';
 import AccountSettingsModal from '@/components/accountSettingsModal';
 
+
 var userRightsTest = [
     {
         "mayChangeUserSettings": 1,
@@ -34,10 +35,11 @@ var userRightsTest = [
 ]
 
 function Header() {
+	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
 return <header>
-<Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}> 
+<Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> 
 <h1>Benutzerverwaltung</h1> 
-<Link to="/chooseuser"><CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false'))}}/></Link>
+<CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false')); window.history.go(siteBefore-window.history.length)}}/>
 </Box>
 </header>;
 }
@@ -55,20 +57,39 @@ function UserCol(props) {
 		if (decryptString(sessionStorage.getItem('userAuthorized'))=='false'){
 			return
 		}
-		var executingUser = decryptString(sessionStorage.getItem('executingUserID'))
-		const deletePath = env()["api-path"] + "user/" + props.user.id;
-		fetch(deletePath, {method: "DELETE"})
+		let executingUser = decryptString(sessionStorage.getItem('executingUserID'))
+		let accountID = decryptString(sessionStorage.getItem('accountID'))
+		let deletePath = env()["api-path"] + "user/deleteUser";
+
+		let data = {
+			userId: props.user.id,
+			executingUserId: executingUser,
+			accountId: accountID
+		}
+
+		let requestOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data)
+		}
+		
+
+		fetch(deletePath, requestOptions)
 		  .then(response => {
+			console.log(response.status)
 				if (response.status >= 400){
 					toast({
 						title: 'Löschen fehlgeschlagen',
-						status: 'Du hast keine Berechtigung diesen Nutzer zu löschen',
+						description: 'Das Löschen von '+props.user.username+' ist fehlgeschlagen',
+						status: 'error',
 						duration: 7000,
 						isClosable: true,
 					});
 				} else {
 					toast({
-						title: 'Löschen erfolgreich',
+						title: 'Löschen von '+props.user.username+' erfolgreich',
 						status: 'success',
 						duration: 5000,
 						isClosable: true,
@@ -78,7 +99,7 @@ function UserCol(props) {
 		  })
 		  .catch(error => {
 			  toast({
-				  title: 'error',
+				  title: 'Löschen fehlgeschlagen',
 				  status: 'error',
 				  duration: 7000,
 				  isClosable: true,
@@ -87,8 +108,8 @@ function UserCol(props) {
 	  };
 
     const deleteUserModal = () => {
-        props.openValidateModal('Nutzer löschen?',
-        'Sind Sie sich sicher, dass Sie diesen Benutzer löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
+        props.openValidateModal(props.user.username + ' löschen?',
+        'Sind Sie sich sicher, dass Sie '+props.user.username+' löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
         ()=>{
           setdelete(true)
 		  deleteUser();
@@ -117,7 +138,7 @@ function UserCol(props) {
 			if(response.status === 204){
 				toast({
 					title: 'Erfolgreich',
-					description: 'Der Adminstatus wurde erfolgreich geändert',
+					description: 'Der Adminstatus von '+props.user.username+' wurde erfolgreich geändert',
 					status: 'success',
 					isClosable: true,
 					duration: 5000
@@ -148,14 +169,14 @@ function UserCol(props) {
 
     const handleAdminSwitch = () => {
 		if (isAdmin) {
-			props.openValidateModal('Adminstatus ändern?',
-			'Sind Sie sich sicher, dass Sie diesen Admin zu einem Standardbenutzer degradieren möchten?',
+			props.openValidateModal('Adminstatus von '+props.user.username+' ändern?',
+			'Sind Sie sich sicher, dass Sie '+props.user.username+' zu einem Standardbenutzer degradieren möchten?',
 			()=>{
 				updateAdminStatus(props.user.id, false)
 			})
 		}else{
-			props.openValidateModal('Adminstatus ändern?',
-			'Sind Sie sich sicher, dass Sie diesen Benutzer zu einem Administrator ernennen möchten?',
+			props.openValidateModal('Adminstatus von '+props.user.username+' ändern?',
+			'Sind Sie sich sicher, dass Sie '+props.user.username+' zu einem Administrator ernennen möchten?',
 			()=>{
 				updateAdminStatus(props.user.id, true)
 			})
@@ -185,13 +206,13 @@ function UserCol(props) {
 						Admin
 					</Button>
 					
-					<IconButton isDisabled={!editRights['mayChangeUserSettings'] || props.user.role==='superuser'} icon={<EditIcon/>} onClick={()=>{handleUserSettingClick(props.user.id)}}></IconButton>
-					<IconButton isDisabled={!editRights['mayDeleteUser'] || props.user.role==='superuser'} icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}}></IconButton>
-					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)}></IconButton>
-					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)}></IconButton>
+					<IconButton isDisabled={!editRights['mayChangeUserSettings'] || props.user.role==='superuser'} icon={<EditIcon/>} onClick={()=>{handleUserSettingClick(props.user.id)}} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayDeleteUser'] || props.user.role==='superuser'} icon={<DeleteIcon/>} onClick={() => {deleteUserModal()}} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)} colorScheme="teal" variant="solid"></IconButton>
+					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)} colorScheme="teal" variant="solid"></IconButton>
 
-					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role}/>
-					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id}/>
+					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role} userName={props.user.username}/>
+					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id} userName={props.user.username}/>
 				</ButtonGroup>
 			</Box>
 		</Flex>
@@ -207,7 +228,7 @@ function UserAdministration() {
 
 	const handleUserSettingClick = () => {
 		sessionStorage.setItem('userToEdit',sessionStorage.getItem('executingUserID'))
-		window.location.href = '/userSettings'
+		window.location.href = '/settings'
 	}
 
 	const triggerRefresh = () => {
@@ -356,7 +377,7 @@ function UserAdministration() {
 
 		{/* Main*/}
 		
-		<GridItem pl='2' bg='Powderblue' area={'main'}>
+		<GridItem pl='2' area={'main'}>
 
 		<VStack
 		divider={<StackDivider borderColor='gray.200' />}
@@ -366,15 +387,18 @@ function UserAdministration() {
 		{users && users[0] &&
 		<>
 			{Object.keys(users).map((key, index) => (
+				<Box width={'100%'} borderRadius={'xl'} background={'teal.50'} m={1} mb={2} p={2}>
 			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]} editRights={editRights} refresh={() => {triggerRefresh()}}/>
+			</Box>
 			))}
 		</>
 		}
 		</VStack>
 		</GridItem>
 		</Grid>
+		<Box m='2'>
 		<Button rightIcon={<AddIcon/>}
-            colorScheme="teal"
+            colorScheme="teal" m='1'
 			isDisabled={!editRights['mayAddUser']}
             onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
 		<Button colorScheme="teal" m='1'
@@ -383,7 +407,7 @@ function UserAdministration() {
 		<Button colorScheme="teal" m='1'
 		isDisabled={!editRights['mayChangeOwnUserSettings']}
 		onClick={()=>{handleUserSettingClick()}}>Eigene Benutzereinstellungen öffnen</Button>
-
+		</Box>
 		<AccountSettingsModal openModal = {accountSettingModal} closeModal = {()=>{setAccountSettingModal(false)}}/>
 		<AddUserModal openModal = {addUserModal} closeModal = {()=>{setAddUserModal(false); triggerRefresh()}} accountID = {decryptString(sessionStorage.getItem("accountID"))}/>
 		

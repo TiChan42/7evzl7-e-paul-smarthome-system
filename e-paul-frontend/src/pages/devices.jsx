@@ -27,132 +27,144 @@ import { EditIcon } from "@chakra-ui/icons";
 import AddGroupDialog from "@/components/addGroupDialog";
 import AddDeviceDialog from "@/components/addDeviceDialog";
 import OpenHistoryDrawer from "@/components/openhistoryDrawer";
-import { decryptString } from '@/utils/encryptionUtils';
+import { decryptString, encryptString } from '@/utils/encryptionUtils';
 import { LuLamp } from "react-icons/lu";
 import { MdArrowForwardIos } from "react-icons/md";
 import Clock from 'react-live-clock';
 import {env} from '@/utils/env';
 
-const DeviceCard = ({ device }) => (
-    <Card
-      direction={{
-        base: "column",
-        sm: "row",
-      }}
-      overflow="hidden"
-      bg={"#3e5f74"}
-      color={"white"}
-      cursor="pointer"
-    >
-      <Center p={1} h={"100%"} w={"100%"}>
-        <LuLamp size={"30px"} />
-        <CardBody p={0}>
-          <Text pl={2} fontSize={"xl"} fontWeight={"bold"}>
-            {device.name}
-          </Text>
-        </CardBody>
-        <MdArrowForwardIos align="end" size={"30px"} />
-      </Center>
-    </Card>
-  );
-
-const DeviceList = ({ data }) => (
-    <VStack spacing={2} align="stretch">
-      {data.map(device => (
-        <DeviceCard key={device.id} device={device} />
-      ))}
-      if(data.length === 0) {
-        <Text fontSize={"xl"} fontWeight={"bold"}>Keine Geräte vorhanden</Text>
-        }
-    </VStack>
-  );
-
 function DeviceOverview() {
-    const userID = decryptString(sessionStorage.getItem('executingUserID'));
-    const accountID = decryptString(sessionStorage.getItem("accountID")); 
+    const [userID, setUserID] = useState(decryptString(sessionStorage.getItem('executingUserID')));
+    const [accountID, setAccountID] = useState(decryptString(sessionStorage.getItem('accountID')));
     const current = new Date();
     const date = `${current.getDate()}.${current.getMonth() + 1}.${current.getFullYear()}`;
     const toast = useToast()
-    const [users, setUsers] = useState(null);
-    const [devices, setDevices] = useState([]);
-    let username = "username";
 
-    // save username in variable
-    if (users) {
-        username = users.username;
-    }
+    const [accountClients, setAccountClients] = useState([]);
+    const [favoriteClients, setFavoriteClients] = useState([]);
+    const [user, setUser] = useState([]);
+    const [userClientIDs, setUserClientIDs] = useState([]);
+    const [groupID, setGroupID] = useState();
 
-    useEffect(()=>{
-        fetchUsers(accountID)
-        fetchDevices(accountID);
-    },[accountID])
-
-    /*Auf die Startseite wenn nicht angemeldet
+    //Auf die Startseite wenn nicht angemeldet
     useEffect(() => {
         if (sessionStorage.getItem("accountID") == null) {
         window.location.href = "/";
         }
-    }, []); */
+    }, []);
 
-    function fetchDevices(accountID) {
-    const fetchPath = env()["api-path"] + "devices/" + accountID;
-    console.log(fetchPath);
-    fetch(fetchPath, { method: "POST" })
-      .then(response => {
-        console.log(response); // HTTP-Response ausgeben
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-        if (data["devices"].length === 0) {
-          console.log('Kein Gerät vorhanden')
-        } else {
-          setDevices(data["devices"]);
-        }
-      })
-      .catch(error => {
-        console.log('Geräte konnten nicht geladen werden')
-        toast({
-          title: 'Geräte konnten nicht geladen werden',
-          status: 'error',
-          duration: 10000,
-          isClosable: true,
-        });
-        });
-    };
+    //Beim Öffnen der Seite die Daten asynchron laden
+    useEffect( () => {
+        fetchData();
+    }, []);	
 
-    //fetch users from backend
-    function fetchUsers(accountID) {
-        //später auf 0 prüfen und dann nicht laden
-        const fetchPath = env()["api-path"] + "getUser/" + userID;
-        console.log(fetchPath);
-        fetch(fetchPath, {method: "GET"})
+    const fetchData = async () => {
+        await setAccountID(decryptString(sessionStorage.getItem('accountID')));
+        await setUserID(decryptString(sessionStorage.getItem('executingUserID')));
+        await fetchUserClientIDs();
+        await fetchAccountClients();
+        await fetchUser(userID);
+        await fetchUserClientIDs();
+        await fetchUserGroups();
+    }
+
+    const fetchAccountClients = () => {
+        fetch(env()["api-path"] + 'getPorts/'+ accountID , {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
         .then(response => {
-            console.log(response); // HTTP-Response ausgeben
             return response.json();
         })
         .then(data => {
-        console.log(data);
-        setUsers(data["user"]);
-        if (data["user"][0] == null) {
-            console.log('Kein Benutzer vorhanden')
-        }
+            setAccountClients(data);
         })
-        .catch(error => {
-        console.log('Benuzterdaten konnten nicht geladen werden')
-        toast({
-            title: 'Benuzterdaten konnten nicht geladen werden',
-            status: 'error',
-            duration: 10000,
-            isClosable: true,
+        .catch((error) => {
+            console.error('Error(fetchAccountClients):', error);
+            setAccountClients([]);  
+            toast({
+                title: 'Geräte konnten nicht geladen werden',
+                status: 'error',
+                duration: 10000,
+                isClosable: true,
+            });
         });
+    };
+
+    const fetchUserClientIDs = () => {
+        fetch(env()["api-path"] + 'getGroup/Assignment/' + userID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setGroupID(data[0].id);
+            setUserClientIDs(data[1]);
+            
+        })
+        .catch((error) => {
+            console.error('Error(fetchUserClientIDs):', error);
+            setGroupID(null);
+            setUserClientIDs([]);
+            toast({
+                title: 'Geräte konnten nicht geladen werden',
+                status: 'error',
+                duration: 10000,
+                isClosable: true,
+            });
+        });
+    }
+
+    const fetchUser = (userID) => { 
+        fetch(env()["api-path"] + 'user/' + userID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setUser(data);
+        })
+        .catch((error) => {
+            console.error('Error(fetchUsers):', error);
+            setUser([]);
+            toast({
+                title: 'Benutzer konnten nicht geladen werden',
+                status: 'error',
+                duration: 10000,
+                isClosable: true,
+            });
+        });
+    }
+
+    const fetchUserGroups = () => {
+        fetch(env()["api-path"] + 'getGroup/Favorite/' + userID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setFavoriteClients(data[1]);
+            console.log(data[1])
+        })
+        .catch((error) => {
+            console.error('Error(fetchUserClientIDs):', error);
+            setGroupID(null);
+            setUserClientIDs([]);
         });
     };
 
     return (
         <Box h={"100%"} w={["100%", "85%", "70%"]}>
             <Flex pt={4} pl={4} pr={4}>
-                <Heading>Hallo {username}!</Heading>
+                <Heading>Hallo {user.username}</Heading>
                 <Spacer></Spacer>
                 <OpenHistoryDrawer></OpenHistoryDrawer>
             </Flex>
@@ -163,6 +175,7 @@ function DeviceOverview() {
                     templateColumns="repeat(3, 1fr)"
                     gap={4}
                 >
+                    {/* Statusmeldung */}
                     <GridItem colSpan={1}>
                         <Card bg={"blue2"} w="100%" h="100%">
                             <CardHeader>
@@ -171,12 +184,13 @@ function DeviceOverview() {
                                 </Heading>
                                 <Text color={"white"} fontSize='lg' as={'b'}>
                                     Datum: {date} <br/>
-                                    Uhrzeit: <Clock format={'HH:mm:ss'} ticking={true} timezone={'US/Pacific'} />
+                                    Uhrzeit: <Clock format={'HH:mm:ss'} ticking={true} timezone={Intl.DateTimeFormat().resolvedOptions().timeZone} />
                                 </Text>
                             </CardHeader>
                         </Card>
                     </GridItem>
 
+                    {/* Gruppen */}
                     <GridItem rowSpan={2} colSpan={1}>
                         <Card bg={"blue2"} w="100%" h="100%">
                             <CardHeader>
@@ -225,52 +239,143 @@ function DeviceOverview() {
                                 </Accordion>
                             </CardBody>
                             <Box align="end" m={4}>
-                                <AddGroupDialog devices={devices}/>
+                                <AddGroupDialog />
                             </Box>
                         </Card>
                     </GridItem>
 
+                    {/* Meine Geräte */}
                     <GridItem rowSpan={2} colSpan={1}>
-                        <Card bg={"blue2"} w="100%" h="100%">
-                            <CardHeader>
-                                <Heading size="lg" color={"white"}>
-                                    Meine Geräte
-                                </Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <DeviceList data={devices} />
-                            </CardBody>
-                            <Box align="end" m={4}>
-                                <AddDeviceDialog />
-                            </Box>
-                        </Card>
+                        <MyDevices accountClients={accountClients} userClientIDs={userClientIDs}/>
                     </GridItem>
 
+                    {/* Favoriten */}
                     <GridItem colSpan={1}>
-                        <Card bg={"blue2"} w="100%" h="100%">
-                            <CardHeader>
-                                <Heading size="lg" color={"white"}>
-                                    Favoriten
-                                </Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <SimpleGrid columns={[2, 3, 4]} w={"100%"} gap={[1, 2, 4]}>
-                                    <Tooltip label="Lampe1" aria-label='A tooltip'>
-                                        <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
-                                            <Center>
-                                                <LuLamp size={"100%"}/>
-                                            </Center>
-                                        </Card>
-                                    </Tooltip>
-
-                                </SimpleGrid>
-                            </CardBody>
-                        </Card>
+                        <Favourites favoriteClients={favoriteClients}/>
                     </GridItem>
                 </Grid>
             </Box>
         </Box>
     );
+}
+
+function MyDevices({ accountClients, userClientIDs }) {
+
+    const DeviceCard = ({ clientName }) => (
+        <Card
+          direction={{
+            base: "column",
+            sm: "row",
+          }}
+          overflow="hidden"
+          bg={"#3e5f74"}
+          color={"white"}
+          cursor="pointer"
+        >
+          <Center p={1} h={"100%"} w={"100%"}>
+            <LuLamp size={"30px"} />
+            <CardBody p={0}>
+              <Text pl={2} fontSize={"xl"} fontWeight={"bold"}>
+                {clientName}
+              </Text>
+            </CardBody>
+            <MdArrowForwardIos align="end" size={"30px"} />
+          </Center>
+        </Card>
+    );
+    
+    const DeviceList = ({ clients, userClientIDs, variant }) => {
+        const [elementsToShow, setElementsToShow] = useState([]);
+    
+        useEffect(() => {
+            if (variant) {
+                var temp = [];
+                if (clients && userClientIDs && clients[0] && userClientIDs[0]) {
+                    userClientIDs.forEach((id) => {
+                        temp.push(clients.find(client => client.id === id));
+                    });
+                }
+                setElementsToShow(temp);
+            } else {
+                if (clients && userClientIDs && clients[0] && userClientIDs[0]) {
+                    setElementsToShow(clients.filter(client => !userClientIDs.includes(client.id)));
+                } else if (clients && clients[0]) {
+                    setElementsToShow(clients);
+                }
+            }
+        }, [clients, variant, userClientIDs]);
+    
+        const generateNameOutOfID = (id) => {
+            let temp = (id*2345+id*856+id*71)/id*id
+            //More complex function to generate a name out of the id
+            temp = (temp*2345+temp*856+temp*71)/temp*temp*temp;
+            return 'Client_'+temp.toString();
+        }
+    
+        return (
+            <Box maxH="400px" overflowY="auto">
+                <VStack spacing={2} align="stretch">
+                    {elementsToShow.length === 0 ? (
+                        <Text fontSize="xl" fontWeight="bold">Keine Geräte vorhanden</Text>
+                    ) : (
+                        elementsToShow.map((client) => (
+                            <DeviceCard key={encryptString(client.id.toString())}  clientName={client.name ? client.name : generateNameOutOfID(client.id)} clientType={client.type}/>
+                        ))
+                    )}
+                </VStack>
+            </Box>
+        );
+    }
+
+    return (
+        <Card bg={"blue2"} w="100%" h="100%">
+            <CardHeader>
+                <Heading size="lg" color={"white"}>
+                    Meine Geräte
+                </Heading>
+            </CardHeader>
+            <CardBody>
+                <DeviceList clients={accountClients} userClientIDs={userClientIDs} variant={true}/>
+            </CardBody>
+            <Box align="end" m={4}>
+                <AddDeviceDialog />
+            </Box>
+        </Card>
+    )
+}
+
+function Favourites( {favoriteClients} ) {
+
+    const FavoriteCard = (key, client) => {
+        return (
+            <Tooltip label={client.clientName} aria-label='A tooltip'>
+                <Card bg={"#3e5f74"} aspectRatio={1} cursor="pointer" p={1} color={'white'}>
+                    <Center>
+                        <LuLamp size={"100%"}/>
+                    </Center>
+                </Card>
+            </Tooltip>
+        )
+    };
+    
+    return (
+             <Card bg={"blue2"} w="100%" h="100%">
+                <CardHeader>
+                    <Heading size="lg" color={"white"}>
+                        Favoriten
+                    </Heading>
+                </CardHeader>
+                <CardBody>
+                <SimpleGrid columns={[2, 3, 4]} w={"100%"} gap={[1, 2, 4]}>
+                    {favoriteClients.map((client, index) => (
+                        <FavoriteCard key={index} client={client} />
+                    ))}
+                </SimpleGrid>
+                </CardBody>
+            </Card>
+        
+    )
+
 }
 
 class Devices extends Component {
