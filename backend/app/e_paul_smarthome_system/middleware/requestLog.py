@@ -19,7 +19,10 @@ class SaveRequest():
 
         def __call__(self, request):
                 _t = time.time() # Calculated execution time.
+                
+                request_body = request.body.decode('utf-8')
                 response = self.get_response(request) # Get response from view function.
+                response_body = response.content.decode('utf-8')
                 _t = int((time.time() - _t)*1000)    
 
                 #If the url does not start with on of the prefixes above, then return response and dont save log.
@@ -51,8 +54,9 @@ class SaveRequest():
                         status = status,
                         remoteAddress = self.get_client_ip(request),
                         execTime = _t,
-                        bodyResponse = str(response.content),
-                        #bodyRequest = str(request.body)
+                        time = int(time.time()),
+                        bodyResponse = str(response_body),
+                        bodyRequest = str(request_body)
                         )
                 
                 
