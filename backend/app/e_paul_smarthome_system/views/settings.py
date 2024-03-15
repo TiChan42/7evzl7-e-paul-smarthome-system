@@ -97,7 +97,7 @@ class SingleUserSettingsView(APIView):
             else:
                 return 0
 
-        if ((userId == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1) or ((userId != executingUserId) and (executingUser.rights["mayChangeUserSettings"] == 1))):   
+        if ((userId == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1) or (executingUser.rights["mayChangeUserSettings"] == 1)):   
             if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
                 user.username = newUsername
                 user.gender = gender
@@ -137,7 +137,7 @@ class ChangePin(APIView):
         pin = request.data["pin"]
         userPin = user.pin
 
-        if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or ((userid != executingUserId) and (executingUser.rights["mayChangeUserSettings"] == 1)):
+        if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
             if not bool(userPin):   
                 if not bool(pin):
                     user.pin = user.__class__._meta.get_field('pin').default
