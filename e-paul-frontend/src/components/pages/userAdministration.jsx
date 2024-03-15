@@ -34,10 +34,11 @@ var userRightsTest = [
 ]
 
 function Header() {
+	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
 return <header>
 <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}> 
 <h1>Benutzerverwaltung</h1> 
-<Link to="/chooseuser"><CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false'))}}/></Link>
+<CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false')); window.history.go(siteBefore-window.history.length)}}/>
 </Box>
 </header>;
 }
@@ -62,13 +63,14 @@ function UserCol(props) {
 				if (response.status >= 400){
 					toast({
 						title: 'Löschen fehlgeschlagen',
-						status: 'Du hast keine Berechtigung diesen Nutzer zu löschen',
+						description: 'Das Löschen von '+props.user.username+' ist fehlgeschlagen',
+						status: 'error',
 						duration: 7000,
 						isClosable: true,
 					});
 				} else {
 					toast({
-						title: 'Löschen erfolgreich',
+						title: 'Löschen von '+props.user.username+' erfolgreich',
 						status: 'success',
 						duration: 5000,
 						isClosable: true,
@@ -78,7 +80,7 @@ function UserCol(props) {
 		  })
 		  .catch(error => {
 			  toast({
-				  title: 'error',
+				  title: 'Löschen fehlgeschlagen',
 				  status: 'error',
 				  duration: 7000,
 				  isClosable: true,
@@ -87,8 +89,8 @@ function UserCol(props) {
 	  };
 
     const deleteUserModal = () => {
-        props.openValidateModal('Nutzer löschen?',
-        'Sind Sie sich sicher, dass Sie diesen Benutzer löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
+        props.openValidateModal(props.user.username + ' löschen?',
+        'Sind Sie sich sicher, dass Sie '+props.user.username+' löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
         ()=>{
           setdelete(true)
 		  deleteUser();
@@ -117,7 +119,7 @@ function UserCol(props) {
 			if(response.status === 204){
 				toast({
 					title: 'Erfolgreich',
-					description: 'Der Adminstatus wurde erfolgreich geändert',
+					description: 'Der Adminstatus von '+props.user.username+' wurde erfolgreich geändert',
 					status: 'success',
 					isClosable: true,
 					duration: 5000
@@ -148,14 +150,14 @@ function UserCol(props) {
 
     const handleAdminSwitch = () => {
 		if (isAdmin) {
-			props.openValidateModal('Adminstatus ändern?',
-			'Sind Sie sich sicher, dass Sie diesen Admin zu einem Standardbenutzer degradieren möchten?',
+			props.openValidateModal('Adminstatus von '+props.user.username+' ändern?',
+			'Sind Sie sich sicher, dass Sie '+props.user.username+' zu einem Standardbenutzer degradieren möchten?',
 			()=>{
 				updateAdminStatus(props.user.id, false)
 			})
 		}else{
-			props.openValidateModal('Adminstatus ändern?',
-			'Sind Sie sich sicher, dass Sie diesen Benutzer zu einem Administrator ernennen möchten?',
+			props.openValidateModal('Adminstatus von '+props.user.username+' ändern?',
+			'Sind Sie sich sicher, dass Sie '+props.user.username+' zu einem Administrator ernennen möchten?',
 			()=>{
 				updateAdminStatus(props.user.id, true)
 			})
@@ -190,8 +192,8 @@ function UserCol(props) {
 					<IconButton isDisabled={!editRights['mayAssignController'] || props.user.role==='superuser'} icon={<FaMicrochip/>} onClick={() => setUserModuleModal(true)}></IconButton>
 					<IconButton isDisabled={!editRights['mayChangeUserRights'] || props.user.role==='superuser'} icon={<ImSection/>} onClick={()=> setUserRightModal(true)}></IconButton>
 
-					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role}/>
-					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id}/>
+					<UserRightSettingsModal openModal={userRightModal} closeModal={() => setUserRightModal(false)} userID={props.user.id.toString()} userRole={props.user.role} userName={props.user.username}/>
+					<ClientUserAssignmentModal openModal={userModuleModal} closeModal={() => setUserModuleModal(false)} userID={props.user.id} userName={props.user.username}/>
 				</ButtonGroup>
 			</Box>
 		</Flex>
@@ -207,7 +209,7 @@ function UserAdministration() {
 
 	const handleUserSettingClick = () => {
 		sessionStorage.setItem('userToEdit',sessionStorage.getItem('executingUserID'))
-		window.location.href = '/userSettings'
+		window.location.href = '/settings'
 	}
 
 	const triggerRefresh = () => {

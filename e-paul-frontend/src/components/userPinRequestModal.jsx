@@ -38,24 +38,20 @@ const UserPinRequestModal = (props) => {
             userId: userID,
             accountId: decryptString(sessionStorage.getItem('accountID'))
         }
-        console.log(data);
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
-        console.log(requestOptions);
-        console.log(env()["api-path"] + "validatePin");
         fetch(env()["api-path"] + "validatePin", requestOptions)
         .then(response => {
-            //console.log(response); // HTTP-Response ausgeben
             return response.json();
         })
         .then(data => {
             if(data.valid){
                 target.value = "";
                 sessionStorage.setItem('executingUserID', encryptString(userID.toString()));
-                sessionStorage.setItem('userAuthorized', encryptString("true"));
+                sessionStorage.setItem('userAuthorized', encryptString("true")); 
                 props.closeModal();
                 props.executeIfValid();
             }
