@@ -73,6 +73,8 @@ class SingleUserSettingsView(APIView):
         user = User.objects.get(pk = userId)
         #account = user.account
         accountId = request.data["accountId"]
+        executingUserId = request.data["executingUserId"]
+        executingUser = User.objects.get(pk =  executingUserId)
         
         try: 
             gender = request.data["gender"]
@@ -96,22 +98,25 @@ class SingleUserSettingsView(APIView):
                 return 1
             else:
                 return 0
-            
-        if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
-            user.username = newUsername
-            user.gender = gender
-            user.save()
-            return Response(status = 200)
-        elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
-            user.username = newUsername
-            user.save()
-            return Response(status = 200)
-        elif not newUsername and gender:
-            user.gender = gender
-            user.save()
-            return Response(status = 200)
-        elif uniqueUsername(newUsername, account.id)==1:
-            return Response("Username existiert bereits.", status=400)
+
+        if ((userId == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1) or (executingUser.rights["mayChangeUserSettings"] == 1)):   
+            if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
+                user.username = newUsername
+                user.gender = gender
+                user.save()
+                return Response(status = 200)
+            elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
+                user.username = newUsername
+                user.save()
+                return Response(status = 200)
+            elif not newUsername and gender:
+                user.gender = gender
+                user.save()
+                return Response(status = 200)
+            elif uniqueUsername(newUsername, account.id)==1:
+                return Response("Username existiert bereits.", status=400)
+            else:
+                return Response(status = 400)
         else:
             return Response(status = 400)
 
@@ -128,34 +133,39 @@ class ChangePin(APIView):
 
     def put(self, request):
         userid = request.data["userId"]
+        executingUserId = request.data["executingUserId"]
         user = User.objects.get(pk = userid)
+        executingUser = User.objects.get(pk = userid)
         pin = request.data["pin"]
         userPin = user.pin
-        if not bool(userPin):   
-            if not bool(pin):
-                user.pin = user.__class__._meta.get_field('pin').default
-                user.save()
-                return Response(status = 200)  
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            user.pin = pin
-            user.save()
-            return Response(status = 200)
-        else: 
-            oldPin = request.data["previousPin"]
-            if checkpw(oldPin.encode("utf-8"), userPin.encode("utf-8")):
+
+        if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
+            if not bool(userPin):   
                 if not bool(pin):
                     user.pin = user.__class__._meta.get_field('pin').default
                     user.save()
-                    return Response(status = 200) 
+                    return Response(status = 200)  
                 pin = pin.encode("utf-8")
                 pinHash = hashpw(pin, salt=gensalt())
                 pin = pinHash.decode("utf-8")
                 user.pin = pin
                 user.save()
                 return Response(status = 200)
-            
+            else: 
+                oldPin = request.data["previousPin"]
+                if checkpw(oldPin.encode("utf-8"), userPin.encode("utf-8")):
+                    if not bool(pin):
+                        user.pin = user.__class__._meta.get_field('pin').default
+                        user.save()
+                        return Response(status = 200) 
+                    pin = pin.encode("utf-8")
+                    pinHash = hashpw(pin, salt=gensalt())
+                    pin = pinHash.decode("utf-8")
+                    user.pin = pin
+                    user.save()
+                    return Response(status = 200)
+        else:
+            return Response(status = 400)  
 """
 Teststring:
 {
