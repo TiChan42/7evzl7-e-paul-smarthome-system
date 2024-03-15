@@ -16,8 +16,8 @@ class Log(models.Model):
     status = models.TextField(choices=Status.choices, null = True, blank = True)
     remoteAddress = models.CharField(max_length = 20, null=True)
     execTime = models.IntegerField(null=True)
-    date = models.DateField(auto_now = True)
-    bodyResponse = models.TextField()
-    bodyRequest = models.TextField()
+    time = models.IntegerField(null=True, blank=True)
+    bodyResponse = models.TextField(null = True, blank = True)
+    bodyRequest = models.TextField(null = True, blank = True)
     user = models.ForeignKey("e_paul_smarthome_system.User", null = True, blank = True, related_name="Log", verbose_name=("Log"), on_delete=models.CASCADE)
     

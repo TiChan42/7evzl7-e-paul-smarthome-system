@@ -13,24 +13,26 @@ from bcrypt import hashpw, gensalt, checkpw
 
 class RightsSettings(APIView):
     queryset = User.objects.all()
-    
-    def get(self, request):
-        user = User.objects.all()
-        serializer = UserSerializer(user, many = True)
-        return Response(serializer.data, status = 200)
-    
+       
     def post(self, request):
-        superUserId = request.data["superUserId"]
-        user = User.objects.get(pk = superUserId)
-        if user is None:
-            return Response(status = 400)
-        if user.role == "superuser":
-            user = User.objects.get(pk = request.data["userId"])
-            if user is None:
-                return Response(status = 400)
-            user.changeRights(request.data["rights"])   
-            userSerializer = UserDetailSerializer(user)
-            return Response(userSerializer.data ,status = 200)
+        try:
+            userRightKey = request.data["userRightKey"]
+            value = request.data["value"]
+            userId = request.data["userId"]
+            executingUserId = request.data["executingUserId"]
+        except KeyError:
+            return Response()
+        
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk = executingUserId)      
+        except User.DoesNotExist:
+            return Response(status = 400)  
+           
+        if executingUser.rights["mayChangeUserRights"] == 1 and executingUser.role != "user" and user.role != "superuser" and user.id != executingUser.id:
+            user.rights[userRightKey] = value
+            user.save()
+            return Response(status = 202)
         else: 
             return Response(status = 400)
 
@@ -71,6 +73,8 @@ class SingleUserSettingsView(APIView):
         user = User.objects.get(pk = userId)
         #account = user.account
         accountId = request.data["accountId"]
+        executingUserId = request.data["executingUserId"]
+        executingUser = User.objects.get(pk =  executingUserId)
         
         try: 
             gender = request.data["gender"]
@@ -94,22 +98,25 @@ class SingleUserSettingsView(APIView):
                 return 1
             else:
                 return 0
-            
-        if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
-            user.username = newUsername
-            user.gender = gender
-            user.save()
-            return Response(status = 200)
-        elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
-            user.username = newUsername
-            user.save()
-            return Response(status = 200)
-        elif not newUsername and gender:
-            user.gender = gender
-            user.save()
-            return Response(status = 200)
-        elif uniqueUsername(newUsername, account.id)==1:
-            return Response("Username existiert bereits.", status=400)
+
+        if ((userId == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1) or (executingUser.rights["mayChangeUserSettings"] == 1)):   
+            if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
+                user.username = newUsername
+                user.gender = gender
+                user.save()
+                return Response(status = 200)
+            elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
+                user.username = newUsername
+                user.save()
+                return Response(status = 200)
+            elif not newUsername and gender:
+                user.gender = gender
+                user.save()
+                return Response(status = 200)
+            elif uniqueUsername(newUsername, account.id)==1:
+                return Response("Username existiert bereits.", status=400)
+            else:
+                return Response(status = 400)
         else:
             return Response(status = 400)
 
@@ -126,34 +133,39 @@ class ChangePin(APIView):
 
     def put(self, request):
         userid = request.data["userId"]
+        executingUserId = request.data["executingUserId"]
         user = User.objects.get(pk = userid)
+        executingUser = User.objects.get(pk = userid)
         pin = request.data["pin"]
         userPin = user.pin
-        if not bool(userPin):   
-            if not bool(pin):
-                user.pin = user.__class__._meta.get_field('pin').default
-                user.save()
-                return Response(status = 200)  
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            user.pin = pin
-            user.save()
-            return Response(status = 200)
-        else: 
-            oldPin = request.data["previousPin"]
-            if checkpw(oldPin.encode("utf-8"), userPin.encode("utf-8")):
+
+        if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
+            if not bool(userPin):   
                 if not bool(pin):
                     user.pin = user.__class__._meta.get_field('pin').default
                     user.save()
-                    return Response(status = 200) 
+                    return Response(status = 200)  
                 pin = pin.encode("utf-8")
                 pinHash = hashpw(pin, salt=gensalt())
                 pin = pinHash.decode("utf-8")
                 user.pin = pin
                 user.save()
                 return Response(status = 200)
-            
+            else: 
+                oldPin = request.data["previousPin"]
+                if checkpw(oldPin.encode("utf-8"), userPin.encode("utf-8")):
+                    if not bool(pin):
+                        user.pin = user.__class__._meta.get_field('pin').default
+                        user.save()
+                        return Response(status = 200) 
+                    pin = pin.encode("utf-8")
+                    pinHash = hashpw(pin, salt=gensalt())
+                    pin = pinHash.decode("utf-8")
+                    user.pin = pin
+                    user.save()
+                    return Response(status = 200)
+        else:
+            return Response(status = 400)  
 """
 Teststring:
 {
@@ -192,10 +204,13 @@ class ChangeRole(APIView):
                 user.save()
                 group = Group.objects.get(user__id = user.id, groupType = "Assignment")
                 
-                ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                ports = Port.objects.filter(groupPort__group__user__id = executingUser.id, groupPort__group__groupType = 'Assignment')
                 for port in ports:
-                    groupPort = GroupPort(group = group, port = port)
-                    groupPort.save()
+                    if GroupPort.objects.filter(group__id = group.id, port__id = port.id).exists() == False:
+                        groupPort = GroupPort(group = group, port = port)
+                        groupPort.save()
+                    else:
+                        continue
                 return Response(status = 204)
             elif role == "user":
                 user.role = role

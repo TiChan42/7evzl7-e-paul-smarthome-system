@@ -28,15 +28,45 @@ class SingleUserView(APIView):
         serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
         
-    def delete(self, request, userId):
+        
+
+
+class DeleteUserView(APIView):
+    queryset = User.objects.all()
+
+    def post(self, request):
+        userid = request.data["userId"]
+        executingUserId = request.data["executingUserId"]
+        accountId = request.data["accountId"]
+        
         try:
-            user = User.objects.get(pk = userId)
+            user = User.objects.get(pk = userid)
+            executingUser = User.objects.get(pk = executingUserId)
         except User.DoesNotExist:
             return Response(status = 400)
         
+        try:
+            account = Account.objects.filter(pk = accountId, user__id__in=[userid, executingUserId]).distinct()
+        except Account.DoesNotExist:
+            return Response(status = 400)
+        
+        if account.count() != 1:
+            return Response(status = 400)
+
         if user.role == "superuser":
             return Response('Superuser kann nicht gelöscht werden', status=400)
         
-        user.delete()
-        return Response('User erfolgreich gelöscht')
-    
+
+        if ((userid == executingUserId) and (user.rights["mayDeleteSelf"] == 1)) or (executingUser.rights["mayDeleteUser"] == 1):
+            user.delete()
+            return Response('User erfolgreich gelöscht', status = 204)
+        else:
+            return Response(status = 400)
+        
+"""
+{
+"userId" : 2,
+"executingUserId" : 1,
+"accountId" : 2
+}
+"""

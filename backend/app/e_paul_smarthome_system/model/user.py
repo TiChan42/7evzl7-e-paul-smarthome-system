@@ -1,6 +1,8 @@
 from django.db import models
 from .account import Account
 
+import random
+
 class User(models.Model):
     
     class Geschlecht(models.TextChoices):
@@ -15,7 +17,7 @@ class User(models.Model):
         
     username = models.CharField(max_length=12, unique=True, null = True, blank = True)
     account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
-    pin = models.CharField(max_length=32, default = "", blank = True)
+    pin = models.CharField(max_length=60, default = "", blank = True)
     role = models.TextField(choices = Role.choices)
     imageName = models.CharField(max_length = 32,null = True, blank = True)
     gender = models.TextField(choices=Geschlecht.choices, null = True, blank = True)
@@ -51,7 +53,7 @@ class User(models.Model):
         self.birthdate = self.birthdate
 
         if self.imageName == None:
-            self.imageName = "user_profile_" + str(Account.objects.get(id=self.account.id).user.count()) + ".jpg"
+            self.imageName = "user_profile_" + str(random.randint(1,7)) + ".jpg"
         else:
             self.imageName = self.imageName
         

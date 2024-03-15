@@ -1,7 +1,7 @@
 from django import urls
 from .views.settings import RightsSettings, SingleUserSettingsView, ChangePin, ChangeRole, ChangeMail
-from .views.userView import UserView, SingleUserView
-from .views.accountView import AccountView
+from .views.userView import UserView, SingleUserView, DeleteUserView
+from .views.account import AccountView, DeleteAccount
 from .views.about_us import AboutUsView
 from .views.login import Login, LoginUser
 from .views.signUp import SignUp, CreateUser, MicrocontrollerSignUp, EmailVerification
@@ -19,8 +19,10 @@ urlpatterns = [
     path("user/addGroup", AddGroup.as_view(), name = "addGroup"),
     path("user/deleteGroup", DeleteGroup.as_view(), name = "deleteGroup"),
     path("user/changeRole", ChangeRole.as_view(), name = "changeRole"), 
-    path("user/<userId>", SingleUserView.as_view(), name = "singleUser"), 
+    path("user/deleteUser", DeleteUserView.as_view(), name = "deleteUser"),
+    path("user/<userId>", SingleUserView.as_view(), name = "singleUser"),
     path("account", AccountView.as_view(), name = "group"),
+    path("deleteAccount", DeleteAccount.as_view(), name = "deleteAccount"),
     path("aboutUs", AboutUsView.as_view(), name="aboutUs"),
     path("signUp", SignUp.as_view(), name="signUp"),
     path("signUp/email", EmailVerification.as_view(), name="signUpEmail"),
