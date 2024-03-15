@@ -13,24 +13,26 @@ from bcrypt import hashpw, gensalt, checkpw
 
 class RightsSettings(APIView):
     queryset = User.objects.all()
-    
-    def get(self, request):
-        user = User.objects.all()
-        serializer = UserSerializer(user, many = True)
-        return Response(serializer.data, status = 200)
-    
+       
     def post(self, request):
-        superUserId = request.data["superUserId"]
-        user = User.objects.get(pk = superUserId)
-        if user is None:
-            return Response(status = 400)
-        if user.role == "superuser":
-            user = User.objects.get(pk = request.data["userId"])
-            if user is None:
-                return Response(status = 400)
-            user.changeRights(request.data["rights"])   
-            userSerializer = UserDetailSerializer(user)
-            return Response(userSerializer.data ,status = 200)
+        try:
+            userRightKey = request.data["userRightKey"]
+            value = request.data["value"]
+            userId = request.data["userId"]
+            executingUserId = request.data["executingUserId"]
+        except KeyError:
+            return Response()
+        
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk = executingUserId)      
+        except User.DoesNotExist:
+            return Response(status = 400)  
+           
+        if executingUser.rights["mayChangeUserRights"] == 1 and executingUser.role != "user" and user.role != "superuser" and user.id != executingUser.id:
+            user.rights[userRightKey] = value
+            user.save()
+            return Response(status = 202)
         else: 
             return Response(status = 400)
 
@@ -202,10 +204,13 @@ class ChangeRole(APIView):
                 user.save()
                 group = Group.objects.get(user__id = user.id, groupType = "Assignment")
                 
-                ports = Port.objects.filter(microcontroller__account__user__id = user.id)
+                ports = Port.objects.filter(groupPort__group__user__id = executingUser.id, groupPort__group__groupType = 'Assignment')
                 for port in ports:
-                    groupPort = GroupPort(group = group, port = port)
-                    groupPort.save()
+                    if GroupPort.objects.filter(group__id = group.id, port__id = port.id).exists() == False:
+                        groupPort = GroupPort(group = group, port = port)
+                        groupPort.save()
+                    else:
+                        continue
                 return Response(status = 204)
             elif role == "user":
                 user.role = role
