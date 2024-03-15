@@ -102,9 +102,12 @@ class AddPortToGroup(APIView):
         except User.DoesNotExist:
             return Response(status = 400)
         
-        groupPort = GroupPort(group = group, port = port)
-        groupPort.save()
-        return Response(status = 201)
+        if user.rights["mayEditController"] == 1:
+            groupPort = GroupPort(group = group, port = port)
+            groupPort.save()
+            return Response(status = 201)
+        else:
+            return Response(status = 400)
 
 """
 teststring
@@ -122,6 +125,7 @@ class RemovePortFromGroup(APIView):
         
         try:
             userId = data["userId"]
+            executingUserId = data["executingUserId"]
             groupId = data["groupId"]
             portId = data["portId"]
         except KeyError:
@@ -131,6 +135,15 @@ class RemovePortFromGroup(APIView):
             groupPort = GroupPort.objects.get(group__id = groupId, port__id = portId)
         except GroupPort.DoesNotExist:
             return Response(status = 400)
-
-        groupPort.delete()
-        return Response(status = 204)
+        
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk = executingUserId)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        
+        if executingUser.rights["mayDeleteControllers"] == 1:
+            groupPort.delete()
+            return Response(status = 204)
+        else:
+            return Response(status = 400)
