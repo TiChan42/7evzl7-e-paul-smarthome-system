@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Heading, Grid, GridItem, CloseButton, Button, ButtonGroup, useToast, Box, HStack, VStack, StackDivider, IconButton, Flex, Spacer} from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import {env} from '../../env';
 import { encryptString, decryptString } from '../../encryptionUtils';
 import {DeleteIcon, EditIcon, AddIcon} from '@chakra-ui/icons';
@@ -36,7 +35,7 @@ var userRightsTest = [
 function Header() {
 	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
 return <header>
-<Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}> 
+<Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> 
 <h1>Benutzerverwaltung</h1> 
 <CloseButton onClick={()=>{sessionStorage.setItem('userAuthorized', encryptString('false')); window.history.go(siteBefore-window.history.length)}}/>
 </Box>
@@ -377,8 +376,9 @@ function UserAdministration() {
 		</VStack>
 		</GridItem>
 		</Grid>
+		<Box m='2'>
 		<Button rightIcon={<AddIcon/>}
-            colorScheme="teal" m='3'
+            colorScheme="teal" m='1'
 			isDisabled={!editRights['mayAddUser']}
             onClick={()=>{setAddUserModal(true)}}>Benutzer hinzufügen</Button>
 		<Button colorScheme="teal" m='1'
@@ -387,7 +387,7 @@ function UserAdministration() {
 		<Button colorScheme="teal" m='1'
 		isDisabled={!editRights['mayChangeOwnUserSettings']}
 		onClick={()=>{handleUserSettingClick()}}>Eigene Benutzereinstellungen öffnen</Button>
-
+		</Box>
 		<AccountSettingsModal openModal = {accountSettingModal} closeModal = {()=>{setAccountSettingModal(false)}}/>
 		<AddUserModal openModal = {addUserModal} closeModal = {()=>{setAddUserModal(false); triggerRefresh()}} accountID = {decryptString(sessionStorage.getItem("accountID"))}/>
 		
