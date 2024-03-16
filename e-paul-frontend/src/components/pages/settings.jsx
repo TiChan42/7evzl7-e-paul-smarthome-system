@@ -188,74 +188,17 @@ class Settings extends Component {
                 }
                 else {
                     // Invalid Old Pin
-                    /*<Alert status='error'>
-                        <AlertIcon />
-                        <AlertTitle>Deine alte Pin ist falsch!</AlertTitle>
-                        <AlertDescription>Bitte versuchen sie es erneut.</AlertDescription>
-                    </Alert>
-                    */
                     this.setState({wrongPinOpen : true})
                     console.log("old pin is not valid")
                 }
+                this.setState({diffPinOpen : false})
             }
             else {
                 // Pins are different
-                <Alert status='error'>
-                    <AlertIcon />
-                    <AlertTitle>Die Pins stimmen nicht überein!</AlertTitle>
-                    <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
-                </Alert>
+                this.setState({diffPinOpen : true})
                 console.log("new pins are different")
 
 
-            }
-        };
-
-
-        const validateEmail = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/validateEmail', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    key: this.key,
-                    accountId: this.accountID,
-
-                })
-            });
-            return res;
-        };
-
-
-        const updateEmail = async () => {
-            var validated = await validateEmail();
-            // try catch
-            validated = await validated.json()
-            // end
-            if (validated == 1) {
-                const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeMail', {
-                    method: 'PUT',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId: this.executingUserID,
-                        accountId: this.accountID,
-                        mail: this.state.mail
-                    })
-                })
-            }
-            else {
-                // Invalid Old Pin
-                <Alert status='error'>
-                    <AlertIcon />
-                    <AlertTitle>Die alte Email ist falsch!</AlertTitle>
-                    <AlertDescription>Bitte versuchen sie es erneut</AlertDescription>
-                </Alert>
-                console.log("Old Email isn't correct")
             }
         };
 
@@ -318,49 +261,6 @@ class Settings extends Component {
                 </Card>
             );
         }
-        else if (activeTab === 'konto') {
-            return (
-                <Card bg={"#218395"} w='100%' h='100%'>
-                    <CardHeader>
-                        <Heading size='lg' color={"white"}>Konto</Heading>
-                    </CardHeader>
-                    <Box m={4} width={'80%'}>
-                        <Text color={"white"}>Hier können Sie Ihre Email-Adresse ändern:</Text>
-                        <Input
-                            isInvalid
-                            type="text"
-                            errorBorderColor='white'
-                            borderColor={'green'}
-                            placeholder='Aktuelle E-Mail-Adresse'
-                            _placeholder={{ color: 'white' }}
-                            focusBorderColor={'red'}
-                            pattern="/^\S+@\S+\.\S+$/"
-                            marginTop={'2em'}
-                        />
-
-                        <Input
-                            isInvalid
-                            type="text"
-                            errorBorderColor='white'
-                            borderColor={'green'}
-                            placeholder='Neue E-Mail-Adresse'
-                            _placeholder={{ color: 'white' }}
-                            focusBorderColor={'red'}
-                            pattern="/^\S+@\S+\.\S+$/"
-                            marginTop={'2em'}
-                        />
-
-                        <Button onClick={updateEmail} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
-                        <br></br><br></br>
-                        <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
-                        <DeleteAcc />
-                    </Box>
-                </Card>
-            );
-
-        }
-
-
         else if (activeTab === 'pin') {
 
             return (
@@ -376,7 +276,8 @@ class Settings extends Component {
                             <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
                             <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
                         </Stack>
-                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Deine alte Pin ist falsch!"} AlertDescription={"Bitte versuchen sie es erneut."}/>
+                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."}/>
+                        <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."}/>
                         <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
@@ -406,9 +307,6 @@ class Settings extends Component {
                         </Button>
                         <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
                             Modus
-                        </Button>
-                        <Button onClick={() => this.setState({ activeTab: 'konto' })} colorScheme={activeTab === 'konto' ? "blue" : "gray"} width={'80%'}>
-                            Konto
                         </Button>
                     </VStack>
                 </Box>
