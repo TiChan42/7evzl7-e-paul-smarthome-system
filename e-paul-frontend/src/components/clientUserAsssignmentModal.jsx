@@ -361,6 +361,7 @@ const ClientUserAssignmentModal = (props) => {
         if(props.openModal){
              reloadClients();
         }
+        // eslint-disable-next-line
     }, [props.openModal]);
 
     const reloadClients = async () => {
@@ -399,6 +400,7 @@ const ClientUserAssignmentModal = (props) => {
     }
     useEffect(() => {
         fetchExecutingUserClientIDs();
+        // eslint-disable-next-line
     }, [props.openModal]);
 
 

@@ -126,7 +126,7 @@ const AddUserModal = (props) => {
 
     const getExecutingUserRights = () => {
         const executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
-        if(executingUserID != null && executingUserID != "" && executingUserID != undefined){
+        if(executingUserID !== null && executingUserID !== "" && executingUserID !== undefined){
             let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
             const requestOptions = {
                 method: 'GET',

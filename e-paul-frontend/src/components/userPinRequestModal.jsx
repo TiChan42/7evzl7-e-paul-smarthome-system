@@ -76,6 +76,7 @@ const UserPinRequestModal = (props) => {
             setRequireUserSelection(false);
         }
         tryToSubmitPin(inputRef.current)
+        // eslint-disable-next-line
     }, [props.users,props.openModal]);
 
     const inputRef = React.createRef();
