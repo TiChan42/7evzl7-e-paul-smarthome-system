@@ -31,7 +31,7 @@ function InitialFocus() {
     return (
         <>
             <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>User löschen</Button>
-
+            <DeleteAcc/>
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -276,8 +276,8 @@ class Settings extends Component {
                             <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
                             <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
                         </Stack>
-                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."}/>
-                        <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."}/>
+                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
+                        <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
                         <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>

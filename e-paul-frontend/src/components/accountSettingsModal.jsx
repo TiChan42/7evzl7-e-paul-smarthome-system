@@ -16,13 +16,14 @@ import {
 } from '@chakra-ui/react'
 import React from 'react';
 import { decryptString } from '../encryptionUtils';
+import ValidateActionModal from './validateActionModal';
 
 //Modal for signing up and in
 const AccountSettingsModal = (props) => {
 
     //AccountId
     const [accountID, setAccountID] = React.useState(decryptString(sessionStorage.getItem('accountID')))
-
+    const [openValidateDeleteAcc, setOpenValidateDeleteAcc] = React.useState(false)
     //Hier die ganzen Funktionen Hinpacken 
 
 
@@ -126,6 +127,8 @@ const AccountSettingsModal = (props) => {
                                 <br></br><br></br>
                                 <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
                                 {/*<DeleteAcc />*/}
+                                <Button onClick={() => setOpenValidateDeleteAcc(true)}>Account löschen</Button>
+                                <ValidateActionModal openModal = {openValidateDeleteAcc} closeModal = {()=>{setOpenValidateDeleteAcc(false)}} title = {"Account löschen?"} content = {"Möchten Sie wirklich Ihren E-Paul Account löschen? Diese Aktion kann nicht rückgängig gemacht werden."} execute = {()=>{console.log("passt")}}/>
                             </Box>
                         </Card>
                     </ModalBody>
