@@ -7,9 +7,16 @@ import {
     ModalBody,
     ModalCloseButton,
     Button,
+    Card,
+    CardHeader,
+    Heading,
+    Box,
+    Text,
+    Input
   } from '@chakra-ui/react'
   import React from 'react';
 import { decryptString } from '@/utils/encryptionUtils';
+import ValidateActionModal from '@/components/validateActionModal';
 
 //Modal for signing up and in
 const AccountSettingsModal = (props) => {
