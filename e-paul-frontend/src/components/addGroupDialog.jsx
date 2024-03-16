@@ -8,7 +8,11 @@ ModalBody,
 ModalCloseButton,
 useDisclosure,
 Button,
-Input
+Input,
+FormControl,
+FormLabel,
+FormErrorMessage,
+InputGroup
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import MultiSelect from '@/components/multiselect'
@@ -17,7 +21,7 @@ import { decryptString } from '@/utils/encryptionUtils'
 import {env} from '@/utils/env'
 
 
-function AddGroupDialog({devices}) {
+function AddGroupDialog(props) {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const [accountClients, setAccountClients] = useState([]) 
@@ -103,6 +107,7 @@ function AddGroupDialog({devices}) {
           .then(data => {
               let groupNames = data.map((group) => group[0]['name']);
               setGroupNameInUse(groupNames.includes(groupName))
+              setGroupNameValid(groupName.length > 0 && groupName.length <= 32 && !groupNameInUse)
           })
           .catch((error) => {
               console.error('Error(isGroupNameInUse):', error);
@@ -111,15 +116,18 @@ function AddGroupDialog({devices}) {
     }
 
     const handleGroupNameChange = (event) => {
-        let groupName = event.target.value;
-        isGroupNameInUse(groupName);
-        setGroupNameValid(groupName.length > 0);
+        let groupName = event.target.value
+        isGroupNameInUse(groupName)
+        setGroupNameValid(groupName.length > 0 && groupName.length <= 32 && !groupNameInUse)
     }
 
     useEffect(() => {
       fetchAccountClients();
       fetchUserClientIDs();
     }, [isOpen]);
+
+
+
 
     
 
@@ -138,10 +146,26 @@ function AddGroupDialog({devices}) {
             <ModalHeader>Gruppe Hinzufügen</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <Input placeholder='Gruppenname'>
-                </Input>
+                <FormControl isInvalid={!groupNameValid} isRequired>
+                        <FormLabel>Name der Gruppe</FormLabel>
+                        <InputGroup size='md'>
+                            <Input
+                                pr='4.5rem'
+                                type= 'text'
+                                placeholder='Bsp.: Wohnzimmer, Lichter, ...'
+                                maxLength={32}
+                                onChange={(event)=> {handleGroupNameChange(event)}}
+                                focusBorderColor='teal.500'
+                            />
+                        </InputGroup>
+                        {(!groupNameValid) &&
+                            <FormErrorMessage>
+                                {groupNameInUse ? "Gruppenname bereits vergeben" : "Gruppenname muss zwischen 1 und 32 Zeichen lang sein"}
+                            </FormErrorMessage>
+                        }
+                  </FormControl>
                 <br/> <br/>
-                <MultiSelect Bezeichnung="Geräte" groupOptions={[devices]}></MultiSelect>
+                <MultiSelect items={[{'name': 'item1', 'value': '1'}, {'name': 'item2', 'value': '2'}]} onSelect={(items)=>{console.log(items)}} colorScheme={'teal'}></MultiSelect>
             </ModalBody>
   
             <ModalFooter>
