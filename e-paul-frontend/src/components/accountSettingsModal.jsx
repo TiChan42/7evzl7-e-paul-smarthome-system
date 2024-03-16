@@ -25,6 +25,9 @@ const AccountSettingsModal = (props) => {
     //AccountId
     const [accountID, setAccountID] = React.useState(decryptString(sessionStorage.getItem('accountID')))
     const [openValidateDeleteAcc, setOpenValidateDeleteAcc] = React.useState(false)
+    const [openChangeMail, setopenChangeMail] = React.useState(false)
+    const [newMail, setNewMail] = React.useState("")
+    //const [validEmail, setValidEmail] = React.useState(true);
     //Hier die ganzen Funktionen Hinpacken 
 
     const executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
@@ -32,29 +35,10 @@ const AccountSettingsModal = (props) => {
 
     const initialRef = React.useRef();
 
-    const validateEmail = async () => {
-        const res = await fetch('http://epaul-smarthome.de:8000/api/validateEmail', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                key: this.key,
-                accountId: this.accountID,
-
-            })
-        });
-        return res;
-    };
-
     const updateEmail = async () => {
-        var validated = await validateEmail();
-        // try catch
-        validated = await validated.json()
-        // end
-
-        if (validated == 1) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        //setValidEmail(emailRegex.test(newMail));
+        if(emailRegex.test(newMail)){
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeMail', {
                 method: 'PUT',
                 headers: {
@@ -62,15 +46,27 @@ const AccountSettingsModal = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: this.executingUserID,
-                    accountId: this.accountID,
-                    mail: this.state.newMail  //???
+                    userId: executingUserID,
+                    accountId: accountID,
+                    mail: newMail
                 })
             })
+            toast({
+                title: 'E-Mail erfolgreich geändert',
+                description: 'Ihre E-Mail wurde erfolgreich geändert.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true
+            });
         }
-        else {
-            // Invalid Old Pin
-            console.log("Old Email isn't correct")
+        else{
+            toast({
+                title: 'Die eingegebene E-Mail hat das falsche Format',
+                description: 'Bitte geben Sie eine valide E-Mail Adresse ein',
+                status: 'error',
+                duration: 5000,
+                isClosable: true
+            });
         }
     };
 
@@ -134,24 +130,11 @@ const AccountSettingsModal = (props) => {
                                     focusBorderColor={'red'}
                                     pattern="/^\S+@\S+\.\S+$/"
                                     marginTop={'2em'}
-                                    mailName="newMail"
-                                    state={this}
-
+                                    value={newMail}
+                                    onInput={e => setNewMail(e.target.value)}
                                 />
-                                <Input
-                                    isInvalid
-                                    type="text"
-                                    errorBorderColor='white'
-                                    borderColor={'green'}
-                                    placeholder='Ihr Pin'
-                                    _placeholder={{ color: 'white' }}
-                                    focusBorderColor={'red'}
-                                    pattern="/^\S+@\S+\.\S+$/"
-                                    marginTop={'2em'}
-                                    mailName="oldMail"
-                                    state={this}
-                                />
-                                <Button onClick={updateEmail} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                                <Button onClick={() => setopenChangeMail(true)} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                                <ValidateActionModal openModal={openChangeMail} closeModal={() => { setopenChangeMail(false) }} title={"E-Mail ändern?"} content={"Möchten Sie wirklich Ihre E-Mail ändern?"} execute={updateEmail} />
                                 <br></br><br></br>
                                 <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
                                 {/*<DeleteAcc />*/}

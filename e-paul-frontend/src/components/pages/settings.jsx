@@ -323,7 +323,7 @@ export default Settings;
 
 
 
-function PasswordInput(props) {
+export function PasswordInput(props) {
     const [show, setShow] = React.useState(false)
     const handleClick = () => setShow(!show)
 
