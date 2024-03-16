@@ -16,9 +16,9 @@ import {
     InputRightElement,
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { encryptString, decryptString } from '../encryptionUtils';
+  import { encryptString, decryptString } from '@/utils/encryptionUtils';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 //Komponente für die Abfrage des Pins und (wenn nötig) des Benutzers
 const UserPinRequestModal = (props) => {

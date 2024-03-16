@@ -23,10 +23,10 @@ import {
     Tooltip,
   } from '@chakra-ui/react'
   import React, {useState,useEffect} from 'react';
-  import {env} from '../env.js';
-  import {clientIconPath} from '../clientIconPaths';
+  import {env} from '@/utils/env.js';
+  import {clientIconPath} from '@/utils/clientIconPaths';
   import { ArrowForwardIcon, ArrowBackIcon} from '@chakra-ui/icons'
-import { decryptString, encryptString } from '../encryptionUtils.js';
+import { decryptString, encryptString } from '@/utils/encryptionUtils.js';
 
 //ClientElement
 const ClientElement = (props) => {

@@ -24,16 +24,14 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
-import AddGroupDialog from "../addGroupDialog";
-import AddDeviceDialog from "../addDeviceDialog";
-import OpenHistoryDrawer from "../openhistoryDrawer";
-import { decryptString } from '../../encryptionUtils';
+import AddGroupDialog from "@/components/addGroupDialog";
+import AddDeviceDialog from "@/components/addDeviceDialog";
+import OpenHistoryDrawer from "@/components/openhistoryDrawer";
+import { decryptString, encryptString } from '@/utils/encryptionUtils';
 import { LuLamp } from "react-icons/lu";
 import { MdArrowForwardIos } from "react-icons/md";
-import { encryptString } from "../../encryptionUtils";
 import Clock from 'react-live-clock';
-import {env} from '../../env';
-
+import {env} from '@/utils/env';
 
 function DeviceOverview() {
     const [userID, setUserID] = useState(decryptString(sessionStorage.getItem('executingUserID')));

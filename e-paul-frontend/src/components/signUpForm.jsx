@@ -12,7 +12,7 @@ import {
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 
   //Form signing up

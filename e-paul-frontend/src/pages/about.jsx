@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import '../../style.css'
+import '@/styles/style.css'
 import {Center,Box,Heading} from '@chakra-ui/react'
-import SlideShow from "../carousel";
+import SlideShow from "@/components/carousel";
 
 
 

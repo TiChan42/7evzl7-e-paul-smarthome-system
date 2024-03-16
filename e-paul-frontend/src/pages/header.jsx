@@ -10,9 +10,9 @@ import {
     Divider,
 } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
-import SignUpAndInModal from "../signUpAndInModal";
-import { env } from "../../env";
-import { decryptString, encryptString } from "../../encryptionUtils";
+import SignUpAndInModal from "@/components/signUpAndInModal";
+import { env } from "@/utils/env";
+import { decryptString, encryptString } from "@/utils/encryptionUtils";
 
 class Header extends Component {
     state = {

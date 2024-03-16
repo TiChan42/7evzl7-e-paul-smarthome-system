@@ -1,10 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Box, Text, Center, Spinner, Wrap, WrapItem } from "@chakra-ui/react";
 import { Avatar } from "@chakra-ui/avatar";
-import { encryptString, decryptString } from '../../encryptionUtils';
-import UserPinRequestModal from '../userPinRequestModal';
-import AddUserModal from '../addUserModal';
-import { env } from '../../env';
+import { encryptString, decryptString } from '@/utils/encryptionUtils';
+import UserPinRequestModal from '@/components/userPinRequestModal';
+import AddUserModal from '@/components/addUserModal';
+import { env } from '@/utils/env';
 
 
 //Komponente für die Auswahl des Benutzers

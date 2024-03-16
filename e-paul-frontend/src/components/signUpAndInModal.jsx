@@ -13,8 +13,8 @@ import {
     TabPanel,
   } from '@chakra-ui/react'
   import React from 'react';
-  import SignUpForm from './signUpForm';
-  import SignInForm from './signInForm';
+  import SignUpForm from '@/components/signUpForm';
+  import SignInForm from '@/components/signInForm';
 
 //Modal for signing up and in
 const SignUpAndInModal = (props) => {

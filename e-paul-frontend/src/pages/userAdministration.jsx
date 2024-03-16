@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Heading, Grid, GridItem, CloseButton, Button, ButtonGroup, useToast, Box, HStack, VStack, StackDivider, IconButton, Flex, Spacer} from '@chakra-ui/react';
-import {env} from '../../env';
-import { encryptString, decryptString } from '../../encryptionUtils';
+import { Link } from 'react-router-dom';
+import {env} from '@/utils/env';
+import { encryptString, decryptString } from '@/utils/encryptionUtils';
 import {DeleteIcon, EditIcon, AddIcon} from '@chakra-ui/icons';
 import { Avatar } from "@chakra-ui/avatar";
-import ValidateActionModal from '../validateActionModal';
-import AddUserModal from '../addUserModal';
-import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
+import ValidateActionModal from '@/components/validateActionModal';
+import AddUserModal from '@/components/addUserModal';
+import ClientUserAssignmentModal from '@/components/clientUserAsssignmentModal';
 import { FaMicrochip } from "react-icons/fa6";
 import { ImSection } from "react-icons/im";
-import UserRightSettingsModal from '../userRightSettingsModal';
-import AccountSettingsModal from '../accountSettingsModal';
+import UserRightSettingsModal from '@/components/userRightSettingsModal';
+import AccountSettingsModal from '@/components/accountSettingsModal';
+
 
 var userRightsTest = [
     {

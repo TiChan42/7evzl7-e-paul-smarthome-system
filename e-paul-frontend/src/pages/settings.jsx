@@ -1,37 +1,33 @@
-import { Alert, AlertIcon, AlertTitle, AlertDescription, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogContent, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { decryptString } from '../../encryptionUtils';
-import React, { Component, useEffect, useState } from 'react';
+import { Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { decryptString } from '@/utils/encryptionUtils';
+import React, { Component } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function InitialFocus() {
-    const executingUserID = sessionStorage.getItem('executingUserID');
+    const userID = sessionStorage.getItem('executingUserID');
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const deleteUser = async () => {
-        console.log(executingUserID)
-        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
+        console.log(userID)
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + userID, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: executingUserID
+                userId: userID
             })
         })
 
     };
 
-    useEffect(() => {
-        decryptString(sessionStorage.getItem('userToEdit'))
-    }, [])
-
     return (
         <>
             <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>User löschen</Button>
-            <DeleteAcc/>
+
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -56,70 +52,16 @@ function InitialFocus() {
 }
 
 
-function DeleteAcc() {
-    const executingUserID = sessionStorage.getItem('executingUserID');
-    const initialRef = React.useRef(null);
-    const finalRef = React.useRef(null);
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
-    const deleteAccount = async () => {
-        console.log(executingUserID)
-        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: executingUserID
-            })
-        })
-
-    };
-
-    useEffect(() => {
-        decryptString(sessionStorage.getItem('userToEdit'))
-    }, [])
-
-    return (
-        <>
-            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>Account löschen</Button>
-
-            <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={isOpen}
-                onClose={onClose}
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button colorScheme='red' variant='solid' onClick={deleteAccount} marginRight={'1em'}>Bestätigen</Button>
-                        <Button onClick={onClose}>Cancel</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
-    );
-}
-
 
 class Settings extends Component {
-    state = { activeTab: 'allgemein', isModalOpen: false};
-    executingUserID = sessionStorage.getItem('executingUserID');
-    accountID = decryptString(sessionStorage.getItem('accountID'));
-    userID = decryptString(sessionStorage.getItem('userToEdit'));
+    state = { activeTab: 'allgemein', isModalOpen: false };
+    userID = sessionStorage.getItem('executingUserID');
+    accountID = sessionStorage.getItem('accountID');
 
 
 
     renderContent() {
         const { activeTab } = this.state;
-
         const updateUsername = async () => {
             const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
                 method: 'PUT',
@@ -149,6 +91,12 @@ class Settings extends Component {
         };
 
         const validatePin = async () => {
+            console.log(this.accountID, this.userID, this.state.oldPin);
+            console.log(JSON.stringify({
+                accountId: this.accountID,
+                userId: this.userID,
+                pin: this.state.oldPin
+            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/validatePin', {
                 method: 'POST',
                 headers: {
@@ -170,9 +118,10 @@ class Settings extends Component {
             validated = await validated.json()
             // end
             validated = validated["valid"]
+            console.log(typeof validated)
+            console.log(this.state.newPin, this.state.newPinRepeat)
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
-                    this.setState({wrongPinOpen : false})
                     const res = await fetch('http://epaul-smarthome.de:8000/api/settings/pin', {
                         method: 'PUT',
                         headers: {
@@ -186,26 +135,20 @@ class Settings extends Component {
                         })
                     })
                 }
-                else {
+                else{
                     // Invalid Old Pin
-                    this.setState({wrongPinOpen : true})
                     console.log("old pin is not valid")
                 }
-                this.setState({diffPinOpen : false})
             }
-            else {
+            else{
                 // Pins are different
-                this.setState({diffPinOpen : true})
                 console.log("new pins are different")
-
-
             }
         };
 
         if (activeTab === 'allgemein') {
             return (
                 <Card bg={"#218395"} w='100%' h='100%' >
-
                     <CardHeader>
                         <Heading size='lg' color={"white"}>Allgemein</Heading>
                     </CardHeader>
@@ -261,6 +204,46 @@ class Settings extends Component {
                 </Card>
             );
         }
+        else if (activeTab === 'konto') {
+            return (
+                <Card bg={"#218395"} w='100%' h='100%'>
+                    <CardHeader>
+                        <Heading size='lg' color={"white"}>Konto</Heading>
+                    </CardHeader>
+                    <Box m={4} width={'80%'}>
+                        <Text color={"white"}>Hier können Sie Ihre Email-Adresse ändern:</Text>
+                        <Input
+                            isInvalid
+                            type="text"
+                            errorBorderColor='white'
+                            borderColor={'green'}
+                            placeholder='Aktuelle E-Mail-Adresse'
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}
+                            pattern="/^\S+@\S+\.\S+$/"
+                            marginTop={'2em'}
+                        />
+
+                        <Input
+                            isInvalid
+                            type="text"
+                            errorBorderColor='white'
+                            borderColor={'green'}
+                            placeholder='Neue E-Mail-Adresse'
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}
+                            pattern="/^\S+@\S+\.\S+$/"
+                            marginTop={'2em'}
+                        />
+
+                        <Button margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                    </Box>
+                </Card>
+            );
+
+        }
+
+
         else if (activeTab === 'pin') {
 
             return (
@@ -276,8 +259,6 @@ class Settings extends Component {
                             <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
                             <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
                         </Stack>
-                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
-                        <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
                         <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                     </Box>
                 </Card>
@@ -307,6 +288,9 @@ class Settings extends Component {
                         </Button>
                         <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
                             Modus
+                        </Button>
+                        <Button onClick={() => this.setState({ activeTab: 'konto' })} colorScheme={activeTab === 'konto' ? "blue" : "gray"} width={'80%'}>
+                            Konto
                         </Button>
                     </VStack>
                 </Box>
@@ -346,18 +330,3 @@ function PasswordInput(props) {
     )
 }
 
-
-function AlertDialogExample(props) {
-    var openvar = props.open
-    return (
-        <>
-        {openvar ? 
-            <Alert status={props.alertStatus} >
-                <AlertIcon />
-                <AlertTitle>{props.alertTitle}</AlertTitle>
-                <AlertDescription>{props.AlertDescription}</AlertDescription>
-            </Alert>
-        : <></> }
-        </>
-    )
-}
