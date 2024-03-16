@@ -100,6 +100,7 @@ const ClientListElement = (props) => {
                         <>
                         <Center p={1}>
                             <IconButton
+                                isDisabled={props.muted}
                                 variant='solid'
                                 colorScheme='teal'
                                 aria-label='Call Sage'
@@ -122,6 +123,7 @@ const ClientListElement = (props) => {
                         <Spacer />
                         <Center p={1}>
                         <IconButton
+                                isDisabled={props.muted}
                                 variant='solid'
                                 colorScheme='teal'
                                 aria-label='Call Sage'
@@ -171,6 +173,7 @@ const ClientList = (props) => {
         }else{
             setLargerSide(false);
         }
+
     }, [props.userClientIDs, props.clients, props.triggerRender]);
 
     const generateNameOutOfID = (id) => {
@@ -187,7 +190,15 @@ const ClientList = (props) => {
         <>
         {elementsToShow.map((client) => {
             return (
-                <ClientListElement key={encryptString(client.id.toString())}  clientName={client.name?client.name:generateNameOutOfID(client.id)} clientType={client.type} state={props.state} variant={props.variant} onUserIDChange={() => {props.onUserIDChange(client.id)}}/>
+                <ClientListElement 
+                    muted={props.executingUserClients[0] === undefined || !props.executingUserClients.includes(client.id)}
+                    key={encryptString(client.id.toString())}  
+                    clientName={client.name?client.name:generateNameOutOfID(client.id)} 
+                    clientType={client.type} 
+                    state={props.state} 
+                    variant={props.variant} 
+                    onUserIDChange={() => {props.onUserIDChange(client.id)}}
+                />
             )
         })}
         </>
@@ -256,10 +267,12 @@ const ClientUserAssignmentModal = (props) => {
     }
 
     const addClientToUser = (clientID) => {
+        let executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
         let data = {
             userId: userID,
             portId: clientID,
-            groupId: groupID
+            groupId: groupID,
+            executingUserId: executingUserID
         }
 
         fetch(env()["api-path"] + 'group/addPort', {
@@ -280,11 +293,15 @@ const ClientUserAssignmentModal = (props) => {
     }
 
     const removeClientFromUser = (clientID) => {
+        let executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
+
         let data = {
             userId: userID,
             portId: clientID,
-            groupId: groupID
+            groupId: groupID,
+            executingUserId: executingUserID
         }
+
 
         fetch(env()["api-path"] + 'group/removePort', {
             method: 'POST',
@@ -357,6 +374,33 @@ const ClientUserAssignmentModal = (props) => {
         }
     }
 
+    const [executingUserClients, setExecutingUserClients] = useState([]);
+    const fetchExecutingUserClientIDs = () => {
+        let execUserID = decryptString(sessionStorage.getItem('executingUserID'));
+        if (execUserID !== null && execUserID !== undefined && execUserID !== ''){
+            fetch(env()["api-path"] + 'getGroup/Assignment/' + execUserID, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                setExecutingUserClients(data[1]);
+                setTriggerRender(!triggerRender);
+                
+            })
+            .catch((error) => {
+                console.error('Error(fetchUserClientIDs):', error);
+                setExecutingUserClients([]);
+                setTriggerRender(!triggerRender);
+            });
+        }
+    }
+    useEffect(() => {
+        fetchExecutingUserClientIDs();
+    }, [props.openModal]);
+
 
     return (
         <>
@@ -371,27 +415,27 @@ const ClientUserAssignmentModal = (props) => {
             <ModalOverlay />
             {(accountClients && userClientIDs && groupID && userID && accountID) ? (
             <ModalContent>
-                <Tabs align='start' variant='enclosed' colorScheme='teal' >
+                <Tabs align='start' variant='enclosed' colorScheme='teal'>
                     <ModalHeader>
                         <TabList display={{base:'flex', md:'none'}}>
                             <Tab ref={userClientsRef} onClick={()=>{setSiteState(1)} }>Alle</Tab>
                             <Tab ref={allClientsRef} onClick={()=>{setSiteState(0)}}>Zugewiesen</Tab>
                         </TabList>
-                    <Heading size={'md'} display={{base:'none', md:'flex'}}>Weisen Sie dem Benutzer Clients zu</Heading>
+                    <Heading size={'md'} display={{base:'none', md:'flex'}}>Weisen Sie {props.userName?(<>{props.userName}</>):(<>dem Benutzer</>)} Clients zu</Heading>
                     </ModalHeader>
                 </Tabs>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Text display={{base:'flex', md:'none'}}>Weisen Sie dem Benutzer Clients zu</Text>
+                    <Text display={{base:'flex', md:'none'}}>Weisen Sie {props.userName?(<>{props.userName}</>):(<>dem Benutzer</>)} Clients zu</Text>
                     <Flex height={'100%'}>
                         <Box  w={{base: siteState?'70%':'30%' ,md:'50%'}} height={'100%'}>
                             <Heading size={{base:'xs', sm:'sm'}} textAlign={'left'} p={1} onClick={()=>{setSiteState(1)}}>Alle</Heading>
-                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?siteState:1} variant={false} height={'100%'} onUserIDChange={(changedID) => {addClientToUser(changedID)}} triggerRender={triggerRender} />
+                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?siteState:1} variant={false} height={'100%'} onUserIDChange={(changedID) => {addClientToUser(changedID)}} triggerRender={triggerRender} executingUserClients={executingUserClients}/>
                         </Box>
 
                         <Box w={{base: !siteState?'70%':'30%' ,md:'50%'}} height={'100%'}>
                             <Heading size={{base:'xs', sm:'sm'}} textAlign={'right'} p={1} onClick={()=>{setSiteState(0)}}>Zugewiesen</Heading>
-                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?(!siteState):1} variant={true}  height={'100%'} onUserIDChange={(changedID) => {removeClientFromUser(changedID)}} triggerRender={triggerRender}/>
+                            <ClientList clients={accountClients} userClientIDs={userClientIDs} state={displayState?(!siteState):1} variant={true}  height={'100%'} onUserIDChange={(changedID) => {removeClientFromUser(changedID)}} triggerRender={triggerRender} executingUserClients={executingUserClients}/>
                         </Box>
                     </Flex>
                 </ModalBody>

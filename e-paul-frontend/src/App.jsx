@@ -8,13 +8,11 @@ import Welcome from './components/pages/welcome'
 import ChooseUser from './components/pages/chooseUser'
 import Imprint from './components/pages/imprint'
 import Devices from './components/pages/devices'
-import UserSettings from './components/pages/userSettings'
 import UserAdministration from './components/pages/userAdministration'
 import theme from './theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import ModalTest from './components/pages/modalTest';
 import Settings from "./components/pages/settings"
-import Options from "./components/pages/options"
 import FAQ from "./components/pages/faq";
 
 //router
@@ -26,9 +24,7 @@ const router = createBrowserRouter (
             <Route path="/chooseUser" element={<ChooseUser/>}/>
             <Route path="/imprint" element={<Imprint/>}/>
             <Route path="/devices" element={<Devices/>}/>
-            <Route path="/options" element={<Options/>}/>
             <Route path="/faq" element={<ChakraProvider theme={theme}><FAQ/></ChakraProvider>}/>
-            <Route path="/userSettings" element={<UserSettings/>}/>
             <Route path="/settings" element={<Settings/>}/>
             <Route path='/userAdministration' element={<UserAdministration/>}/>
             <Route path='/modalTest' element={<ModalTest/>}/>
