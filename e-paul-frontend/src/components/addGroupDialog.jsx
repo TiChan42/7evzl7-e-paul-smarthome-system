@@ -12,7 +12,8 @@ Input,
 FormControl,
 FormLabel,
 FormErrorMessage,
-InputGroup
+InputGroup,
+useToast
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import MultiSelect from '@/components/multiselect'
@@ -21,15 +22,14 @@ import { decryptString } from '@/utils/encryptionUtils'
 import {env} from '@/utils/env'
 
 
-function AddGroupDialog(props) {
+function AddGroupDialog() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const [accountClients, setAccountClients] = useState([]) 
     const [userClientIDs, setUserClientIDs] = useState([])
-    const [userAssignmentGroupID, setUserAssignmentGroupID] = useState(null)
     const [assignedUserClients, setAssignedUserClients] = useState([])
-    const [updateAssignedUserClients, setUpdateAssignedUserClients] = useState(false)
-
+    const [preparedAssignedUserClients, setPreparedAssignedUserClients] = useState([])
+    const [selectedClientIDs, setSelectedClientIDs] = useState([])
     const fetchAccountClients = () => {
       let  accountID = decryptString(sessionStorage.getItem('accountID'));
       if (accountID) {
@@ -65,14 +65,12 @@ function AddGroupDialog(props) {
           })
           .then(response => response.json())
           .then(data => {
-              setUserAssignmentGroupID(data[0].id);
               setUserClientIDs(data[1]);
               //setUpdateAssignedUserClients(!updateAssignedUserClients);
               
           })
           .catch((error) => {
               console.error('Error(fetchUserClientIDs):', error);
-              setUserAssignmentGroupID(null);
               setUserClientIDs([]);
               //setUpdateAssignedUserClients(!updateAssignedUserClients);
           });
@@ -88,7 +86,25 @@ function AddGroupDialog(props) {
             })
         }
         setAssignedUserClients(temp);
+        console.log(assignedUserClients);
     }, [userClientIDs, accountClients]);
+
+
+    const generateNameOutOfID = (id) => {
+        let temp = (id*2345+id*856+id*71)/(id*id*id)
+        //More complex function to generate a name out of the id
+        temp = parseInt((temp*2345+temp*856+temp*71)/(id*id)) ;
+        return 'Client_'+temp.toString();
+    }
+    useEffect(() => {
+        let temp = [];
+        if(assignedUserClients && assignedUserClients[0]){
+            assignedUserClients.forEach((client) => {
+                temp.push({'name': client.name?client.name:generateNameOutOfID(client.id), 'value': client.id});
+            })
+        }
+        setPreparedAssignedUserClients(temp);
+    }, [assignedUserClients]);
 
     
     const [groupNameInUse, setGroupNameInUse] = useState(false);
@@ -126,13 +142,6 @@ function AddGroupDialog(props) {
       fetchUserClientIDs();
     }, [isOpen]);
 
-
-
-
-    
-
-
-
     return (
       <>
         <Button onClick={onOpen}>
@@ -141,12 +150,12 @@ function AddGroupDialog(props) {
         </Button>
   
         <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Gruppe Hinzufügen</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-                <FormControl isInvalid={!groupNameValid} isRequired>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Gruppe Hinzufügen</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <FormControl isInvalid={!groupNameValid} isRequired>
                         <FormLabel>Name der Gruppe</FormLabel>
                         <InputGroup size='md'>
                             <Input
@@ -163,17 +172,21 @@ function AddGroupDialog(props) {
                                 {groupNameInUse ? "Gruppenname bereits vergeben" : "Gruppenname muss zwischen 1 und 32 Zeichen lang sein"}
                             </FormErrorMessage>
                         }
-                  </FormControl>
-                <br/> <br/>
-                <MultiSelect items={[{'name': 'item1', 'value': '1'}, {'name': 'item2', 'value': '2'}]} onSelect={(items)=>{console.log(items)}} colorScheme={'teal'}></MultiSelect>
-            </ModalBody>
+                    </FormControl>
+                    <br/>
+                    <br/>
+                    <FormControl>
+                        <FormLabel>Auswahl der Clients für die Gruppe</FormLabel>
+                        <MultiSelect items={preparedAssignedUserClients} onSelect={(items)=>{setSelectedClientIDs(items.map((item) => item.value))}} colorScheme={'teal'} placeHolder={'Klicken zum auswählen'}></MultiSelect>
+                    </FormControl>
+                </ModalBody>
   
-            <ModalFooter>
-              <Button colorScheme='teal'>
-                Hinzufügen
-              </Button>
-            </ModalFooter>
-          </ModalContent>
+                <ModalFooter>
+                    <Button colorScheme='teal' isDisabled={!groupNameValid}>
+                      Hinzufügen
+                    </Button>
+                </ModalFooter>
+            </ModalContent>
         </Modal>
       </>
     )

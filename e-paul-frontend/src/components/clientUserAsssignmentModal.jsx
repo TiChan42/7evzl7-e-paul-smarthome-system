@@ -177,9 +177,9 @@ const ClientList = (props) => {
     }, [props.userClientIDs, props.clients, props.triggerRender]);
 
     const generateNameOutOfID = (id) => {
-        let temp = (id*2345+id*856+id*71)/id*id
+        let temp = (id*2345+id*856+id*71)/(id*id*id)
         //More complex function to generate a name out of the id
-        temp = (temp*2345+temp*856+temp*71)/temp*temp*temp;
+        temp = parseInt((temp*2345+temp*856+temp*71)/(id*id)) ;
         return 'Client_'+temp.toString();
     }
 
