@@ -14,7 +14,7 @@ from bcrypt import hashpw, gensalt, checkpw
 class RightsSettings(APIView):
     queryset = User.objects.all()
        
-    def post(self, request):
+    def put(self, request):
         try:
             userRightKey = request.data["userRightKey"]
             value = request.data["value"]

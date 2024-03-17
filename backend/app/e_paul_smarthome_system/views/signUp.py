@@ -152,7 +152,7 @@ class CreateUser(APIView):
         elif(userExists(accountId, username)==0):
             if executingUser.rights["mayAddUser"] == 0:
                 return Response(status=400)
-            if(pin == None):
+            if(pin == None or pin == ""):
                 if  isAdmin == True:
                     rights = executingUser.rights
                     rights["mayChangeAccountSettings"] = 0

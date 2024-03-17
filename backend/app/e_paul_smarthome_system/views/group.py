@@ -20,6 +20,7 @@ class AddGroup(APIView):
         try:
             userId = data["userId"]
             name = data["name"]
+            clientIds = data["clientIds"]
         except KeyError:
             return Response(status = 400)
         
@@ -28,11 +29,23 @@ class AddGroup(APIView):
         except User.DoesNotExist:
             return Response(status = 400)
         
-        group = Group(name = name, groupType = "Standard", user = user)
-        group.save()
-        
-        return Response(status = 201)
-
+        if len(clientIds) == 0:
+            group = Group(name = name, groupType = "Standard", user = user)
+            group.save()
+            return Response(status = 201)
+        elif len(clientIds) > 0:
+            group = Group(name = name, groupType = "Assignment", user = user)
+            group.save()
+            for clientId in clientIds:
+                try:
+                    port = Port.objects.get(id = clientId)
+                except Port.DoesNotExist:
+                    continue
+                groupPort = GroupPort(group = group, port = port)
+                groupPort.save()
+            return Response(status = 201)
+        else:
+            return Response(status = 400)
 """
 teststring
 {
@@ -79,6 +92,7 @@ class AddPortToGroup(APIView):
             userId = data["userId"]
             groupId = data["groupId"]
             portId = data["portId"]
+            executingUserId = data["executingUserId"]
         except KeyError:
             return Response(status = 400)
         
@@ -99,10 +113,11 @@ class AddPortToGroup(APIView):
         
         try:
             user = User.objects.get(id = userId, group = groupId)
+            executingUser = User.objects.get(id = executingUserId)
         except User.DoesNotExist:
             return Response(status = 400)
         
-        if user.rights["mayEditController"] == 1:
+        if executingUser.rights["mayEditControllers"] == 1:
             groupPort = GroupPort(group = group, port = port)
             groupPort.save()
             return Response(status = 201)
