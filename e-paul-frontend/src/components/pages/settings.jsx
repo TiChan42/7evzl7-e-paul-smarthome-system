@@ -1,7 +1,6 @@
-import { Alert, AlertIcon, AlertTitle, AlertDescription, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogContent, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Tabs, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, ModalFooter, useDisclosure, Select, HStack, PinInput, PinInputField, show, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
 import { decryptString } from '../../encryptionUtils';
 import React, { Component, useEffect, useState } from 'react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function InitialFocus() {
     const executingUserID = sessionStorage.getItem('executingUserID');
@@ -31,7 +30,6 @@ function InitialFocus() {
     return (
         <>
             <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>User löschen</Button>
-            <DeleteAcc/>
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -55,67 +53,11 @@ function InitialFocus() {
     );
 }
 
-
-function DeleteAcc() {
-    const executingUserID = sessionStorage.getItem('executingUserID');
-    const initialRef = React.useRef(null);
-    const finalRef = React.useRef(null);
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
-    const deleteAccount = async () => {
-        console.log(executingUserID)
-        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: executingUserID
-            })
-        })
-
-    };
-
-    useEffect(() => {
-        decryptString(sessionStorage.getItem('userToEdit'))
-    }, [])
-
-    return (
-        <>
-            <Button onClick={onOpen} colorScheme='red' variant='solid' margin={'2em'}>Account löschen</Button>
-
-            <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={isOpen}
-                onClose={onClose}
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Möchten sie ihren Account wirklich löschen?</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button colorScheme='red' variant='solid' onClick={deleteAccount} marginRight={'1em'}>Bestätigen</Button>
-                        <Button onClick={onClose}>Cancel</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
-    );
-}
-
-
 class Settings extends Component {
     state = { activeTab: 'allgemein', isModalOpen: false};
     executingUserID = sessionStorage.getItem('executingUserID');
     accountID = decryptString(sessionStorage.getItem('accountID'));
     userID = decryptString(sessionStorage.getItem('userToEdit'));
-
-
 
     renderContent() {
         const { activeTab } = this.state;
