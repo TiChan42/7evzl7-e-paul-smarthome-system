@@ -53,8 +53,29 @@ function InitialFocus() {
     );
 }
 
+function AddToast(props) {
+    const toast = useToast()
+    useEffect(() => {
+        console.log(props.title + " " + props.status + " " + props.duration + " " + props.isClosable+ " " + props.description)
+        console.log(props.trigger)
+        if (props.trigger) {
+            if (props.title && props.status && props.duration && props.isClosable && props.description) {
+                toast({
+                    title: props.title,
+                    status: props.status,
+                    duration: props.duration,
+                    isClosable: props.isClosable,
+                    description: props.description
+                })
+                props.afterTrigger();
+            }
+        }
+    }, [props.trigger])
+    return (<></>)
+}
+
 class Settings extends Component {
-    state = { activeTab: 'allgemein', isModalOpen: false};
+    state = { activeTab: 'allgemein', isModalOpen: false, toastTitle: "123", toastStatus: "error", toastDuration: 5000, toastIsClosable: true, toastDescription: "descr", openToastTrigger: false };
     executingUserID = sessionStorage.getItem('executingUserID');
     accountID = decryptString(sessionStorage.getItem('accountID'));
     userID = decryptString(sessionStorage.getItem('userToEdit'));
@@ -114,7 +135,7 @@ class Settings extends Component {
             validated = validated["valid"]
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
-                    this.setState({wrongPinOpen : false})
+                    this.setState({ wrongPinOpen: false })
                     const res = await fetch('http://epaul-smarthome.de:8000/api/settings/pin', {
                         method: 'PUT',
                         headers: {
@@ -130,14 +151,20 @@ class Settings extends Component {
                 }
                 else {
                     // Invalid Old Pin
-                    this.setState({wrongPinOpen : true})
+                    this.setState({ wrongPinOpen: true })
                     console.log("old pin is not valid")
+                    this.state.toastTitle = "PIN ist falsch!"
+                    this.state.toastDescription = "Test"
+                    this.state.toastStaus = "error"
+                    this.state.toastIsClosable = true
+                    this.state.toastDuration = 7000
+                    this.state.openToastTrigger = true
                 }
-                this.setState({diffPinOpen : false})
+                this.setState({ diffPinOpen: false })
             }
             else {
                 // Pins are different
-                this.setState({diffPinOpen : true})
+                this.setState({ diffPinOpen: true })
                 console.log("new pins are different")
 
 
@@ -206,23 +233,26 @@ class Settings extends Component {
         else if (activeTab === 'pin') {
 
             return (
-                <Card bg={"#218395"} w='100%' h='100%'>
-                    <CardHeader>
-                        <Heading size='lg' color={"white"}>PIN</Heading>
-                    </CardHeader>
-                    <Box m={"4"} width={'80%'}>
-                        <Text color={"white"}>Hier können Sie Ihren PIN ändern:</Text>
-                        <Stack spacing={"3"} pt={"3"}>
-                            <PasswordInput text="Alter PIN" pinName="oldPin" class={this} />
-                            <Text color={"white"}>Hier nun den neuen gewünschten PIN eingeben</Text>
-                            <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
-                            <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
-                        </Stack>
-                        <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
-                        <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"}/>
-                        <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
-                    </Box>
-                </Card>
+                <>
+                    <AddToast title={this.state.toastTitle} status={this.state.toastStatus} duration={this.state.toastDuration} isClosable={this.state.toastIsClosable} description={this.state.toastDescription} trigger={this.state.openToastTrigger} afterTrigger={(() => { this.state.openToastTrigger = false })} />
+                    <Card bg={"#218395"} w='100%' h='100%'>
+                        <CardHeader>
+                            <Heading size='lg' color={"white"}>PIN</Heading>
+                        </CardHeader>
+                        <Box m={"4"} width={'80%'}>
+                            <Text color={"white"}>Hier können Sie Ihren PIN ändern:</Text>
+                            <Stack spacing={"3"} pt={"3"}>
+                                <PasswordInput text="Alter PIN" pinName="oldPin" class={this} />
+                                <Text color={"white"}>Hier nun den neuen gewünschten PIN eingeben</Text>
+                                <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
+                                <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
+                            </Stack>
+                            <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"} />
+                            <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"} />
+                            <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                        </Box>
+                    </Card>
+                </>
 
             );
         }
@@ -293,13 +323,13 @@ function AlertDialogExample(props) {
     var openvar = props.open
     return (
         <>
-        {openvar ? 
-            <Alert status={props.alertStatus} >
-                <AlertIcon />
-                <AlertTitle>{props.alertTitle}</AlertTitle>
-                <AlertDescription>{props.AlertDescription}</AlertDescription>
-            </Alert>
-        : <></> }
+            {openvar ?
+                <Alert status={props.alertStatus} >
+                    <AlertIcon />
+                    <AlertTitle>{props.alertTitle}</AlertTitle>
+                    <AlertDescription>{props.AlertDescription}</AlertDescription>
+                </Alert>
+                : <></>}
         </>
     )
 }
