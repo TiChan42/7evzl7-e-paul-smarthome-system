@@ -95,6 +95,12 @@ const AddUserModal = (props) => {
             if(response.status === 201){
                 props.closeModal();
                 setGeneratedName(generateRandomUsername());
+                //Reet all useState Values
+                setUserName(generatedName);
+                setPassword("");
+                setPasswordRepeat("");
+                setIsAdmin(false);
+
                 toast({
                     title: 'Benutzer erfolgreich erstellt',
                     status: 'success',
