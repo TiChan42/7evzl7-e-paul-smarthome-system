@@ -4,6 +4,10 @@ from ..model.microcontroller import Microcontroller
 from ..model.group import Group
 from ..model.port import Port
 from ..model.groupPort import GroupPort
+from ..model.knownControllerType import KnownControllerType
+from ..model.portTemplate import PortTemplate
+from ..model.command import Command
+from ..model.commandOption import CommandOption
 
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
 
@@ -45,8 +49,70 @@ class SignUp(APIView):
             password = password.encode("utf-8")
             passwordHash = hashpw(password, salt=gensalt())
             password = passwordHash.decode("utf-8")
-            account = Account(password=password,email = email)
+            account = Account(password=password,email = email)           
             account.save()
+            
+            knownControllerTypeLamp = KnownControllerType(account = account, type = "lamp_1")
+            knownControllerTypeButton = KnownControllerType(account = account, type = "button_1") 
+            knownControllerTypeLamp.save(), knownControllerTypeButton.save()
+            
+            portTemplateLamp = PortTemplate(knownControllerType = knownControllerTypeLamp, status_default = {"status" : "off"})
+            portTemplateButton = PortTemplate(knownControllerType = knownControllerTypeButton, status_default = {"status" : "off"})
+            portTemplateLamp.save(), portTemplateButton.save()
+            
+            commandLamp1 = Command(portTemplate = portTemplateLamp, description = "erhöht die Helligkeit der Lampe um den übergebenen Wert ")
+            commandLamp1.save()
+            commandOptionLamp1_1 = CommandOption(command = commandLamp1, key = "type", static = True, value = 1)
+            commandOptionLamp1_2 = CommandOption(command = commandLamp1, key = "target", static = False, value = None)
+            commandOptionLamp1_3 = CommandOption(command = commandLamp1, key = "command", static = True, value = "changeLampBrightness")
+            commandOptionLamp1_4 = CommandOption(command = commandLamp1, key = "brightness", static = False, value = None)
+            commandOptionLamp1_1.save(), commandOptionLamp1_2.save(), commandOptionLamp1_3.save(), commandOptionLamp1_4.save()
+            
+            commandLamp2 = Command(portTemplate = portTemplateLamp, description = "ändert den rgb Wert der Lampe auf den übergebenen Hex-Wert")
+            commandLamp2.save()
+            commandOptionLamp2_1 = CommandOption(command = commandLamp2, key = "type", static = True, value = 1)
+            commandOptionLamp2_2 = CommandOption(command = commandLamp2, key = "target", static = False, value = None)
+            commandOptionLamp2_3 = CommandOption(command = commandLamp2, key = "command", static = True, value = "changeRGBValue")
+            commandOptionLamp2_4 = CommandOption(command = commandLamp2, key = "rgb", static = False, value = None)
+            commandOptionLamp2_1.save(), commandOptionLamp2_2.save(), commandOptionLamp2_3.save(), commandOptionLamp2_4.save()
+            
+            commandLamp3 = Command(portTemplate = portTemplateLamp, description = "schaltet das Modul ein")
+            commandLamp3.save()
+            commandOptionLamp3_1 = CommandOption(command = commandLamp3, key = "type", static = True, value = 1)
+            commandOptionLamp3_2 = CommandOption(command = commandLamp3, key = "target", static = False, value = None)
+            commandOptionLamp3_3 = CommandOption(command = commandLamp3, key = "command", static = True, value = "switchOn")
+            commandOptionLamp3_1.save(), commandOptionLamp3_2.save(), commandOptionLamp3_3.save()
+            
+            commandLamp4 = Command(portTemplate = portTemplateLamp, description = "schaltet das Modul aus")
+            commandLamp4.save()
+            commandOptionLamp4_1 = CommandOption(command = commandLamp4, key = "type", static = True, value = 1)
+            commandOptionLamp4_2 = CommandOption(command = commandLamp4, key = "target", static = False, value = None)
+            commandOptionLamp4_3 = CommandOption(command = commandLamp4, key = "command", static = True, value = "switchOff")
+            commandOptionLamp4_1.save(), commandOptionLamp4_2.save(), commandOptionLamp4_3.save()
+            
+            
+            commandButton1 = Command(portTemplate = portTemplateButton, description = "schaltet das Modul ein")
+            commandButton1.save()
+            commandOptionButton1_1 = CommandOption(command = commandButton1, key = "type", static = True, value = 1)
+            commandOptionButton1_2 = CommandOption(command = commandButton1, key = "target", static = False, value = None)
+            commandOptionButton1_3 = CommandOption(command = commandButton1, key = "command", static = True, value = "switchOn")
+            commandOptionButton1_1.save(), commandOptionButton1_2.save(), commandOptionButton1_3.save()
+            
+            commandButton2 = Command(portTemplate = portTemplateButton, description = "schaltet das Modul aus")
+            commandButton2.save()
+            commandOptionButton2_1 = CommandOption(command = commandButton2, key = "type", static = True, value = 1)
+            commandOptionButton2_2 = CommandOption(command = commandButton2, key = "target", static = False, value = None)
+            commandOptionButton2_3 = CommandOption(command = commandButton2, key = "command", static = True, value = "switchOff")
+            commandOptionButton2_1.save(), commandOptionButton2_2.save(), commandOptionButton2_3.save()
+            
+            commandButton3 = Command(portTemplate = portTemplateButton, description  = "wechselt den modus des buttons zwischen signal nur bei drücken und signal bei drücken und bei loslassen")
+            commandButton3.save()
+            commandOptionButton3_1 = CommandOption(command = commandButton3, key = "type", static = True, value = 1)
+            commandOptionButton3_2 = CommandOption(command = commandButton3, key = "target", static = False, value = None)
+            commandOptionButton3_3 = CommandOption(command = commandButton3, key = "command", static = True, value = "changeMode")
+            commandOptionButton3_4 = CommandOption(command = commandButton3, key = "mode", static = False, value = None)
+            commandOptionButton3_1.save(), commandOptionButton3_2.save(), commandOptionButton3_3.save(), commandOptionButton3_4.save()
+            
             return Response(status=201)
         else:
             return Response(status=420)
@@ -154,10 +220,7 @@ class CreateUser(APIView):
                 return Response(status=400)
             if(pin == None or pin == ""):
                 if  isAdmin == True:
-                    rights = executingUser.rights
-                    rights["mayChangeAccountSettings"] = 0
-                    user = User(username = username, account = account, rights = rights, role = 'admin')
-                    user.save()
+                    return Response(status=400)
                 else:
                     user = User(username = username, account = account, role = 'user')
                     user.save()
@@ -221,21 +284,34 @@ class MicrocontrollerSignUp(APIView):
     queryset = User.objects.all()
     
     def post(self, request):
+        
         data = request.data	
-        email = data["email"]
-        password = data["password"]
-        name = data["name"]
-
-        if Account.objects.get(email=email) == None:
+        
+        try:
+            email = data["email"]
+            password = data["password"]
+            name = data["name"]
+            type = data["type"]
+        except KeyError:    
             return Response(status=400)
-        else:
+        
+        try:
             account = Account.objects.get(email=email)
+        except Account.DoesNotExist: 
+            return Response(status=400)
+        
+        try:
+            knownControllerType = KnownControllerType.objects.get(account__email = email, type = type)
+        except KnownControllerType.DoesNotExist:
+            return Response(status=400)
+        
+        if account and knownControllerType:
             samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
             if samePassword == 1:
                 key = id_generator()
-                microcontroller = Microcontroller(name=name, account = account, key = key)
+                microcontroller = Microcontroller(name=name, account = account, key = key, type = type)
                 microcontroller.save()
-                with open("/etc/mosquitto/authbuffer", "a") as myfile:
+                '''with open("/etc/mosquitto/authbuffer", "a") as myfile:
                     myfile.write(str(microcontroller.id) + ":" + key)
                 system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
                 with open("/etc/mosquitto/authbuffer", "r+") as myfile:
@@ -243,10 +319,12 @@ class MicrocontrollerSignUp(APIView):
                     myfile.truncate(0)
                 with open("/etc/mosquitto/auth", "a") as myfile:
                     myfile.write(str(key))
-                system("sudo systemctl restart mosquitto")
-                port = Port(type = "test", microcontroller = microcontroller)
-                port.save()
-                serializer = MicrocontrollerSerializer(microcontroller)
+                system("sudo systemctl restart mosquitto")'''
+                portTemplates = PortTemplate.objects.filter(knownControllerType = knownControllerType)
+                for portTemplate in portTemplates:
+                    port = Port(type = portTemplate.knownControllerType.type, microcontroller = microcontroller, portTemplate = portTemplate, currentStatus = portTemplate.status_default)
+                    port.save()
+                serializer = MicrocontrollerSerializer(microcontroller)    
                 return Response(serializer.data, status=201)
             else:
                 return Response(status=400)
@@ -258,5 +336,6 @@ class MicrocontrollerSignUp(APIView):
 "email" : "test",
 "password" : "435",
 "name" : "Zelda's Microcontroller"
+"type" : "lamp_1"
 }
 """
