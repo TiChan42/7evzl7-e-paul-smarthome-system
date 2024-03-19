@@ -237,7 +237,7 @@ class ChangeMail(APIView):
         try:
             userId = request.data["userId"]
             accountId = request.data["accountId"]
-            mail = request.data["mail"]
+            email = request.data["email"]
         except KeyError:
             return Response(status = 400)
         
@@ -252,7 +252,7 @@ class ChangeMail(APIView):
             return Response(status = 400)
         
         if user.rights["mayChangeAccountSettings"] == 1:
-            account.mail = mail
+            account.email = email
             account.save()
             return Response(status = 204)
         else:

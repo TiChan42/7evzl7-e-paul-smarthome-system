@@ -89,7 +89,6 @@ class AddPortToGroup(APIView):
         data = request.data
         
         try:
-            userId = data["userId"]
             groupId = data["groupId"]
             portId = data["portId"]
             executingUserId = data["executingUserId"]
@@ -107,12 +106,11 @@ class AddPortToGroup(APIView):
             return Response(status = 400)
         
         try:
-            account = Account.objects.get(user = userId, microcontroller__port = portId)
+            account = Account.objects.get(user = executingUserId, microcontroller__port = portId)
         except Account.DoesNotExist:
             return Response(status = 400)
         
         try:
-            user = User.objects.get(id = userId, group = groupId)
             executingUser = User.objects.get(id = executingUserId)
         except User.DoesNotExist:
             return Response(status = 400)
@@ -166,3 +164,39 @@ class RemovePortFromGroup(APIView):
             return Response(status = 204)
         else:
             return Response(status = 400)
+
+class ChangeName(APIView):
+    queryset = Group.objects.all()
+
+    def post(self, request):
+        data = request.data
+
+        try:
+            executingUserId = data["executingUserId"]
+            groupId = data["groupId"]
+            name = data["name"]
+        except KeyError:
+            return Response(status = 400)
+
+        try:
+            group = Group.objects.get(id = groupId, user__id = executingUserId)
+        except Group.DoesNotExist:
+            return Response(status = 400)
+
+        if group.groupType == "Assignment" or group.groupType == "Favorite":
+            return Response(status = 400)
+        elif group.groupType == "Standard":
+            group.name = name
+            group.save()
+            return Response(status = 204)
+        else:
+            return Response(status = 500)
+    
+'''
+Teststring:
+{
+"executingUserId" : 1,
+"groupId" : 1,
+"name" : "Test2"
+}
+'''

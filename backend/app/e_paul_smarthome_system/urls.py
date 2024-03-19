@@ -10,7 +10,7 @@ from .views.home import HomeView
 from .views.devices import DeviceView, AddPort
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
 from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights, GetCommands
-from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup
+from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup, ChangeName
 from django.urls import path
 
 
@@ -49,4 +49,5 @@ urlpatterns = [
     path("getUserRights/<userId>/<executingUserId>", GetUserRights.as_view(), name = "getUserRights"),
     path("group/addPort", AddPortToGroup.as_view(), name = "addPortToGroup"),
     path("group/removePort",RemovePortFromGroup.as_view(), name = "deletePortFromGroup"),
+    path("group/changeName", ChangeName.as_view(), name = "changeGroupName"),
     ]
