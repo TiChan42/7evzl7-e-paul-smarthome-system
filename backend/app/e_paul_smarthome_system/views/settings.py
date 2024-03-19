@@ -69,12 +69,14 @@ class SingleUserSettingsView(APIView):
         serializer = UserDetailSerializer(user)
         return Response(serializer.data, status = 200)
 
-    def put(self, request, userId):
-        user = User.objects.get(pk = userId)
-        #account = user.account
-        accountId = request.data["accountId"]
-        executingUserId = request.data["executingUserId"]
-        executingUser = User.objects.get(pk =  executingUserId)
+    def put(self, request):
+        
+        try:
+            userId = request.data["userId"]
+            accountId = request.data["accountId"]
+            executingUserId = request.data["executingUserId"]
+        except KeyError:
+            return Response(status = 400)
         
         try: 
             gender = request.data["gender"]
@@ -85,35 +87,39 @@ class SingleUserSettingsView(APIView):
             newUsername = request.data["username"]    
         except KeyError:
             newUsername = None
-            
-        account = Account.objects.get(id=accountId)
-
-        # check if new username is unique in given account
-        def uniqueUsername(username, accountId):
-            try:
-                accountExists = Account.objects.get(pk = accountId).user.get(username = username)
-            except:
-                accountExists = None
-            if accountExists:
-                return 1
-            else:
-                return 0
+        
+                
+        try:
+            account = Account.objects.get(id=accountId)
+        except Account.DoesNotExist:
+            return Response(status = 400)
+        
+        try:
+            user = User.objects.get(pk = userId)
+            executingUser = User.objects.get(pk =  executingUserId)
+        except User.DoesNotExist:
+            return Response(status = 400)    
+        
+        try:
+            usernameExists = User.objects.get(username = newUsername, account = account)
+        except User.DoesNotExist:
+            usernameExists = None
 
         if ((userId == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1) or (executingUser.rights["mayChangeUserSettings"] == 1)):   
-            if newUsername and uniqueUsername(newUsername, account.id)==0 and gender:
+            if newUsername and usernameExists == None and gender:
                 user.username = newUsername
                 user.gender = gender
                 user.save()
-                return Response(status = 200)
-            elif newUsername and uniqueUsername(newUsername, account.id)==0 and not gender:
+                return Response(status = 204)
+            elif newUsername and usernameExists == None and not gender:
                 user.username = newUsername
                 user.save()
-                return Response(status = 200)
+                return Response(status = 204)
             elif not newUsername and gender:
                 user.gender = gender
                 user.save()
-                return Response(status = 200)
-            elif uniqueUsername(newUsername, account.id)==1:
+                return Response(status = 204)
+            elif usernameExists:
                 return Response("Username existiert bereits.", status=400)
             else:
                 return Response(status = 400)
@@ -123,6 +129,7 @@ class SingleUserSettingsView(APIView):
 """
 {
     "accountId" : "5",
+    "executingUserId" : "1", 
     "username" : "testuser1",
     "gender" : "männlich"
 } 

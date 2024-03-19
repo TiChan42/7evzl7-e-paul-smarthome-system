@@ -29,12 +29,17 @@ class AddGroup(APIView):
         except User.DoesNotExist:
             return Response(status = 400)
         
-        if len(clientIds) == 0:
+        try:
+            groupnameExists = Group.objects.get(name = name, user = user, groupType = "Standard")
+        except Group.DoesNotExist:
+            groupnameExists = None
+        
+        if len(clientIds) == 0 and groupnameExists == None:
             group = Group(name = name, groupType = "Standard", user = user)
             group.save()
             return Response(status = 201)
-        elif len(clientIds) > 0:
-            group = Group(name = name, groupType = "Assignment", user = user)
+        elif len(clientIds) > 0 and groupnameExists == None:
+            group = Group(name = name, groupType = "Standard", user = user)
             group.save()
             for clientId in clientIds:
                 try:
@@ -51,6 +56,7 @@ teststring
 {
 "userId" : 1,
 "name" : "Test"
+"clientIds" : [1,2]
 }
 """
 class DeleteGroup(APIView):
@@ -165,7 +171,7 @@ class RemovePortFromGroup(APIView):
         else:
             return Response(status = 400)
 
-class ChangeName(APIView):
+class ChangeGroupName(APIView):
     queryset = Group.objects.all()
 
     def post(self, request):
@@ -183,14 +189,19 @@ class ChangeName(APIView):
         except Group.DoesNotExist:
             return Response(status = 400)
 
+        try:
+            groupnameExists = Group.objects.get(name = name, user__id = executingUserId)
+        except Group.DoesNotExist:
+            groupnameExists = None
+        
         if group.groupType == "Assignment" or group.groupType == "Favorite":
             return Response(status = 400)
-        elif group.groupType == "Standard":
+        elif group.groupType == "Standard" and groupnameExists == None:
             group.name = name
             group.save()
             return Response(status = 204)
         else:
-            return Response(status = 500)
+            return Response(status = 400)
     
 '''
 Teststring:

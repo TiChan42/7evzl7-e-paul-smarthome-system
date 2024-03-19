@@ -15,7 +15,7 @@ class User(models.Model):
         admin = 'admin'
         user = 'user'
         
-    username = models.CharField(max_length=12, unique=True, null = True, blank = True)
+    username = models.CharField(max_length=12, null = True, blank = True)
     account = models.ForeignKey("e_paul_smarthome_system.Account", null = True, blank = True, related_name="user", verbose_name=("Account"), on_delete=models.CASCADE)
     pin = models.CharField(max_length=60, default = "", blank = True)
     role = models.TextField(choices = Role.choices)

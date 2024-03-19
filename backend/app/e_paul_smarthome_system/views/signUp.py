@@ -168,18 +168,19 @@ class CreateUser(APIView):
             executingUserId = data["executingUserId"]
         except KeyError:
             return Response(status=400)
-        
-        try: 
-            executingUser = User.objects.get(id=executingUserId)
-        except User.DoesNotExist:
-            executingUser = None
-        
         try:
             pin = data["pin"]
         except KeyError:
             pin = None
         accountId = data["accountId"]
-
+        
+        try: 
+            executingUser = User.objects.get(id=executingUserId)
+        except User.DoesNotExist:
+            if User.objects.filter(account__id = accountId).count() >= 1:
+                return Response(status=400)
+            executingUser = None
+        
         try:
             account = Account.objects.get(id=accountId)
         except Account.DoesNotExist:
@@ -188,7 +189,6 @@ class CreateUser(APIView):
         if(Account.objects.get(id=accountId).user.count() >= 7):
             return Response(status=400)
         
-        
         try: 
             if (Account.objects.filter(id=accountId, user__isnull = False)):
                 noUser = False
@@ -196,12 +196,11 @@ class CreateUser(APIView):
                 noUser = True
         except Account.DoesNotExist:
             noUser = True 
-        
-        def userExists(accountId, username):
-            if Account.objects.filter(id=accountId, user__username=username):
-                return 1
-            else:
-                return 0
+                  
+        try:
+            userExists = User.objects.get(username = username, account__id = accountId) 
+        except User.DoesNotExist:
+            userExists = None
         
         
         if(noUser == True and executingUser == None):
@@ -210,12 +209,12 @@ class CreateUser(APIView):
             pin = pinHash.decode("utf-8")
             user = User(username = username, pin = pin, account = account, role = 'superuser')
             user.save()
-            group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
-            group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+            group1 = Group(user = User.objects.get(pk = user.id), groupType = 'Assignment')
+            group2 = Group(user = User.objects.get(pk = user.id), groupType = 'Favorite')
             group1.save()
             group2.save()
             return Response(status = 201)
-        elif(userExists(accountId, username)==0):
+        elif(userExists == None):
             if executingUser.rights["mayAddUser"] == 0:
                 return Response(status=400)
             if(pin == None or pin == ""):
@@ -224,8 +223,8 @@ class CreateUser(APIView):
                 else:
                     user = User(username = username, account = account, role = 'user')
                     user.save()
-                group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
-                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1 = Group(user = User.objects.get(pk = user.id), groupType = 'Assignment')
+                group2 = Group(user = User.objects.get(pk = user.id), groupType = 'Favorite')
                 
                 group1.save()
                 group2.save()
@@ -251,8 +250,8 @@ class CreateUser(APIView):
                 else:
                     user = User(username = username, pin = pin, account = account, role ='user')
                     user.save()
-                group1 = Group(user = User.objects.get(username = username), groupType = 'Assignment')
-                group2 = Group(user = User.objects.get(username = username), groupType = 'Favorite')
+                group1 = Group(user = User.objects.get(pk = user.id), groupType = 'Assignment')
+                group2 = Group(user = User.objects.get(pk = user.id), groupType = 'Favorite')
                 
                 group1.save()
                 group2.save()
