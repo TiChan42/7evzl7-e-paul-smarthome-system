@@ -9,8 +9,8 @@ from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView, AddPort
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
-from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights
-from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup
+from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights, GetCommands
+from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup, ChangeGroupName
 from django.urls import path
 
 
@@ -40,12 +40,14 @@ urlpatterns = [
     path("settings/rights", RightsSettings.as_view(), name = "rightsSettings"),
     path("settings/pin", ChangePin.as_view(), name = "validatePin"),
     path("settings/changeMail", ChangeMail.as_view(), name = "changeMail"),
-    path("settings/<userId>", SingleUserSettingsView.as_view(), name = "userSettings"),
+    path("settings/changeUserInformation", SingleUserSettingsView.as_view(), name = "userSettings"),
     path("getUsers/<accountId>", GetUsers.as_view(), name = "getUser"),
     path("getVerified/<accountId>", GetVerified.as_view(), name = "getVerified"),
     path("getGroup/<type>/<userId>", GetGroups.as_view(), name = "getGroup"),
     path("getPorts/<accountId>", GetPorts.as_view(), name = "getPorts"),
+    path("getCommands/<portId>", GetCommands.as_view(), name = "getCommands"),
     path("getUserRights/<userId>/<executingUserId>", GetUserRights.as_view(), name = "getUserRights"),
     path("group/addPort", AddPortToGroup.as_view(), name = "addPortToGroup"),
     path("group/removePort",RemovePortFromGroup.as_view(), name = "deletePortFromGroup"),
+    path("group/changeName", ChangeGroupName.as_view(), name = "changeGroupName"),
     ]

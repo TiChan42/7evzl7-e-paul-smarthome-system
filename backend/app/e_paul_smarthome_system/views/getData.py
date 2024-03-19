@@ -2,10 +2,14 @@ from ..model.account import Account
 from ..model.group import Group
 from ..model.port import Port
 from ..model.user import User
+from ..model.command import Command
+from ..model.commandOption import CommandOption
 
-from ..serializer.accountSerializer import AccountUserSerializer, AccountPortSerializer
+from ..serializer.accountSerializer import AccountUserSerializer
 from ..serializer.groupSerializer import GroupSerializer
 from ..serializer.portSerializer import PortSerializer, PortIdSerializer
+from ..serializer.commandSerializer import CommandSerializer
+from ..serializer.commandOptionSerializer import CommandOptionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -99,3 +103,17 @@ class GetUserRights(APIView):
             return Response(user.rights, status = 200)
         else:
             return Response(status = 400)
+
+class GetCommands(APIView):
+    queryset = Account.objects.all()
+    
+    def get(self, request, portId):
+        try:
+            commands = Command.objects.filter(portTemplate__port__id = portId)
+        except Command.DoesNotExist:
+            return Response(status = 400)
+        
+        serializer = CommandSerializer(commands, many = True)
+
+        #serializer = CommandSerializer(command, many = True)
+        return Response(serializer.data, status = 200)
