@@ -1,4 +1,5 @@
 from ..model.account import Account
+from ..model.user import User
 from ..serializer.accountSerializer import AccountSerializer
 
 from rest_framework.views import APIView
@@ -28,8 +29,8 @@ class DeleteAccount(APIView):
             return Response(status = 400)
         
         try:
-            executingUser = Account.objects.get(id = executingUserId)
-        except Account.DoesNotExist:
+            executingUser = User.objects.get(id = executingUserId)
+        except User.DoesNotExist:
             return Response(status = 400)
         
         if executingUser.rights["mayChangeAccountSettings"] == 1:
