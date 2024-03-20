@@ -1,0 +1,21 @@
+:root {
+    --color: 33,131,149;
+}
+
+
+body {
+    background-color: rgba(var(--color), 0.2);
+    height: auto;
+    min-height: 100vh;
+    position: fixed;
+
+}
+
+.logo {
+    position: fixed;
+    width : 50vw;
+    height: 50vw;
+    top: calc(50vh - 25vw);
+    left: 25vw;
+    color: rgba(var(--color), 0.05);
+}
