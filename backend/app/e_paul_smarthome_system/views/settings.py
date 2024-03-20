@@ -139,11 +139,19 @@ class ChangePin(APIView):
     queryset = User.objects.all()
 
     def put(self, request):
-        userid = request.data["userId"]
-        executingUserId = request.data["executingUserId"]
-        user = User.objects.get(pk = userid)
-        executingUser = User.objects.get(pk = userid)
-        pin = request.data["pin"]
+        try: 
+            userid = request.data["userId"]
+            executingUserId = request.data["executingUserId"]
+            pin = request.data["pin"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            user = User.objects.get(pk = userid)
+            executingUser = User.objects.get(pk = userid)
+        except User.DoesNotExist:
+            return Response(status = 400)
+        
         userPin = user.pin
 
         if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):

@@ -3,10 +3,7 @@ from ..model.port import Port
 from ..model.groupPort import GroupPort
 from ..model.account import Account
 from ..model.user import User
-
-from ..serializer.userSerializer import UserGroupSerializer
-from ..serializer.portSerializer import PortSerializer
-from ..serializer.accountSerializer import AccountPortSerializer
+from ..model.state import State
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -102,7 +99,7 @@ class AddPortToGroup(APIView):
             return Response(status = 400)
         
         try:
-            group = Group.objects.get(pk = groupId)
+            group = Group.objects.get(pk = groupId, user__id = executingUserId)
         except Group.DoesNotExist:
             return Response(status = 400)
         
@@ -166,6 +163,9 @@ class RemovePortFromGroup(APIView):
             return Response(status = 400)
         
         if executingUser.rights["mayDeleteControllers"] == 1:
+            states = State.objects.filter(port__id = portId, scene__group__id = groupId)
+            for state in states:
+                state.delete()
             groupPort.delete()
             return Response(status = 204)
         else:
@@ -174,7 +174,7 @@ class RemovePortFromGroup(APIView):
 class ChangeGroupName(APIView):
     queryset = Group.objects.all()
 
-    def post(self, request):
+    def put(self, request):
         data = request.data
 
         try:
