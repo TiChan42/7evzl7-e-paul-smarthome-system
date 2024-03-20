@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Card, CardBody, Image, Stack, Heading, Text, Flex, Box} from '@chakra-ui/react'
+import {Card, CardBody, Image, Stack, Heading, Text, Flex, Box, Center} from '@chakra-ui/react'
 
 
 
@@ -20,27 +20,28 @@ class Impressum extends Component {
                                 width={300}
                             />
                         </Flex>
-                        <Stack mt='6' spacing='3'>
-                            <Heading size='md' textAlign={"center"}>Infos über uns</Heading>
-                            <Text textAlign={"center"}>
-                                <strong>Angaben gemäß § 5 TMG:</strong><br />
-                                E-Paul Smart-Home<br />
-                                Fallenbrunnen 2<br />
-                                88045 Friedrichshafen<br />
-                                <br />
-                                <strong>Kontakt:</strong><br />
-                                Telefon: +49 152 05761819<br />
-                                E-Mail: mddruica@gmail.com<br />
-                                <br />
-                                <strong>Vertreten durch:</strong><br />
-                                Mathias Daniel Druica<br />
-                                <br />
-                                <strong>Haftungsausschluss:</strong><br />
-                                    <p textAlign="center">Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. <br></br>Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p><br />
-                                <br />
-                                <strong>Urheberrecht:</strong><br />
-                                Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.<br></br> Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen <br></br> des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
-                            </Text> 
+                        <Stack mt='6' spacing='3' textAlign={'center'}>
+                            <Heading size='md'>Infos über uns</Heading>
+                            <Center>
+                                <Center maxW={'95%'} display={'block'}>
+                                    <Heading size='sm' mb={1} mt={5}>Angaben gemäß § 5 TMG:</Heading>
+                                    <Text>E-Paul Smart-Home</Text>
+                                    <Text>Fallenbrunnen 2</Text>
+                                    <Text mb={4}>88045 Friedrichshafen</Text>
+                                    <Heading size='sm' mb={1} mt={5}>Kontakt:</Heading>
+                                    <Text>Telefon: -</Text>
+                                    <Text mb={4}>E-Mail: mddruica@gmail.com</Text>
+                                    <Heading size='sm' mb={1} mt={5}>Vertreten durch:</Heading>
+                                    <Text mb={4}>Mathias Daniel Druica</Text>
+                                    <Heading size='sm' mb={1} mt={5}>Haftungsausschluss:</Heading>
+                                    <Text>Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.</Text>
+                                    <Text mb={4}>Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</Text>
+                                    <Heading size='sm' mb={1} mt={5}>Urheberrecht:</Heading>
+                                    <Text>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.</Text>
+                                    <Text>Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen </Text>
+                                    <Text mb={5}> des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</Text>         
+                                </Center> 
+                            </Center>
                         </Stack>
                     </CardBody>
                 </Card>
