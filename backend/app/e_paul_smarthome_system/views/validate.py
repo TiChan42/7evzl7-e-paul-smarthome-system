@@ -13,10 +13,11 @@ class ValidatePin(APIView):
         accountId = request.data["accountId"]
         userId = request.data["userId"]
         pin = request.data["pin"].encode("utf-8")
-        account = Account.objects.get(pk = accountId)
         
-        #user = account.user.get(pk = userId)
-        user = User.objects.filter(account__id= accountId).get(id = userId)
+        try:
+            user = User.objects.get(account__id= accountId, id = userId)
+        except User.DoesNotExist:
+            return Response(status = 400)
         
         savedpin = user.pin.encode("utf-8")
         try:
@@ -29,7 +30,7 @@ class ValidatePin(APIView):
         if samePin == 0:
             return Response({"valid" : 0},status = 200)
         else:
-            return Response(status = 400)
+            return Response(status = 500)
         
 class CheckPinRequired(APIView):
     queryset = User.objects.all()
@@ -78,6 +79,6 @@ class ValidateEmail(APIView):
             if sameKey == 1:
                 account.emailVerified = True
                 account.save()
-                return Response("Deine Email wurde erfolgreich verifiziert", status = 200)
+                return Response({"message": "Deine Email wurde erfolgreich verifiziert"}, status = 200)
             else:
                 return Response({"WrongKey": 1}, status = 400)
