@@ -13,8 +13,11 @@ class Login(APIView):
 
     def post(self, request):
         data = request.data
-        password = data["password"].encode("utf-8")
-        email = data["email"]
+        try:
+            password = data["password"].encode("utf-8")
+            email = data["email"]
+        except KeyError:
+            return Response(status = 400)
         try: 
             account = Account.objects.get(email = email)
         except Account.DoesNotExist:

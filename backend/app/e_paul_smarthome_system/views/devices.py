@@ -1,6 +1,9 @@
 from ..model.account import Account
 from ..model.microcontroller import Microcontroller
 from ..model.port import Port
+from ..model.user import User
+from ..model.group import Group
+from ..model.groupPort import GroupPort
 
 from ..serializer.accountSerializer import AccountMicrocontrollerSerializer
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
@@ -50,10 +53,18 @@ class AddPort(APIView):
             type = data["type"]
             port = Port(type = type, microcontroller = microcontroller)
             port.save()
+            superuser = User.objects.get(account__microcontroller__port__id = port.id, role = "Superuser")
+            assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")
+            groupPort = GroupPort(group = assignmentGroup, port = port)
+            groupPort.save()
             return Response(status = 201)
         else: 
             port = Port(type = "controller", microcontroller = microcontroller)
             port.save()
+            superuser = User.objects.get(account__microcontroller__port__id = port.id, role = "Superuser")
+            assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")
+            groupPort = GroupPort(group = assignmentGroup, port = port)
+            groupPort.save()
             return Response({"message":"Der Port wurde automatisch auf controller gesetzt"} ,status = 201)
 """
 teststring

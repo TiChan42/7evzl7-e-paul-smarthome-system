@@ -85,7 +85,7 @@ class DeleteScene(APIView):
 class ChangeSceneName(APIView):
     queryset = Scene.objects.all()
     
-    def post(self, request):
+    def put(self, request):
         data = request.data
         
         try:

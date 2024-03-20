@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','gender','birthdate', 'rights']
+        fields = ['id','username','gender','birthdate', 'rights','role']
 
 
 class UserLoginSerializer(serializers.ModelSerializer):

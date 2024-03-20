@@ -99,7 +99,7 @@ class AddPortToGroup(APIView):
             return Response(status = 400)
         
         try:
-            group = Group.objects.get(pk = groupId)
+            group = Group.objects.get(pk = groupId, user__id = executingUserId)
         except Group.DoesNotExist:
             return Response(status = 400)
         
@@ -174,7 +174,7 @@ class RemovePortFromGroup(APIView):
 class ChangeGroupName(APIView):
     queryset = Group.objects.all()
 
-    def post(self, request):
+    def put(self, request):
         data = request.data
 
         try:
