@@ -321,7 +321,7 @@ class MicrocontrollerSignUp(APIView):
                 system("sudo systemctl restart mosquitto")
                 portTemplates = PortTemplate.objects.filter(knownControllerType = knownControllerType)
                 for portTemplate in portTemplates:
-                    port = Port(type = portTemplate.knownControllerType.type, microcontroller = microcontroller, portTemplate = portTemplate, currentStatus = portTemplate.status_default)
+                    port = Port(type = portTemplate.knownControllerType.type, microcontroller = microcontroller, name = microcontroller.name, portTemplate = portTemplate, currentStatus = portTemplate.status_default)
                     port.save()
                     superuser = User.objects.get(account__microcontroller__port__id = port.id, role = "superuser")
                     assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")

@@ -51,7 +51,7 @@ class AddPort(APIView):
         
         if data["type"]:
             type = data["type"]
-            port = Port(type = type, microcontroller = microcontroller)
+            port = Port(type = type, microcontroller = microcontroller, name = microcontroller.name)
             port.save()
             superuser = User.objects.get(account__microcontroller__port__id = port.id, role = "Superuser")
             assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")
@@ -59,7 +59,7 @@ class AddPort(APIView):
             groupPort.save()
             return Response(status = 201)
         else: 
-            port = Port(type = "controller", microcontroller = microcontroller)
+            port = Port(type = "controller", microcontroller = microcontroller, name = microcontroller.name)
             port.save()
             superuser = User.objects.get(account__microcontroller__port__id = port.id, role = "Superuser")
             assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")
