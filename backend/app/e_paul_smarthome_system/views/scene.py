@@ -43,7 +43,7 @@ class CreateScene(APIView):
             scene = Scene(name = name, group = group)
             scene.save()
             
-            ports = Port.objects.filter(group = group)
+            ports = Port.objects.filter(groupPort__group = group)
             
             for port in ports:
                 if port.id in ignoredPorts:
