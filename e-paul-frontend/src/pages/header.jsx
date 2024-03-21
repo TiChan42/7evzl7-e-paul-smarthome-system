@@ -138,7 +138,7 @@ function Header() {
             <Link
                 href="/"
                 display={"flex"}
-                p={[1, 2, 4]}
+                p={[2, 4]}
                 alignItems="center"
                 _hover={"false"}
             >
@@ -162,7 +162,7 @@ function Header() {
                 </Text>
             </Link>
             <Divider orientation="vertical" h={"70%"} borderWidth={1} />
-            <Box textAlign={"center"} p={[1, 2, 4]}>
+            <Box textAlign={"center"} p={[2, 4]}>
                 <Routes>
                     <Route
                         path="/"

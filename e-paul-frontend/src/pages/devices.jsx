@@ -194,15 +194,18 @@ function DeviceOverview() {
 
     return (
         <Box h={"100%"} w={"100%"}  marginLeft={['1%', '2%', '4%', '5%']} marginRight={['1%', '2%', '4%', '5%']}>
-            <Flex pt={4} pl={4} pr={4}>
-                <Heading color="#3e5f74">Hallo {user.username}</Heading>
-                <Spacer></Spacer>
-                <SettingsButton userRights={userRights} userRole={user.role} Text={isSmallScreen ? ("") : (" Einstellungen")}/>
-                <OpenHistoryDrawer Text={isSmallScreen ? ("") : (" Verlauf")} />
+            <Flex pt={4} pl={4} pr={4} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "start", md: "center" }}>
+                <Heading color="#3e5f74" mb={{ base: 2, md: 0 }}>Hallo {user.username}</Heading>
+                <Spacer />
+                <Flex flexDirection={'horizontal'}>
+                    <SettingsButton userRights={userRights} userRole={user.role} Text={isSmallScreen ? ("") : ("Einstellungen")} />
+                    <OpenHistoryDrawer Text={isSmallScreen ? ("") : ("Verlauf")} />
+                </Flex>
             </Flex>
 
             {isSmallScreen ? (
-                // Render the original layout for small screens
+            <>
+                { /* Render the original layout for small screens */ }
                 <Box p={4}>
                     {/* Statusmeldung */}
                     <Status />
@@ -228,9 +231,10 @@ function DeviceOverview() {
                         </TabPanels>
                     </Tabs>
                 </Box>
-
+            </>
             ) : (
-                // Render the original layout for large screens
+            <>
+                { /* Render the original layout for large screens */ }
                 <Box p={4}>
                     <Grid
                         templateRows={"repeat(2, 1fr)"}
@@ -257,7 +261,8 @@ function DeviceOverview() {
                             <Favourites favoriteClients={favoriteClients}/>
                         </GridItem>
                     </Grid>
-                </Box>
+                </Box>#
+            </>
             )}
         </Box>
     );
