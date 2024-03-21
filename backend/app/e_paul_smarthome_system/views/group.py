@@ -92,6 +92,7 @@ class AddPortToGroup(APIView):
         data = request.data
         
         try:
+            userId = data["userId"]
             groupId = data["groupId"]
             portId = data["portId"]
             executingUserId = data["executingUserId"]
@@ -99,7 +100,7 @@ class AddPortToGroup(APIView):
             return Response(status = 400)
         
         try:
-            group = Group.objects.get(pk = groupId, user__id = executingUserId)
+            group = Group.objects.get(pk = groupId, user__id = userId)
         except Group.DoesNotExist:
             return Response(status = 400)
         
@@ -114,6 +115,7 @@ class AddPortToGroup(APIView):
             return Response(status = 400)
         
         try:
+            user = User.objects.get(id = userId)
             executingUser = User.objects.get(id = executingUserId)
         except User.DoesNotExist:
             return Response(status = 400)
