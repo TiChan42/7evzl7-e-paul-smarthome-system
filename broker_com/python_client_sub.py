@@ -2,6 +2,7 @@
 import random
 import time
 import json
+import requests
 
 from paho.mqtt import client as mqtt_client
 
@@ -19,8 +20,10 @@ class python_client:
         time.sleep(1)  # Warten Sie eine Sekunde, um der Verbindung Zeit zum Aufbau zu geben
     
     def fetch_topics(self):
-        #hier dann den part aus der notes.txt integrieren
-        self.topics_to_subscribe = ["robbe0503@t-online.de","testmail"]
+        apiMailAnswer = requests.get("http://epaul-smarthome.de:8000/api/getEmails")
+        mails = apiMailAnswer.json()
+        self.topics_to_subscribe = mails["emails"]
+
 
     def connect_mqtt(self):
         def on_connect(client, userdata, flags, rc):
@@ -41,11 +44,12 @@ class python_client:
 
     def subscribe(self):
         def on_message(client, userdata, msg):
-            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+            #print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
             message = msg.payload.decode()
             data = json.loads(message)
             if data["type"] == 2:
-                #print(message)
+                print(data)
+                requests.put("http://epaul-smarthome.de:8000/api/port/setCurrentState", data)
                 pass
 
         for topic in self.topics_to_subscribe:
