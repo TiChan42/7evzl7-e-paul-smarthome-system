@@ -121,12 +121,32 @@ testcl = python_client()
 
 
 
-testcl.publish("robbe0503@t-online.de", "7", "switchOff")
 #testcl.publish("robbe0503@t-online.de", "7", "switchOn")
-#testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#00FF00")
-#testcl.publish("robbe0503@t-online.de", "7", "changeLampBrightness", 200)
-#testcl.publishScene("robbe0503@t-online.de", "7", 0, 255, 0, 0, 100)	
-time.sleep(10)
+#testcl.publish("robbe0503@t-online.de", "7", "switchOn")
+'''
+colors = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 
+for i in range(0, 16):
+    for j in range(0, 16):
+        for k in range(0, 16):
+            testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", f"#{colors[i]}{colors[i]}{colors[j]}{colors[j]}{colors[k]}{colors[k]}")
+            time.sleep(1)
+'''
+
+'''
+while True:
+
+    testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#FF0000")
+    time.sleep(3)
+    testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#00FF00")
+    time.sleep(3)
+    testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#0000FF")
+    #testcl.publish("robbe0503@t-online.de", "7", "changeLampBrightness", 200)
+    #testcl.publishScene("robbe0503@t-online.de", "7", 0, 255, 0, 0, 100)	
+    time.sleep(3)
+'''
+
+testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#FF0000")
+time.sleep(3)
 
         
