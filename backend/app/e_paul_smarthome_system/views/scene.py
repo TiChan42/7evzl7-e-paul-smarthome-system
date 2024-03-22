@@ -3,6 +3,7 @@ from ..model.group import Group
 from ..model.user import User
 from ..model.state import State
 from ..model.port import Port
+from ..model.microcontroller import Microcontroller
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -200,38 +201,38 @@ class SceneRemovePort(APIView):
 
 class UpdateState(APIView):
     queryset = State.objects.all()
-    
-    def post(self, request):
+  
+    def put(self, request):
         data = request.data
         
         try:
-            executingUserId = data["executingUserId"]
-            sceneId = data["sceneId"]
-            portId = data["portId"]
+            password = data["key"]
+            id = data["microcontrollerId"]
+            currentStatus = data["state"]
         except KeyError:
             return Response(status = 400)
         
         try:
-            user = User.objects.get(id = executingUserId)
-        except User.DoesNotExist:
+            microcontroller = Microcontroller.objects.get(pk = id)
+        except Microcontroller.DoesNotExist:
             return Response(status = 400)
         
         try:
-            scene = Scene.objects.get(id = sceneId, group__user = user)
-        except Scene.DoesNotExist:
-            return Response(status = 400)
-        
-        try:
-            port = Port.objects.get(id = portId, groupPort__group = scene.group)
+            port = Port.objects.get(microcontroller = microcontroller)
         except Port.DoesNotExist:
             return Response(status = 400)
-        
+              
         try:
-            state = State.objects.get(scene = scene, port = port)
-        except State.DoesNotExist:
+            if password == microcontroller.key:
+                samePassword = 1
+            else:
+                samePassword = 0
+        except ValueError:
             return Response(status = 400)
         
-        state.state = port.currentStatus
-        state.save()
-        
-        return Response(status = 204)
+        if samePassword == 0:
+            return Response(status = 400)
+        else:
+            port.currentStatus = currentStatus
+            port.save()
+            return Response(status = 204)
