@@ -16,16 +16,16 @@ import FAQ from "@/pages/faq";
 //router
 const router = createBrowserRouter (
     createRoutesFromElements (
-        <Route exact path='/' element={<RootLayout/>}>
+        <Route exact path='*' element={<RootLayout/>}>
             <Route index element={<Welcome/>}/>
-            <Route path="/about" element={<About/>}/>
-            <Route path="/chooseUser" element={<ChooseUser/>}/>
-            <Route path="/imprint" element={<Imprint/>}/>
-            <Route path="/devices" element={<Devices/>}/>
-            <Route path="/faq" element={<FAQ/>}/>
-            <Route path="/settings" element={<Settings/>}/>
-            <Route path='/userAdministration' element={<UserAdministration/>}/>
-            <Route path='/modalTest' element={<ModalTest/>}/>
+            <Route path="about" element={<About/>}/>
+            <Route path="chooseUser" element={<ChooseUser/>}/>
+            <Route path="imprint" element={<Imprint/>}/>
+            <Route path="devices" element={<Devices/>}/>
+            <Route path="faq" element={<FAQ/>}/>
+            <Route path="settings" element={<Settings/>}/>
+            <Route path='userAdministration' element={<UserAdministration/>}/>
+            <Route path='modalTest' element={<ModalTest/>}/>
         </Route>
     )
 )
