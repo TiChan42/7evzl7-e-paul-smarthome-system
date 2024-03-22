@@ -11,9 +11,9 @@ function InitialFocus() {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const deleteUser = async () => {
-        console.log(executingUserID)
-        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + executingUserID, {
-            method: 'DELETE',
+        console.log(executingUserID, accountID, userID)
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/deleteUser', {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -106,9 +106,25 @@ class Settings extends Component {
                 var message = await res.json()
                 if (message.error == "Username existiert bereits.") {
                     console.log("username existiert bereits")
+                    this.setState({
+                        toastTitle: "Ungültige Eingabe",
+                        toastDescription: "Dieser Username existiert bereits.",
+                        toastStatus: "error",
+                        toastIsClosable: true,
+                        toastDuration: 5000,
+                        openToastTrigger: true
+                    })
                 }
                 else if (res.status != 400) {
                     console.log("erfolg")
+                    this.setState({
+                        toastTitle: "Erfolg!",
+                        toastDescription: "Ihr Benutzername wurde erfolgreich geändert.",
+                        toastStatus: "success",
+                        toastIsClosable: true,
+                        toastDuration: 5000,
+                        openToastTrigger: true
+                    })
                 }
                 else {
                     console.log("kaputt")
@@ -123,18 +139,11 @@ class Settings extends Component {
                     toastDuration: 5000,
                     openToastTrigger: true
                 })
-                //this.state.toastTitle = "Erfolg!"
-
-                //this.state.toastDescription = "Ihr Benutzername wurde geändert."
-                //this.state.toastStatus = "success"
-                //this.state.toastIsClosable = true
-                //this.state.toastDuration = 7000
-                //this.state.openToastTrigger = true
             }
         };
 
         const updateGender = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/', {
+            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeUserInformation', {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -142,19 +151,20 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                    gender: this.state.newGender,
-                    executingUserId: this.executingUserID,
-                    userId: this.userID
+                        userId: this.userID,
+                        executingUserId: this.executingUserID,
+                        gender: this.state.newGender
 
                 })
             })
-            //this.setState(toastTitle, "Erfolg")
-            this.state.toastTitle = "Erfolg!"
-            this.state.toastDescription = "Ihr Geschlecht wurde geändert."
-            this.state.toastStatus = "success"
-            this.state.toastIsClosable = true
-            this.state.toastDuration = 7000
-            this.state.openToastTrigger = true
+            this.setState({
+                toastTitle: "Erfolg!",
+                toastDescription: "Ihr Geschlecht wurde geändert.",
+                toastStatus: "success",
+                toastIsClosable: true,
+                toastDuration: 5000,
+                openToastTrigger: true
+            })
         };
 
         const validatePin = async () => {
