@@ -59,9 +59,9 @@ function InitialFocus() {
 
 function AddToast(props) {
     const toast = useToast()
+    // console.log(props.title + " " + props.status + " " + props.duration + " " + props.isClosable + " " + props.description)
+    // console.log(props.trigger)
     useEffect(() => {
-        console.log(props.title + " " + props.status + " " + props.duration + " " + props.isClosable+ " " + props.description)
-        console.log(props.trigger)
         if (props.trigger) {
             if (props.title && props.status && props.duration && props.isClosable && props.description) {
                 toast({
@@ -71,10 +71,11 @@ function AddToast(props) {
                     isClosable: props.isClosable,
                     description: props.description
                 })
-                props.afterTrigger();
+                props.afterTrigger()
             }
         }
-    }, [props.trigger])
+    });
+
     return (<></>)
 }
 
@@ -88,26 +89,48 @@ class Settings extends Component {
         const { activeTab } = this.state;
 
         const updateUsername = async () => {
-            console.log(this.accountID + " " + this.state.newUsername + " " + this.executingUserID)
-            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/', {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    accountId: this.accountID,
-                    username: this.state.newUsername,
-                    executingUserId: this.executingUserID,
-                    userId: this.userID
+            if (this.state.newUsername) {
+                const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeUserInformation', {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: this.accountID,
+                        userId: this.userID,
+                        username: this.state.newUsername,
+                        executingUserId: this.executingUserID
+                    })
                 })
-            })
-            this.state.toastTitle = "Erfolg!"
-            this.state.toastDescription = "Ihr Benutzername wurde geändert."
-            this.state.toastStatus = "success"
-            this.state.toastIsClosable = true
-            this.state.toastDuration = 7000
-            this.state.openToastTrigger = true
+                var message = await res.json()
+                if (message.error == "Username existiert bereits.") {
+                    console.log("username existiert bereits")
+                }
+                else if (res.status != 400) {
+                    console.log("erfolg")
+                }
+                else {
+                    console.log("kaputt")
+                }
+            }
+            else {
+                this.setState({
+                    toastTitle: "Ungültige Eingabe",
+                    toastDescription: "Sie haben das Feld leer gelassen.",
+                    toastStatus: "error",
+                    toastIsClosable: true,
+                    toastDuration: 5000,
+                    openToastTrigger: true
+                })
+                //this.state.toastTitle = "Erfolg!"
+
+                //this.state.toastDescription = "Ihr Benutzername wurde geändert."
+                //this.state.toastStatus = "success"
+                //this.state.toastIsClosable = true
+                //this.state.toastDuration = 7000
+                //this.state.openToastTrigger = true
+            }
         };
 
         const updateGender = async () => {
@@ -125,6 +148,7 @@ class Settings extends Component {
 
                 })
             })
+            //this.setState(toastTitle, "Erfolg")
             this.state.toastTitle = "Erfolg!"
             this.state.toastDescription = "Ihr Geschlecht wurde geändert."
             this.state.toastStatus = "success"
@@ -208,49 +232,52 @@ class Settings extends Component {
 
         if (activeTab === 'allgemein') {
             return (
-                <Card bg={"#218395"} w='100%' h='100%' >
+                <>
+                    <AddToast onChange={"update"} title={this.state.toastTitle} status={this.state.toastStatus} duration={this.state.toastDuration} isClosable={this.state.toastIsClosable} description={this.state.toastDescription} trigger={this.state.openToastTrigger} afterTrigger={(() => { this.state.openToastTrigger = false })} />
+                    <Card bg={"#218395"} w='100%' h='100%' >
 
-                    <CardHeader>
-                        <Heading size='lg' color={"white"}>Allgemein</Heading>
-                    </CardHeader>
-                    <Box m={4}>
-                        <Text color={"white"}>Hier können Sie Ihren Benutzernamen ändern:</Text>
-                        <Input
-                            isInvalid
-                            type="text"
-                            errorBorderColor='white'
-                            placeholder='Neuer Benutzername'
-                            _placeholder={{ color: 'white' }}
-                            focusBorderColor={'red'}
-                            marginTop={'1em'}
+                        <CardHeader>
+                            <Heading size='lg' color={"white"}>Allgemein</Heading>
+                        </CardHeader>
+                        <Box m={4}>
+                            <Text color={"white"}>Hier können Sie Ihren Benutzernamen ändern:</Text>
+                            <Input
+                                isInvalid
+                                type="text"
+                                errorBorderColor='white'
+                                placeholder='Neuer Benutzername'
+                                _placeholder={{ color: 'white' }}
+                                focusBorderColor={'red'}
+                                marginTop={'1em'}
 
-                            value={this.state.newUsername}
-                            onChange={(e) => this.setState({ newUsername: e.target.value })}
-                        />
-                        <Button onClick={updateUsername} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Benutzernamen aktualisieren</Button>
-                    </Box>
+                                value={this.state.newUsername}
+                                onChange={(e) => this.setState({ newUsername: e.target.value })}
+                            />
+                            <Button onClick={updateUsername} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Benutzernamen aktualisieren</Button>
+                        </Box>
 
-                    <Box m={4}>
-                        <Text color={"white"}>Hier können Sie Ihr Geschlecht ändern:</Text>
-                        <Select
-                            errorBorderColor='white'
-                            borderColor={'white'}
-                            focusBorderColor={'red'}
-                            placeholder='Geschlecht wählen'
-                            marginTop={'1em'}
-                            value={this.state.newGender}
-                            onChange={(e) => this.setState({ newGender: e.target.value })}
-                        >
-                            <option value='männlich'>männlich</option>
-                            <option value='weiblich'>weiblich</option>
-                            <option value='divers'>divers</option>
-                        </Select>
-                        <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
-                        <br></br><br></br>
-                        <Text color={"white"}>Hier können Sie Ihren User löschen:</Text>
-                        <InitialFocus />
-                    </Box>
-                </Card>
+                        <Box m={4}>
+                            <Text color={"white"}>Hier können Sie Ihr Geschlecht ändern:</Text>
+                            <Select
+                                errorBorderColor='white'
+                                borderColor={'white'}
+                                focusBorderColor={'red'}
+                                placeholder='Geschlecht wählen'
+                                marginTop={'1em'}
+                                value={this.state.newGender}
+                                onChange={(e) => this.setState({ newGender: e.target.value })}
+                            >
+                                <option value='männlich'>männlich</option>
+                                <option value='weiblich'>weiblich</option>
+                                <option value='divers'>divers</option>
+                            </Select>
+                            <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
+                            <br></br><br></br>
+                            <Text color={"white"}>Hier können Sie Ihren User löschen:</Text>
+                            <InitialFocus />
+                        </Box>
+                    </Card>
+                </>
             );
 
         } else if (activeTab === 'modus') {
