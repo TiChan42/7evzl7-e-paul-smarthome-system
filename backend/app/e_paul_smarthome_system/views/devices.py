@@ -74,3 +74,42 @@ teststring
 }
 
 """
+
+class UpdateCurrentState(APIView):
+    queryset = Port.objects.all()
+
+    def put(self, request):
+        data = request.data
+        try:
+            password = data["key"]
+            id = data["microcontrollerId"]
+            currentStatus = data["state"]
+        except KeyError:
+            return Response("lol",status = 400)
+        
+        try:
+            microcontroller = Microcontroller.objects.get(pk = id)
+        except Microcontroller.DoesNotExist:
+            return Response("mein",status = 400)
+        
+        try:
+            port = Port.objects.get(microcontroller = microcontroller)
+        except Port.DoesNotExist:
+            return Response(status = 400)
+        
+        #microcontrollerKey = microcontroller.key.encode("utf-8")
+        
+        try:
+            if password == microcontroller.key:
+                samePassword = 1
+            else:
+                samePassword = 0
+        except ValueError:
+            return Response("Code",status = 400)
+        
+        if samePassword == 0:
+            return Response("ist Scheiße",status = 400)
+        else:
+            port.currentStatus = currentStatus
+            port.save()
+            return Response(status = 204)

@@ -120,8 +120,8 @@ class SignUp(APIView):
 """     
 for testing purposes    
 {
-"email" : "test",
-"password" : "435"
+"email" : "robbe0503@t-online.de",
+"password" : "123"
 }
 """
 
@@ -310,7 +310,7 @@ class MicrocontrollerSignUp(APIView):
                 key = id_generator()
                 microcontroller = Microcontroller(name=name, account = account, key = key, type = type)
                 microcontroller.save()
-                with open("/etc/mosquitto/authbuffer", "a") as myfile:
+                """with open("/etc/mosquitto/authbuffer", "a") as myfile:
                     myfile.write(str(microcontroller.id) + ":" + key)
                 system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
                 with open("/etc/mosquitto/authbuffer", "r+") as myfile:
@@ -318,7 +318,7 @@ class MicrocontrollerSignUp(APIView):
                     myfile.truncate(0)
                 with open("/etc/mosquitto/auth", "a") as myfile:
                     myfile.write(str(key))
-                system("sudo systemctl restart mosquitto")
+                system("sudo systemctl restart mosquitto")"""
                 portTemplates = PortTemplate.objects.filter(knownControllerType = knownControllerType)
                 for portTemplate in portTemplates:
                     port = Port(type = portTemplate.knownControllerType.type, microcontroller = microcontroller, name = microcontroller.name, portTemplate = portTemplate, currentStatus = portTemplate.status_default)
@@ -336,9 +336,9 @@ class MicrocontrollerSignUp(APIView):
 
 """
 {
-"email" : "test",
-"password" : "435",
-"name" : "Zelda's Microcontroller"
+"email" : "robbe0503@t-online.de",
+"password" : "123",
+"name" : "Zelda's Microcontroller",
 "type" : "lamp_1"
 }
 """
