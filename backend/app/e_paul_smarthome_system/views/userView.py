@@ -35,9 +35,12 @@ class DeleteUserView(APIView):
     queryset = User.objects.all()
 
     def post(self, request):
-        userid = request.data["userId"]
-        executingUserId = request.data["executingUserId"]
-        accountId = request.data["accountId"]
+        try:
+            userid = request.data["userId"]
+            executingUserId = request.data["executingUserId"]
+            accountId = request.data["accountId"]
+        except KeyError:
+            return Response(status = 400)
         
         try:
             user = User.objects.get(pk = userid)

@@ -13,6 +13,4 @@ class Logout(APIView):
             return Response(status = 400)
         
         return Response(status = 204)
-        
-
-        
+          

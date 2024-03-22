@@ -56,6 +56,17 @@ class CreateScene(APIView):
         else:
             return Response(status = 400)
 
+"""
+teststring:
+{
+"executingUserId": 4,
+"groupId" : 7,
+"name": "Admin Scene",
+"ignoredPorts" : []
+}
+"""
+
+
 class DeleteScene(APIView):
     queryset = Scene.objects.all()
     

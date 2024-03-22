@@ -64,11 +64,6 @@ Teststring:
 class SingleUserSettingsView(APIView):
     queryset = User.objects.all()
 
-    def get(self, request, userId):
-        user = User.objects.get(pk = userId)
-        serializer = UserDetailSerializer(user)
-        return Response(serializer.data, status = 200)
-
     def put(self, request):
         
         try:
@@ -120,7 +115,7 @@ class SingleUserSettingsView(APIView):
                 user.save()
                 return Response(status = 204)
             elif usernameExists:
-                return Response("Username existiert bereits.", status=400)
+                return Response({"error":"Username existiert bereits."}, status=400)
             else:
                 return Response(status = 400)
         else:
