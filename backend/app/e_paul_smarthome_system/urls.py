@@ -9,7 +9,7 @@ from .views.logout import Logout
 from .views.home import HomeView
 from .views.devices import DeviceView, AddPort, UpdateCurrentState
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
-from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights, GetCommands, GetScenes, GetEmails
+from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights, GetCommands, GetScenes, GetEmails, GetScenePorts
 from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup, ChangeGroupName
 from .views.scene import CreateScene, DeleteScene, ChangeSceneName, SceneAddPort, UpdateState, SceneRemovePort
 from django.urls import path
@@ -60,4 +60,5 @@ urlpatterns = [
     path("group/scene/addPort",                         SceneAddPort.as_view(),             name = "addPortToScene"),
     path("group/scene/removePort",                      SceneRemovePort.as_view(),          name = "removePortFromScene"),
     path("group/scene/UpdateState",                     UpdateState.as_view(),              name = "updateState"),
+    path("group/scene/getPorts/<sceneId>",              GetScenePorts.as_view(),            name = "getPortsFromScene"),
     ]

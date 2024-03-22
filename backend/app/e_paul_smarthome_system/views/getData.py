@@ -133,6 +133,7 @@ class GetScenes(APIView):
         serializer = SceneSerializer(scenes, many = True)
         return Response(serializer.data, status = 200)
 
+
 class GetEmails(APIView):
     queryset = Account.objects.all()
     
@@ -142,3 +143,19 @@ class GetEmails(APIView):
         for account in accounts:
             emails.append(account.email)
         return Response({"emails": emails}, status = 200)
+    
+
+class GetScenePorts(APIView):
+    queryset = Scene.objects.all()
+    
+    def get(self, request, sceneId):
+        try:
+            scene = Scene.objects.get(pk = sceneId)
+        except Scene.DoesNotExist:
+            return Response(status = 400)
+        
+        ports = Port.objects.filter(state__scene = scene)
+        
+        scenePorts = [port.id for port in ports]
+        
+        return Response({"ids": scenePorts}, status = 200)
