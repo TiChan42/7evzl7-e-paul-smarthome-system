@@ -4,6 +4,8 @@ import React, { Component, useEffect, useState } from 'react';
 
 function InitialFocus() {
     const executingUserID = sessionStorage.getItem('executingUserID');
+    const accountID = decryptString(sessionStorage.getItem('accountID'));
+    const userID = decryptString(sessionStorage.getItem('userToEdit'));
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -17,7 +19,9 @@ function InitialFocus() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: executingUserID
+                userId: userID,
+                accountId: accountID,
+                executingUserId: executingUserID
             })
         })
 
@@ -76,7 +80,7 @@ function AddToast(props) {
 
 class Settings extends Component {
     state = { activeTab: 'allgemein', isModalOpen: false, toastTitle: "123", toastStatus: "error", toastDuration: 5000, toastIsClosable: true, toastDescription: "descr", openToastTrigger: false };
-    executingUserID = sessionStorage.getItem('executingUserID');
+    executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
     accountID = decryptString(sessionStorage.getItem('accountID'));
     userID = decryptString(sessionStorage.getItem('userToEdit'));
 
@@ -84,7 +88,8 @@ class Settings extends Component {
         const { activeTab } = this.state;
 
         const updateUsername = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
+            console.log(this.accountID + " " + this.state.newUsername + " " + this.executingUserID)
+            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/', {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -92,13 +97,21 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                    username: this.state.newUsername
+                    username: this.state.newUsername,
+                    executingUserId: this.executingUserID,
+                    userId: this.userID
                 })
             })
+            this.state.toastTitle = "Erfolg!"
+            this.state.toastDescription = "Ihr Benutzername wurde geändert."
+            this.state.toastStatus = "success"
+            this.state.toastIsClosable = true
+            this.state.toastDuration = 7000
+            this.state.openToastTrigger = true
         };
 
         const updateGender = async () => {
-            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/' + this.userID, {
+            const res = await fetch('http://epaul-smarthome.de:8000/api/settings/', {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -106,9 +119,18 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                    gender: this.state.newGender
+                    gender: this.state.newGender,
+                    executingUserId: this.executingUserID,
+                    userId: this.userID
+
                 })
             })
+            this.state.toastTitle = "Erfolg!"
+            this.state.toastDescription = "Ihr Geschlecht wurde geändert."
+            this.state.toastStatus = "success"
+            this.state.toastIsClosable = true
+            this.state.toastDuration = 7000
+            this.state.openToastTrigger = true
         };
 
         const validatePin = async () => {
@@ -148,14 +170,21 @@ class Settings extends Component {
                             previousPin: this.state.oldPin
                         })
                     })
+
+                    this.state.toastTitle = "Erfolg!"
+                    this.state.toastDescription = "Ihr PIN wurde erfolgreich geändert."
+                    this.state.toastStatus = "success"
+                    this.state.toastIsClosable = true
+                    this.state.toastDuration = 7000
+                    this.state.openToastTrigger = true
                 }
                 else {
                     // Invalid Old Pin
                     this.setState({ wrongPinOpen: true })
                     console.log("old pin is not valid")
                     this.state.toastTitle = "PIN ist falsch!"
-                    this.state.toastDescription = "Test"
-                    this.state.toastStaus = "error"
+                    this.state.toastDescription = "Ihr eingegebener PIN ist falsch. Bitte versuchen Sie es erneut."
+                    this.state.toastStatus = "error"
                     this.state.toastIsClosable = true
                     this.state.toastDuration = 7000
                     this.state.openToastTrigger = true
@@ -164,6 +193,12 @@ class Settings extends Component {
             }
             else {
                 // Pins are different
+                this.state.toastTitle = "PINs sind verschieden!"
+                this.state.toastDescription = "Geben Sie zwei mal den gleichen PIN ein, um diesen zu ändern."
+                this.state.toastStaus = "error"
+                this.state.toastIsClosable = true
+                this.state.toastDuration = 7000
+                this.state.openToastTrigger = true
                 this.setState({ diffPinOpen: true })
                 console.log("new pins are different")
 
@@ -247,8 +282,6 @@ class Settings extends Component {
                                 <PasswordInput text="Neuer PIN" pinName="newPin" class={this} />
                                 <PasswordInput text="Neuen PIN Bestätigen" pinName="newPinRepeat" class={this} />
                             </Stack>
-                            <AlertDialogExample open={this.state.wrongPinOpen} alertStatus={"error"} alertTitle={"Ihre alte PIN ist falsch!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"} />
-                            <AlertDialogExample open={this.state.diffPinOpen} alertStatus={"error"} alertTitle={"Die PINs stimmen nicht überein!"} AlertDescription={"Bitte versuchen Sie es erneut."} margin={"2em"} />
                             <Button onClick={updatePin} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
                         </Box>
                     </Card>
@@ -315,21 +348,5 @@ export function PasswordInput(props) {
                 </Button>
             </InputRightElement>
         </InputGroup>
-    )
-}
-
-
-function AlertDialogExample(props) {
-    var openvar = props.open
-    return (
-        <>
-            {openvar ?
-                <Alert status={props.alertStatus} >
-                    <AlertIcon />
-                    <AlertTitle>{props.alertTitle}</AlertTitle>
-                    <AlertDescription>{props.AlertDescription}</AlertDescription>
-                </Alert>
-                : <></>}
-        </>
     )
 }

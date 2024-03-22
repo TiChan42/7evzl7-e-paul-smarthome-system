@@ -137,7 +137,6 @@ const AccountSettingsModal = (props) => {
                                 <ValidateActionModal openModal={openChangeMail} closeModal={() => { setopenChangeMail(false) }} title={"E-Mail ändern?"} content={"Möchten Sie wirklich Ihre E-Mail ändern?"} execute={updateEmail} />
                                 <br></br><br></br>
                                 <Text color={"white"}>Hier können Sie Ihren Account löschen:</Text>
-                                {/*<DeleteAcc />*/}
                                 <Button onClick={() => setOpenValidateDeleteAcc(true)} colorScheme='red' variant='solid' marginLeft={'2em'} marginTop={'1em'}>Account löschen</Button>
                                 <ValidateActionModal openModal={openValidateDeleteAcc} closeModal={() => { setOpenValidateDeleteAcc(false) }} title={"Account löschen?"} content={"Möchten Sie wirklich Ihren E-Paul Account löschen? Diese Aktion kann nicht rückgängig gemacht werden."} execute={deleteAccount} />
                             </Box>
