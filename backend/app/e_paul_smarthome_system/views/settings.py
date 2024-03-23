@@ -9,6 +9,7 @@ from ..serializer.userSerializer import UserDetailSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import re
 from bcrypt import hashpw, gensalt, checkpw
 
 class RightsSettings(APIView):
@@ -148,16 +149,19 @@ class ChangePin(APIView):
             return Response(status = 400)
 
         if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
+            if user.role == "superuser" or user.role == "admin":
+                check = re.match(r"\b\d{3,32}\b", pin)
+            if check:
+                pin = pin.encode("utf-8")
+                pinHash = hashpw(pin, salt=gensalt())
+                pin = pinHash.decode("utf-8")
+                user.pin = pin
+                user.save()
+                return Response(status = 204)    
             if not bool(pin):
                 user.pin = user.__class__._meta.get_field('pin').default
                 user.save()
-                return Response(status = 200)  
-            pin = pin.encode("utf-8")
-            pinHash = hashpw(pin, salt=gensalt())
-            pin = pinHash.decode("utf-8")
-            user.pin = pin
-            user.save()
-            return Response(status = 200)
+                return Response(status = 200)   
         else:
             return Response(status = 400)  
 """
