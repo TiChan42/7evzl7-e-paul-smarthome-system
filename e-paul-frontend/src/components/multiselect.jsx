@@ -9,7 +9,8 @@ import {
     WrapItem,
     Box,
     Checkbox,
-    Center
+    Center,
+    Input
  } from "@chakra-ui/react"
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import React, { useState, useEffect, useRef } from 'react';
@@ -17,6 +18,7 @@ import React, { useState, useEffect, useRef } from 'react';
 export default function MultiSelect(props) {
     const [selectedItems, setSelectedItems] = useState([]);
     const [items, setItems] = useState(props.items);
+    const [changeInit, setChangeInit] = useState(true);
     const contentRef = useRef(null);
 
     const handleScroll = (event) => {
@@ -26,6 +28,37 @@ export default function MultiSelect(props) {
             contentElement.scrollTop += deltaY;
         }
     };
+
+    //setzt am anfang die selectetItems auf die Items mit den Values von props.preSelectValues
+    useEffect(() => {
+        setChangeInit(true);
+        if (props.preSelectValues && props.preSelectValues.length > 0) {
+            setSelectedItemsWithoutDuplicates(props.preSelectValues.map((value) => props.items.find((item) => item['value'] === value)))
+        }
+        // eslint-disable-next-line
+    }, []);
+
+    //setzt selectetItems ohne Duplikate
+    const setSelectedItemsWithoutDuplicates = (items) => {
+        let result = [];
+        items.forEach((item) => {
+            if (!result.includes(item)) {
+                result.push(item);
+            }
+        });
+        setSelectedItems(result);
+    }
+
+    //lädt die Items neu, wenn sich die props.items ändern
+    useEffect(() => {
+        if (changeInit) {
+            setChangeInit(false);
+        } else {
+            props.onSelect(selectedItems);
+        }
+        // eslint-disable-next-line
+    }, [selectedItems]);
+
 
     return (
         <Menu w={'100%'}>
@@ -43,6 +76,8 @@ export default function MultiSelect(props) {
                         maxH={'210px'}
                         overflowY={'hidden'}
                         onWheel={handleScroll}
+                        _hover={{ bg: props.colorScheme + '.150' }}
+                        _active={{ bg: props.colorScheme + '.250' }}
                     >
                         {selectedItems[0] ? (
                             <Box
@@ -56,7 +91,7 @@ export default function MultiSelect(props) {
                                     {selectedItems.map((item, index) => {
                                         return (
                                             <WrapItem key={'MultiSelect-Preview' + index}>
-                                                <Tag colorScheme={props.colorScheme}>
+                                                <Tag bg={props.colorScheme + '.400'}>
                                                     <TagLabel>{item['name']}</TagLabel>
                                                 </Tag>
                                             </WrapItem>
@@ -68,13 +103,16 @@ export default function MultiSelect(props) {
                             <>{props.placeHolder}</>
                         )}
                     </MenuButton>
-                    <MenuList w={'100%'} borderColor={props.colorScheme} maxH ={'250px'} overflow={'hidden'} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                    <MenuList w={'100%'} borderColor={props.colorScheme} maxH ={'250px'} overflow={'hidden'} css={{ '&::-webkit-scrollbar': { display: 'none' } }} bg={props.colorScheme + '.100'}>
                     
-                        <Box w={'100%'} mb={2} ml={5} >
-                            <input
+                        <Center  mb={2} >
+                            <Input
+                                focusBorderColor={props.colorScheme+'.500'}
+                                size= 'sm'
                                 type="text"
                                 placeholder="Suche..."
-                                borderColor={props.colorScheme+'.500'}
+                                borderColor={props.colorScheme+'.200'}
+                                _hover={{ borderColor: props.colorScheme+'.300' }}
                                 onChange={(event) => {
                                     let search = event.target.value;
                                     let filteredItems = props.items.filter((item) => {
@@ -82,10 +120,9 @@ export default function MultiSelect(props) {
                                     });
                                     setItems(filteredItems);
                                 }}
-                                w={'60px'}
-                                p={2}
+                                w={'90%'}
                             />
-                        </Box>
+                        </Center>
                         <Box w={'100%'}>
                             <Checkbox
                                 borderBottom={'1px'}
@@ -94,9 +131,9 @@ export default function MultiSelect(props) {
                                 mb={1}
                                 onChange={(event) => {
                                     if (event.target.checked) {
-                                        setSelectedItems(items);
+                                        setSelectedItemsWithoutDuplicates(items);
                                     } else {
-                                        setSelectedItems([]);
+                                        setSelectedItemsWithoutDuplicates([]);
                                     }
                                 }}
                                 isChecked={selectedItems.length === items.length}
@@ -107,7 +144,7 @@ export default function MultiSelect(props) {
                                 Alle auswählen
                             </Checkbox>
                         </Box>
-                        <Box m={2} w={'100%'}overflowY={'auto'} overflowX={'hidden'} maxH={'210px'} css={{ '&::-webkit-scrollbar': { display: 'none' }}} pb={'40px'}>
+                        <Box m={2} w={'100%'}overflowY={'auto'} overflowX={'hidden'} maxH={'210px'} __css={{  '&::-webkit-scrollbar': { backgroundColor: 'transparent', width: '3px'}, '&::-webkit-scrollbar-thumb': { backgroundColor: 'teal.600', borderRadius: 'full'}}} pb={'40px'}>
                             
                             {items.map((item, index) => {
                                 return (
@@ -115,13 +152,13 @@ export default function MultiSelect(props) {
                                         <Checkbox
                                             onChange={(event) => {
                                                 if (event.target.checked) {
-                                                    setSelectedItems([...selectedItems, item]);
+                                                    setSelectedItemsWithoutDuplicates([...selectedItems, item]);
                                                 } else {
-                                                    setSelectedItems(selectedItems.filter((value) => value !== item));
+                                                    setSelectedItemsWithoutDuplicates(selectedItems.filter((value) => value !== item));
                                                 }
                                             }}
                                             borderBottom={'1px'}
-                                            borderColor={props.colorScheme+'.100'}
+                                            borderColor={props.colorScheme+'.200'}
                                             w={'90%'}
                                             mb={2}
                                             pb={2}

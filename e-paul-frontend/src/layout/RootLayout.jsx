@@ -9,7 +9,7 @@ export default function RootLayout() {
         <ChakraProvider theme={theme}>
             <Box bg='gray.50' h='100vh' overflow='hidden'>
                 <Header/>
-                <Box h='calc(100vh - 120px);' overflowY='auto' bg = {'teal.10'}>
+                <Box h='calc(100vh - 120px);' overflowY='auto' bg = {'teal.30'}>
                     <Outlet/>
                 </Box>
                 <Footer/>

@@ -26,11 +26,11 @@ import {
     SimpleGrid,
     Text,
     Tabs,
-    Tab,
+    Tab
 } from "@chakra-ui/react";
-import { EditIcon } from "@chakra-ui/icons";
-import { SettingsIcon } from "@chakra-ui/icons";
+import { SettingsIcon,ArrowRightIcon } from "@chakra-ui/icons";
 import AddGroupDialog from "@/components/addGroupDialog";
+import EditGroupDialog from "@/components/editGroupDialog";
 import AddDeviceDialog from "@/components/addDeviceDialog";
 import OpenHistoryDrawer from "@/components/openhistoryDrawer";
 import { decryptString, encryptString } from '@/utils/encryptionUtils';
@@ -39,6 +39,7 @@ import { MdArrowForwardIos } from "react-icons/md";
 import Clock from 'react-live-clock';
 import {env} from '@/utils/env';
 import { useBreakpointValue } from "@chakra-ui/react";
+import React from "react";
 
 
 function DeviceOverview() {
@@ -50,7 +51,9 @@ function DeviceOverview() {
     const [favoriteClients, setFavoriteClients] = useState([]);
     const [user, setUser] = useState([]);
     const [userClientIDs, setUserClientIDs] = useState([]);
+    //eslint-disable-next-line
     const [groupID, setGroupID] = useState();
+
     const [userRights, setUserRights] = useState([]);
     const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
@@ -64,6 +67,7 @@ function DeviceOverview() {
     //Beim Öffnen der Seite die Daten asynchron laden
     useEffect( () => {
         fetchData();
+        // eslint-disable-next-line
     }, []);	
 
     const fetchData = async () => {
@@ -138,7 +142,6 @@ function DeviceOverview() {
         .then(response => response.json())
         .then(data => {
             setUser(data);
-            console.log('User: ', data);
         })
         .catch((error) => {
             console.error('Error(fetchUsers):', error);
@@ -194,27 +197,24 @@ function DeviceOverview() {
 
     return (
         <Box h={"100%"} w={"100%"}  marginLeft={['1%', '2%', '4%', '5%']} marginRight={['1%', '2%', '4%', '5%']}>
-            <Flex pt={4} pl={4} pr={4} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "start", md: "center" }}>
-                <Heading color="#3e5f74" mb={{ base: 2, md: 0 }}>Hallo {user.username}</Heading>
-                <Spacer />
-                <Flex flexDirection={'horizontal'}>
-                    <SettingsButton userRights={userRights} userRole={user.role} Text={isSmallScreen ? ("") : ("Einstellungen")} />
-                    <OpenHistoryDrawer Text={isSmallScreen ? ("") : ("Verlauf")} />
-                </Flex>
+            <Flex pt={4} pl={4} pr={4}>
+                <Heading color="#3e5f74">Hallo {user.username}</Heading>
+                <Spacer></Spacer>
+                <SettingsButton userRights={userRights} userRole={user.role} Text={isSmallScreen ? ("") : (" Einstellungen")}/>
+                <OpenHistoryDrawer Text={isSmallScreen ? ("") : (" Verlauf")} />
             </Flex>
 
             {isSmallScreen ? (
-            <>
-                { /* Render the original layout for small screens */ }
+                // Render the original layout for small screens
                 <Box p={4}>
                     {/* Statusmeldung */}
                     <Status />
 
                     {/* Tabs for MyDevices, Groups, and Favorites */}
-                    <Tabs isFitted variant='enclosed' backgroundcolor={"blue2"} mt={4}>
+                    <Tabs isFitted variant='enclosed' backgroundcolor={"teal.400"} mt={4}>
                         <TabList color={"#3e5f74"}>
-                            <Tab fontWeight={'bold'} _selected={{ color: 'white', bg: 'blue2'}}>Meine Geräte</Tab>
-                            <Tab fontWeight={'bold'} _selected={{ color: 'white', bg: 'blue2'}}>Gruppen</Tab>
+                            <Tab fontWeight={'bold'} _selected={{ color: 'white', bg: 'teal.400'}}>Meine Geräte</Tab>
+                            <Tab fontWeight={'bold'} _selected={{ color: 'white', bg: 'teal.400'}}>Gruppen</Tab>
                         </TabList>
                         <TabPanels>
                             <TabPanel p={0}>
@@ -226,15 +226,14 @@ function DeviceOverview() {
                             </TabPanel>
                             <TabPanel p={0}>
                                 {/* Groups component */}
-                                <Groups radius={0}/>
+                                <Groups radius={0} userID={userID}/>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
                 </Box>
-            </>
+
             ) : (
-            <>
-                { /* Render the original layout for large screens */ }
+                // Render the original layout for large screens
                 <Box p={4}>
                     <Grid
                         templateRows={"repeat(2, 1fr)"}
@@ -246,9 +245,10 @@ function DeviceOverview() {
                            <Status />
                         </GridItem>
 
+                    
                         {/* Gruppen */}
                         <GridItem rowSpan={2} colSpan={1}>
-                            <Groups />
+                            <Groups userID={userID}/>
                         </GridItem>
 
                         {/* Meine Geräte */}
@@ -261,8 +261,7 @@ function DeviceOverview() {
                             <Favourites favoriteClients={favoriteClients}/>
                         </GridItem>
                     </Grid>
-                </Box>#
-            </>
+                </Box>
             )}
         </Box>
     );
@@ -337,7 +336,7 @@ function MyDevices({ accountClients, userClientIDs }) {
     }
 
     return (
-        <Card bg={"blue2"} w="100%" h="100%">
+        <Card bg={"teal.400"} w="100%" h="100%">
             <CardHeader>
                 <Heading size="lg" color={"white"}>
                     Meine Geräte
@@ -395,7 +394,7 @@ function Favourites({favoriteClients, isSmallScreen, radius}) {
     };
     
     return (
-             <Card bg={"blue2"} w="100%" h="100%" borderTopRadius={radius}>
+             <Card bg={"teal.400"} w="100%" h="100%" borderTopRadius={radius}>
                 <CardHeader>
                     <Heading size="lg" color={"white"}>
                         Favoriten
@@ -414,13 +413,14 @@ function Favourites({favoriteClients, isSmallScreen, radius}) {
 
 }
 
+// eslint-disable-next-line
 function Status ({}) {
 
     const current = new Date();
     const date = `${current.getDate()}.${current.getMonth() + 1}.${current.getFullYear()}`;
 
     return (
-        <Card bg={"blue2"} w="100%" h="100%">
+        <Card bg={"teal.400"} w="100%" h="100%">
             <CardHeader>
                 <Heading size="lg" color={"white"}>
                     Statusmeldung
@@ -434,59 +434,241 @@ function Status ({}) {
     )
 }
 
-function Groups ({radius}) {
+function Groups (props) {
+    const [standardGroups, setStandardGroups] = useState([]);
+
+    //Beim Öffnen der Seite die Daten asynchron laden
+    useEffect( () => {
+        fetchData();
+        // eslint-disable-next-line
+    }, []);	
+
+    const fetchData = async () => {
+        await fetchUserStandardGroups();
+    }
+
+    //Gruppen des Benutzers laden
+    const fetchUserStandardGroups = () => {
+        fetch(env()["api-path"] + 'getGroup/Standard/' + props.userID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setStandardGroups(data);
+        })
+        .catch((error) => {
+            console.error('Error(fetchUserClientIDs):', error);
+            setStandardGroups([]);
+        });
+    }
+
+    
+
     
     return (
-        <Card bg={"blue2"} w="100%" h="100%" borderTopRadius={radius}>
+        <Card bg={"teal.400"} w="100%" h="100%" borderTopRadius={props.radius}>
             <CardHeader>
                 <Heading size="lg" color={"white"}>
                     Gruppen
                 </Heading>
             </CardHeader>
             <CardBody>
-                <Accordion allowToggle borderRadius="lg">
-                    <AccordionItem>
-                        <h2>
-                            <AccordionButton
-                                background={"#3e5f74"}
-                                _hover={{ bg: "#5b7a91" }}
-                            >
-                                <Box
-                                    as="span"
-                                    flex="1"
-                                    textAlign="left"
-                                    fontWeight={"bold"}
-                                >
-                                    Gruppe1
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-                        </h2>
-                        <AccordionPanel
-                            pb={4}
-                            background={"#7b99a7"}
-                        >
-                            <Button mr={4}>Szene1</Button>
-                            <Button mr={4}>Szene2</Button>
-                            <Divider
-                                mt={4}
-                                mb={4}
-                                orientation="horizontal"
-                            />
-                            <Box align="end">
-                                <Button ml={4}>
-                                    <EditIcon mr={2}></EditIcon>{" "}
-                                    Bearbeiten{" "}
-                                </Button>
-                            </Box>
-                        </AccordionPanel>
-                    </AccordionItem>
-                </Accordion>
+                <Box  borderRadius="lg">
+                    {standardGroups[0]?(
+                        <>
+                        {standardGroups.map((group, index) => (
+                            <Group key={'groupAccordion-'+index} fetchData={()=>{fetchData()}} group={group}/>
+                        ))}
+                        </>
+                    ):(
+                        <Center>
+                            <Text fontSize="lg" fontWeight="bold">Keine Gruppen vorhanden</Text>
+                        </Center>
+                    )}
+                </Box>
             </CardBody>
             <Box align="end" m={4}>
-                <AddGroupDialog />
+                <AddGroupDialog updateGroup={()=>{fetchData()}}/>
             </Box>
         </Card>
+    )
+}
+
+function Group (props) {
+    const toast = useToast();
+
+    const accordionRef = React.useRef();
+
+    const[scenes, setScenes] = useState([]);
+
+    //Szenen der Gruppe laden
+    const fetchGroupScenes = (groupID) => {
+        fetch(env()["api-path"] + 'getScenes/' + groupID, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            setScenes(data);
+        })
+        .catch((error) => {
+            console.error('Error(fetchUserClientIDs):', error);
+        });
+    }
+
+    //Szene ausführen
+    const executeScene = (sceneID) => {
+        let userID = decryptString(sessionStorage.getItem('executingUserID'));
+        if (userID) {
+            let data= {
+                userId: userID,
+                groupId: props.group.id,
+                sceneId: sceneID
+            }
+            fetch(env()["api-path"] + 'group/scene/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if(response.status === 204)
+                {
+                    toast({
+                        title: "Szene erfolgreich ausgeführt",
+                        status: "success",
+                        duration: 1000,
+                        isClosable: true,
+                    })
+                }else{
+                    toast({
+                        title: "Fehler beim Ausführen der Szene",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.error('Error(executeScene):', error);
+                toast({
+                    title: "Fehler beim Ausführen der Szene",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                })
+            });
+        }
+    }
+
+
+    return (
+        <Accordion allowToggle borderRadius={'10px'} mt={2} borderWidth={'0px'} overflow={'hidden'}>
+            <AccordionItem border={0} >
+                <AccordionButton 
+                    ref={accordionRef}
+                    borderTopRadius={'10px'}
+                    background={"secondary.500"}
+                    _hover={{ bg: "secondary.450" }}
+                    _active={{ bg: "secondary.550" }}
+                    w={"100%"}
+                    color={"secondary.50"}
+                    onClick={() => {
+                        //Beim öffnen des Accordions die Szenen laden
+                        if(accordionRef.current.getAttribute('aria-expanded') === 'false'){
+                            fetchGroupScenes(props.group.id);
+                        }
+                    }}
+                >
+                    
+                    <Box
+                        as="span"
+                        flex="1"
+                        textAlign="left"
+                        fontWeight={"bold"}
+                        w={"90%"}
+                        minW={"90%"}
+                    >
+                        <Text noOfLines={1}>
+                            {props.group.name}
+                        </Text>
+                    </Box>
+                    <AccordionIcon />
+                </AccordionButton>
+                <AccordionPanel
+                    pb={4}
+                    background={"teal.300"}
+                    borderWidth={'0px'}
+                >
+                    <Box>
+                        <Heading size={'sm'}>Szenen der Gruppe</Heading>
+                        {scenes[0]?(
+                            <>
+                            {scenes.map((scene, index) => (
+                                <Tooltip 
+                                    hasArrow 
+                                    label='Klicken zum ausführen der Szene' 
+                                    placement='auto-start' 
+                                    bg={'secondary.700'} 
+                                    color={'teal.100'}
+                                    key={'scene-'+index} >
+                                <Button 
+                                    p={2} 
+                                    variant={'outline'} 
+                                    color={'secondary.500'} 
+                                    borderColor={'secondary.500'}
+                                    _hover={{bg: 'teal.350', borderColor: 'secondary.500'}}
+                                    _active={{bg: 'secondary.500', color: 'teal.100', borderColor: 'teal.300'}}
+                                    mt={2}
+                                    w={'100%'}
+                                    onClick={() => {executeScene(scene.id)}}
+                                >
+                                    <Flex alignSelf={'left'} width={'100%'}>
+                                    <Box
+                                        as="span"
+                                        flex="1"
+                                        textAlign="left"
+                                        fontWeight={"bold"}
+                                        w={"80%"}
+                                        minW={"80%"}
+                                        maxW={"80%"}
+                                    >
+                                            <Text noOfLines={1}>
+                                                {scene.name}
+                                            </Text>
+                                        </Box>
+                                        
+                                        <Spacer/>
+                                        <ArrowRightIcon/>
+                                    </Flex>
+                                </Button>
+                                </Tooltip>
+                            ))}
+                            </>
+                        ):(
+                            <Center>
+                                <Text fontSize="lg" fontWeight="bold">Keine Szenen vorhanden</Text>
+                            </Center>
+                        )}
+                    </Box>
+                    <Divider
+                        mt={4}
+                        mb={4}
+                        orientation="horizontal"
+                        borderColor={"teal.500"}
+                    />
+                    <Box align="end">
+                        <EditGroupDialog id={props.group.id} updateGroup={()=>{props.fetchData()}}/>
+                    </Box>
+                </AccordionPanel>
+            </AccordionItem>
+        </Accordion>
     )
 }
 

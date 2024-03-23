@@ -15,26 +15,26 @@ import AccountSettingsModal from '@/components/accountSettingsModal';
 
 var userRightsTest = [
     {
-        "mayChangeUserSettings": 1,
-        "mayDeleteUser": 1,
-        "mayAssignController": 1,
+        "mayChangeUserSettings": 0,
+        "mayDeleteUser": 0,
+        "mayAssignController": 0,
         "mayChangeUserType": 0,
-        "mayChangeUserRights": 1,
+        "mayChangeUserRights": 0,
 
-        "mayAddUser": 1,
-        "mayChangeAccountSettings": 1,
+        "mayAddUser": 0,
+        "mayChangeAccountSettings": 0,
 
         "mayChangeOwnUserSettings": 0,
-        "mayDeleteSelf": 1,
+        "mayDeleteSelf": 0,
 
-        "mayEditControllers": 1,
-        "mayDeleteControllers": 1
+        "mayEditControllers": 0,
+        "mayDeleteControllers": 0
 
     }
 ]
 
 function Header() {
-	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
+	const siteBefore = window.history.length-1
 return <header>
 <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> 
 <h1>Benutzerverwaltung</h1> 

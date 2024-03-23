@@ -167,6 +167,8 @@ const SignInForm = (props) => {
                     onChange={e => setEmail(e.target.value)} 
                     placeholder='beispiel@epaul-smarthome.de' 
                     focusBorderColor='teal.500'
+                    borderColor={'teal.200'}
+                    _hover={{borderColor: 'teal.300'}}
                     ref={references[0]} 
                 />
                 {!isEmailError ? (
@@ -188,6 +190,8 @@ const SignInForm = (props) => {
                         onChange={e => setPassword(e.target.value)}
                         focusBorderColor='teal.500'
                         ref={references[1]}
+                        borderColor={'teal.200'}
+                        _hover={{borderColor: 'teal.300'}}
                     />
                     <InputRightElement width="4.5rem">
                         <Button h="1.75rem" size="sm" onClick={handlePasswordShowClick} isDisabled={emailWrongFormat || !email}>

@@ -13,7 +13,8 @@ FormControl,
 FormLabel,
 FormErrorMessage,
 InputGroup,
-useToast
+useToast,
+Tooltip
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import MultiSelect from '@/components/multiselect'
@@ -22,7 +23,9 @@ import { decryptString } from '@/utils/encryptionUtils'
 import {env} from '@/utils/env'
 
 
-function AddGroupDialog() {
+function AddGroupDialog(props) {
+    const toast = useToast()
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const [accountClients, setAccountClients] = useState([]) 
@@ -30,6 +33,7 @@ function AddGroupDialog() {
     const [assignedUserClients, setAssignedUserClients] = useState([])
     const [preparedAssignedUserClients, setPreparedAssignedUserClients] = useState([])
     const [selectedClientIDs, setSelectedClientIDs] = useState([])
+
     const fetchAccountClients = () => {
       let  accountID = decryptString(sessionStorage.getItem('accountID'));
       if (accountID) {
@@ -86,7 +90,6 @@ function AddGroupDialog() {
             })
         }
         setAssignedUserClients(temp);
-        console.log(assignedUserClients);
     }, [userClientIDs, accountClients]);
 
 
@@ -109,6 +112,7 @@ function AddGroupDialog() {
     
     const [groupNameInUse, setGroupNameInUse] = useState(false);
     const [groupNameValid, setGroupNameValid] = useState(false);
+    const [groupNameValue, setGroupNameValue] = useState('');
     //Test if the given Group-Name is already in use for the executingUserID
     const isGroupNameInUse = (groupName) => {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
@@ -121,11 +125,12 @@ function AddGroupDialog() {
           })
           .then(response => response.json())
           .then(data => {
-              let groupNames = data.map((group) => group[0]['name']);
+              let groupNames = data.map((group) => group['name']);
               setGroupNameInUse(groupNames.includes(groupName))
-              setGroupNameValid(groupName.length > 0 && groupName.length <= 32 && !groupNameInUse)
+              setGroupNameValid(groupName.length > 0 && groupName.length <= 32 && !groupNames.includes(groupName))
           })
           .catch((error) => {
+            setGroupNameValid(false);
               console.error('Error(isGroupNameInUse):', error);
           });
         }
@@ -134,24 +139,75 @@ function AddGroupDialog() {
     const handleGroupNameChange = (event) => {
         let groupName = event.target.value
         isGroupNameInUse(groupName)
-        setGroupNameValid(groupName.length > 0 && groupName.length <= 32 && !groupNameInUse)
+        setGroupNameValue(groupName)
     }
 
     useEffect(() => {
       fetchAccountClients();
       fetchUserClientIDs();
+      setGroupNameValid(false);
     }, [isOpen]);
+
+    const addGroup = () => {
+        let userID = decryptString(sessionStorage.getItem('executingUserID'));
+        if (userID) {
+          fetch(env()["api-path"] + 'user/addGroup', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  userId: userID,
+                  name: groupNameValue,
+                  clientIds: selectedClientIDs
+              })
+          })
+          .then(response => {
+              if(response.status === 201)
+              {
+                  toast({
+                      title: "Gruppe erfolgreich hinzugefügt",
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                  })
+                  onClose();
+                  props.updateGroup();
+              }
+          })
+          .catch((error) => {
+              console.error('Error(addGroup):', error);
+              toast({
+                  title: "Fehler beim Hinzufügen der Gruppe",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+              })
+          });
+        }
+    }
 
     return (
       <>
-        <Button onClick={onOpen}>
-            <AddIcon mr={2}></AddIcon>
-            Hinzufügen
-        </Button>
+        <Tooltip hasArrow label='Öffnen der Gruppeneinstellungen und Hinzufügen von Szenen' placement='auto' bg={'secondary.700'} color={'teal.100'} >
+            <Button 
+                onClick={onOpen} 
+                variant={'solid'} 
+                color={'secondary.700'} 
+                bg={'teal.200'}
+                _hover={{bg: 'teal.100'}}
+                _active={{bg: 'secondary.500', color: 'teal.100'}}
+            >
+                <AddIcon mr={2}></AddIcon>
+                Gruppe Hinzufügen
+            </Button>
+        </Tooltip>
   
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={onClose} size={{base:'full' , sm:'md'}}>
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent
+                bg={'teal.50'}
+            >
                 <ModalHeader>Gruppe Hinzufügen</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -165,6 +221,8 @@ function AddGroupDialog() {
                                 maxLength={32}
                                 onChange={(event)=> {handleGroupNameChange(event)}}
                                 focusBorderColor='teal.500'
+                                borderColor={'teal.200'}
+                                _hover={{borderColor: 'teal.300'}}
                             />
                         </InputGroup>
                         {(!groupNameValid) &&
@@ -182,7 +240,7 @@ function AddGroupDialog() {
                 </ModalBody>
   
                 <ModalFooter>
-                    <Button colorScheme='teal' isDisabled={!groupNameValid}>
+                    <Button colorScheme='teal' isDisabled={!groupNameValid} onClick={()=>{addGroup()}}  >
                       Hinzufügen
                     </Button>
                 </ModalFooter>
