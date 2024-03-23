@@ -229,21 +229,4 @@ void loop() {
     checkButton();
   }
 
-  //mqttChangeBrightness();
-  //mqttChangeColor();
-  //delay(10000);
-
-  //zum Testen und debuggen vorerst dalassen
-  /*
-  topic = readTopicFromEEPROM(eepromStart);
-  
-  unsigned long now = millis();
-  if (now - lastMsg > 2000) {
-    lastMsg = now;
-    snprintf (msg, MSG_BUFFER_SIZE, "{type:1, target:4, command:\"lampOn\"}");
-    Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish(topic.c_str(), msg);
-  }
-  */
 }

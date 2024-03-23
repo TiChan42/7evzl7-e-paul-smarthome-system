@@ -1,3 +1,5 @@
+
+//methoden zum testen der Befehlsverarbeitung, werden nicht mehr benötigt
 void mqttChangeBrightness(){
   
   int eepromStart = 0;

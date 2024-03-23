@@ -4,12 +4,14 @@ void controllerAnswer(String answer){
   int messageType = 2;
   String topic = ""; 
   String ownID = "";
+  String key = "";
   String answerJson = "";
   String status = "";
   String controllerMode = "";
 
   topic = readTopicFromEEPROM(eepromStart);
   ownID = readIDFromEEPROM(eepromStart);
+  key = readKeyFromEEPROM(eepromStart);
   controllerMode = readModeFromEEPROM(eepromStart);
 
   //Bauen des Status abhängig davon in welchem modus sich der Controller befindet
@@ -23,9 +25,8 @@ void controllerAnswer(String answer){
 
 
 
-  answerJson = "{\"type\":" + String(messageType) + ", \"ID\":" + ownID + ", \"answerCode\":\"" + answer + "\", \"state\":\"" + status + "\"}";
+  answerJson = "{\"type\":" + String(messageType) + ", \"microcontrollerId\":" + ownID + ",\"key\":\"" + key + "\", \"answerCode\":\"" + answer + "\", \"state\":" + status + "}";
 
-  //{type:2, ID:"IDofCotrollerThatAnswers", answerCode:"answer, f.e.: "success"}
   snprintf (msg, MSG_BUFFER_SIZE, answerJson.c_str());
   Serial.print("Publish message: ");
   Serial.println(msg);

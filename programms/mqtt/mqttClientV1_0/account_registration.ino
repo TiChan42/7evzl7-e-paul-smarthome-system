@@ -1,12 +1,14 @@
-//TODO @Timo wir brauchen ein input für den controller namen
+
 bool testLogIn(String user, String password){
   //diese Methode registriert den controller unter einem konto
 
   //hat die registrierung funktioniert?
   bool success = false;
 
-  //aktuell noch ein default controller name, muss angepasst werden, damit das mitgegeben werden kann
+  //der Modus des controllers, also aktuell lamp oder button
   String controllerType = controllerMode;
+
+  //aktuell noch ein default controller name, muss angepasst werden, damit das mitgegeben werden kann
   String controllerName = "Testname";
 
   //standartmäßig benötigen alle EEPROM Methoden einen startpunkt, dieser sollte immer null sein
@@ -63,8 +65,6 @@ bool testLogIn(String user, String password){
 
           //die mail adresse des Benutzers ist auch das Topic des controllers auf das er published und listend
           writeTopicToEEPROM(eepromStart, user);
-          //nur für debugging um zu überprüfen ob das topic richtig im EEPROM liegt
-          //Serial.println(readTopicFromEEPROM(eepromStart));
 
           //die ID des kontrollers muss zum authentifizieren gespeichert werden
           writeIDToEEPROM(eepromStart, String(controllerId));

@@ -2,7 +2,7 @@
 /*
 Aufbau der JSONs welche auf dem Broker gepostet werden:
 {type:1, target:"IDofTargetController", command:"commandToBeExecuted", brightness:"theBrightnessOffTheLamp", rgb:"RGBCode"}
-{type:2, ID:"IDofCotrollerThatAnswers", answerCode:"answer, f.e.: 'success'", state:{gesamte information des moduls, z.B.: brightness}}
+{type:2, ID:"IDofCotrollerThatAnswers", Key:"keyOfTheControllerTheOneAlsoUsedForTheBroker" answerCode:"answer, f.e.: 'success'", state:{gesamte information des moduls, z.B.: brightness}}
 {type:3, target:"IDofTargetController", state:{gesamte information des moduls, z.B.: brightness, welche übernommen werden sollen}}
 evtl kann type:4 dann ein Sandkasten Befehl sein, welcher normalerweise mehr Parameter benötigt
 
@@ -15,31 +15,45 @@ changeMode soll dann den modus des buttons ändern
 
 //methode welche die gepublishten jsons verarbeiten kann
 bool mqttJsonInterpretation(String mqttJsonSignal){
-  
+
+  //war die Methode erfolgreich?
   bool success = true;
+  //die eeprom methoden brauchen immer einen Startpunkt
   int eepromStart = 0;
 
+  //die Id, die als Ziel der Befehle gilt
   String targetID="";
+  //die eigene ID des Controllers
   String ownID="";
+  //der Modus in dem sich der Controller aktuell befindet also lamp oder button
   String currentMode="";
+  //der eventuell empfangene Befehl
   String command="";
+  //der Typ der Nachricht, daran wird entschieden wie er weiter verarbeitet wird
   int type;
 
+  //die helligkeit der Lampe im Befehl
   int brightness;
+  //der rgb Wert im Befehl
   String rgb="";
 
+  //der status der übernommen werden soll
   String sceneStatus="";
 
-
+  //die empfangene Nachricht wird als verarbeitbarer json gespeichert
   DynamicJsonDocument jsonDoc(1024);
   deserializeJson(jsonDoc, mqttJsonSignal);
   type = jsonDoc["type"];
   
+  //anhand des typs der Nachricht wird entschieden was gemacht werden soll
   switch(type){
+    //Die Nachricht ist ein Befehl
     case 1:
+      //ist der BEfehl an diesen controller gerichtet
       targetID = String(jsonDoc["target"]);
       ownID = readIDFromEEPROM(eepromStart);
       if(targetID == ownID){
+        //der entsprechende command wird ausgeführt
         command = String(jsonDoc["command"]);
 
         if (command == "activateLamp"){
@@ -112,9 +126,11 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         Serial.println("message received but not for this controller");
       }
       break;
+    //die nachricht war eine Statusmeldung, daher braucht dieser controller sie nicht zu verarbeiten
     case 2:
       Serial.println("message received but not a command");
       break;
+    //die Nachricht war der Befehl eine szene wieder herzustellen
     case 3:
       targetID = String(jsonDoc["target"]);
       ownID = readIDFromEEPROM(eepromStart);
@@ -123,6 +139,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         DynamicJsonDocument jsonDocState(1024);
         deserializeJson(jsonDocState, sceneStatus);
         if (jsonDocState.containsKey("whiteFlag")){
+          //lampe stellt status wieder her
           lampScene(String(jsonDocState["whiteFlag"]), String(jsonDocState["red"]), String(jsonDocState["green"]), String(jsonDocState["blue"]), String(jsonDocState["brightness"]));
         } else {
           //button stellt status wieder her
@@ -136,6 +153,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       }
       
       break;
+    //der typ existiert nicht
     default:
       Serial.println("invalid type of message");
       success = false;
