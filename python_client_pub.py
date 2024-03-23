@@ -89,7 +89,7 @@ class python_client_pub:
 
 testcl = python_client_pub()
 
-#testcl.publish_command("robbe0503@t-online.de", 7, "switchOff")
+testcl.publish_command("robbe0503@t-online.de", 7, "switchOff")
 
 #testcl.publish_command("robbe0503@t-online.de", 7, "switchOn")
 #testcl.publish_command("robbe0503@t-online.de", 7, "changeLampBrightness", 500)

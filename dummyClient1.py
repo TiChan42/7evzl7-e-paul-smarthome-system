@@ -44,7 +44,7 @@ class python_client:
             brightness = None
 
         message = {
-            "type": 1,
+            "type": 2,
             "target": target,
             "command": command
         }
@@ -53,6 +53,28 @@ class python_client:
         if rgb:
             message["rgb"] = rgb
         messageJson = json.dumps(message)
+        result = self.client.publish(pubTopic, messageJson)
+        status = result[0]
+        if status == 0:
+            print(f"Send message to topic {pubTopic}")
+        else:
+            print(f"Failed to send message to topic {pubTopic}")
+
+    def publishAnswer(self,pubTopic, Id,key, white_flag, red, green, blue, brightness):
+        message = {
+            "type": 2,
+            "microcontrollerId": Id,
+            "key": key, 
+            "state":{"whiteFlag": white_flag,
+            "red": red,
+            "green": green,
+            "blue": blue,
+            "brightness": brightness}
+            
+
+        }
+        messageJson = json.dumps(message)
+        print(messageJson)
         result = self.client.publish(pubTopic, messageJson)
         status = result[0]
         if status == 0:
@@ -146,7 +168,8 @@ while True:
     time.sleep(3)
 '''
 
-testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#FF0000")
+#testcl.publish("robbe0503@t-online.de", "7", "changeRGBValue", "#FF0000")
+testcl.publishAnswer("robbe0503@t-online.de", 9, "65JWAZI99ZOH6KLO6SUX", 0, 255, 9, 69, 59)
 time.sleep(3)
 
         
