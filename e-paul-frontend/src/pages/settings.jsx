@@ -1,9 +1,9 @@
-import { Tabs, FormControl, FormLabel, HStack, PinInput, PinInputField, show, Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
+import { CloseButton, Tabs, FormControl, FormLabel, HStack, PinInput, PinInputField, show, Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
 import { decryptString } from '@/utils/encryptionUtils';
 import React, { Component, useEffect, useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
-function InitialFocus() {
+function DeleteUserModal() {
     const executingUserID = sessionStorage.getItem('executingUserID');
     const accountID = decryptString(sessionStorage.getItem('accountID'));
     const userID = decryptString(sessionStorage.getItem('userToEdit'));
@@ -77,13 +77,35 @@ function AddToast(props) {
 }
 
 class Settings extends Component {
-    state = { activeTab: 'allgemein', isModalOpen: false, toastTitle: "123", toastStatus: "error", toastDuration: 5000, toastIsClosable: true, toastDescription: "descr", openToastTrigger: false };
+    state = { activeTab: 'allgemein', isModalOpen: false, toastTitle: "123", toastStatus: "error", toastDuration: 5000, toastIsClosable: true, toastDescription: "descr", openToastTrigger: false, username: "" };
     executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
     accountID = decryptString(sessionStorage.getItem('accountID'));
     userID = decryptString(sessionStorage.getItem('userToEdit'));
 
+    constructor() {
+        super();
+        this.getUsername = this.getUsername.bind(this);
+    }
+
+    async getUsername() {
+        const res = await fetch('http://epaul-smarthome.de:8000/api/user/' + this.userID, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+        var name = await res.json()
+        this.setState({ username: name.username })
+    }
+
+    componentDidMount() {
+        this.getUsername();
+    }
+
     renderContent() {
         const { activeTab } = this.state;
+
         const updateUsername = async () => {
             if (this.state.newUsername) {
                 const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeUserInformation', {
@@ -99,20 +121,8 @@ class Settings extends Component {
                         executingUserId: this.executingUserID
                     })
                 })
-                var message = await res.json()
-                if (message.error == "Username existiert bereits.") {
-                    console.log("username existiert bereits")
-                    this.setState({
-                        toastTitle: "Ungültige Eingabe",
-                        toastDescription: "Dieser Username existiert bereits.",
-                        toastStatus: "error",
-                        toastIsClosable: true,
-                        toastDuration: 5000,
-                        openToastTrigger: true
-                    })
-                }
-                else if (res.status != 400) {
-                    console.log("erfolg")
+                if (res.status == 204) {
+                    console.log("Erfolg")
                     this.setState({
                         toastTitle: "Erfolg!",
                         toastDescription: "Ihr Benutzername wurde erfolgreich geändert.",
@@ -121,9 +131,32 @@ class Settings extends Component {
                         toastDuration: 5000,
                         openToastTrigger: true
                     })
+                    this.getUsername();
                 }
                 else {
-                    console.log("kaputt")
+                    var message = await res.json()
+                    if (message.error == "Username existiert bereits.") {
+                        console.log("Username existiert bereits")
+                        this.setState({
+                            toastTitle: "Ungültige Eingabe",
+                            toastDescription: "Dieser Username existiert bereits.",
+                            toastStatus: "error",
+                            toastIsClosable: true,
+                            toastDuration: 5000,
+                            openToastTrigger: true
+                        })
+                    }
+                    else {
+                        console.log("fehler")
+                        this.setState({
+                            toastTitle: "Fehler",
+                            toastDescription: "Es ist ein Fehler aufgetreten.",
+                            toastStatus: "error",
+                            toastIsClosable: true,
+                            toastDuration: 5000,
+                            openToastTrigger: true
+                        })
+                    }
                 }
             }
             else {
@@ -147,9 +180,9 @@ class Settings extends Component {
                 },
                 body: JSON.stringify({
                     accountId: this.accountID,
-                        userId: this.userID,
-                        executingUserId: this.executingUserID,
-                        gender: this.state.newGender
+                    userId: this.userID,
+                    executingUserId: this.executingUserID,
+                    gender: this.state.newGender
 
                 })
             })
@@ -164,12 +197,6 @@ class Settings extends Component {
         };
 
         const validatePin = async () => {
-            console.log(this.accountID, this.userID, this.state.oldPin);
-            console.log(JSON.stringify({
-                accountId: this.accountID,
-                userId: this.userID,
-                pin: this.state.oldPin
-            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/validatePin', {
                 method: 'POST',
                 headers: {
@@ -187,14 +214,15 @@ class Settings extends Component {
 
         const updatePin = async () => {
             var validated = await validatePin();
-            // try catch
-            validated = await validated.json()
-            // end
+            try {
+                validated = await validated.json()
+            } catch (error) {
+                console.log(error)
+            }
             validated = validated["valid"]
-            console.log(typeof validated)
-            console.log(this.state.newPin, this.state.newPinRepeat)
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
+                    console.log(String(this.state.newPin))
                     this.setState({ wrongPinOpen: false })
                     const res = await fetch('http://epaul-smarthome.de:8000/api/settings/pin', {
                         method: 'PUT',
@@ -204,8 +232,8 @@ class Settings extends Component {
                         },
                         body: JSON.stringify({
                             userId: this.userID,
-                            pin: this.state.newPin,
-                            previousPin: this.state.oldPin
+                            executingUserId: this.executingUserID,
+                            pin: this.state.newPin
                         })
                     })
 
@@ -216,7 +244,7 @@ class Settings extends Component {
                     this.state.toastDuration = 7000
                     this.state.openToastTrigger = true
                 }
-                else{
+                else {
                     // Invalid Old Pin
                     this.setState({ wrongPinOpen: true })
                     console.log("old pin is not valid")
@@ -229,7 +257,7 @@ class Settings extends Component {
                 }
                 this.setState({ diffPinOpen: false })
             }
-            else{
+            else {
                 // Pins are different
                 this.state.toastTitle = "PINs sind verschieden!"
                 this.state.toastDescription = "Geben Sie zwei mal den gleichen PIN ein, um diesen zu ändern."
@@ -286,7 +314,7 @@ class Settings extends Component {
                             <Button onClick={updateGender} margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Geschlecht bestätigen</Button>
                             <br></br><br></br>
                             <Text color={"white"}>Hier können Sie Ihren User löschen:</Text>
-                            <InitialFocus />
+                            <DeleteUserModal />
                         </Box>
                     </Card>
                 </>
@@ -304,46 +332,6 @@ class Settings extends Component {
                 </Card>
             );
         }
-        else if (activeTab === 'konto') {
-            return (
-                <Card bg={"#218395"} w='100%' h='100%'>
-                    <CardHeader>
-                        <Heading size='lg' color={"white"}>Konto</Heading>
-                    </CardHeader>
-                    <Box m={4} width={'80%'}>
-                        <Text color={"white"}>Hier können Sie Ihre Email-Adresse ändern:</Text>
-                        <Input
-                            isInvalid
-                            type="text"
-                            errorBorderColor='white'
-                            borderColor={'green'}
-                            placeholder='Aktuelle E-Mail-Adresse'
-                            _placeholder={{ color: 'white' }}
-                            focusBorderColor={'red'}
-                            pattern="/^\S+@\S+\.\S+$/"
-                            marginTop={'2em'}
-                        />
-
-                        <Input
-                            isInvalid
-                            type="text"
-                            errorBorderColor='white'
-                            borderColor={'green'}
-                            placeholder='Neue E-Mail-Adresse'
-                            _placeholder={{ color: 'white' }}
-                            focusBorderColor={'red'}
-                            pattern="/^\S+@\S+\.\S+$/"
-                            marginTop={'2em'}
-                        />
-
-                        <Button margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
-                    </Box>
-                </Card>
-            );
-
-        }
-
-
         else if (activeTab === 'pin') {
 
             return (
@@ -373,34 +361,31 @@ class Settings extends Component {
     }
 
     render() {
-
         const { activeTab } = this.state;
-
-
         return (
-
-            <Box display="flex" flexDirection="row" bg={"rgba(33, 131, 149, .8)"} height="100vh" margin={'1em'} borderRadius={'16px'}>
-                <Box width="25%" p={4}>
-                    <VStack alignItems="center">
-                        <Image src='../../assets/img/paul.png' />
-                        <Button onClick={() => this.setState({ activeTab: 'allgemein' })} colorScheme={activeTab === 'allgemein' ? "blue" : "gray"} width={'80%'}>
-                            Allgemein
-                        </Button>
-                        <Button onClick={() => this.setState({ activeTab: 'pin' })} colorScheme={activeTab === 'pin' ? "blue" : "gray"} width={'80%'}>
-                            PIN
-                        </Button>
-                        <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
-                            Modus
-                        </Button>
-                        <Button onClick={() => this.setState({ activeTab: 'konto' })} colorScheme={activeTab === 'konto' ? "blue" : "gray"} width={'80%'}>
-                            Konto
-                        </Button>
-                    </VStack>
+            <>
+                <Header />
+                <Box display="flex" flexDirection="row" bg={"teal.250"} height="100vh" margin={'1em'} borderRadius={'16px'}>
+                    <Box width="25%" p={4}>
+                        <VStack alignItems="center">
+                            <Image src='../../assets/img/paul.png' />
+                            <Heading >{this.state.username}</Heading>
+                            <Button onClick={() => this.setState({ activeTab: 'allgemein' })} colorScheme={activeTab === 'allgemein' ? "blue" : "gray"} width={'80%'}>
+                                Allgemein
+                            </Button>
+                            <Button onClick={() => this.setState({ activeTab: 'pin' })} colorScheme={activeTab === 'pin' ? "blue" : "gray"} width={'80%'}>
+                                PIN
+                            </Button>
+                            <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
+                                Modus
+                            </Button>
+                        </VStack>
+                    </Box>
+                    <Box width="75%" p={4}>
+                        {this.renderContent()}
+                    </Box>
                 </Box>
-                <Box width="75%" p={4}>
-                    {this.renderContent()}
-                </Box>
-            </Box>
+            </>
         );
     }
 
@@ -408,6 +393,15 @@ class Settings extends Component {
 
 export default Settings;
 
+
+function Header() {
+    const siteBefore = window.history.length - 1
+    return <header>
+        <Box style={{ display: 'flex', justifyContent: 'right', alignItems: 'right' }}>
+            <CloseButton onClick={() => { window.history.go(siteBefore - window.history.length) }} />
+        </Box>
+    </header>;
+}
 
 
 export function PasswordInput(props) {
