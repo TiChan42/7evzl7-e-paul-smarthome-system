@@ -22,7 +22,7 @@ const ValidateActionModal = (props) => {
         initialFocusRef={initialRef}
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent bg={'teal.50'}>
                 <ModalHeader textColor={'red'} maxW={'90%'}>
                     {props.title}
                 </ModalHeader>
@@ -34,7 +34,7 @@ const ValidateActionModal = (props) => {
                     <Button key={initialRef} colorScheme="teal" mr={3} onClick={()=>{props.closeModal(); props.execute();}}>
                         Bestätigen
                     </Button>
-                    <Button mr={3} onClick={()=>{props.closeModal()}}>
+                    <Button mr={3} onClick={()=>{props.closeModal()}} variant={'outline'} borderColor={'teal.500'} color={'teal.500'}>
                         Abbrechen
                     </Button>
                 </ModalFooter>

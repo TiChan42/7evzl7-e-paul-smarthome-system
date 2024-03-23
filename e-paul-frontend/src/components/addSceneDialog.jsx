@@ -27,6 +27,7 @@ import { AddIcon,EditIcon } from '@chakra-ui/icons'
 import React, { useState, useEffect } from 'react'
 import { decryptString } from '@/utils/encryptionUtils'
 import {env} from '@/utils/env'
+import ControllerCommandsModal from '@/components/controllerCommandsModal'
 
 
 
@@ -41,6 +42,9 @@ function AddSceneDialog(props) {
     const [groupClients, setGroupClients] = useState([])
 
     const [ignoredPorts, setIgnoredPorts] = useState([])
+
+    const [scenePortModals, setScenePortModals] = useState([])
+    const [rerender, setRerender] = useState(false)
 
     //prüft ob der Szenenname bereits vergeben ist
     const checkSceneNameInUse = (sceneName) => {
@@ -97,6 +101,13 @@ function AddSceneDialog(props) {
     useEffect(() => {
         if (props.groupClients && props.groupClients.length > 0) {
             setGroupClients(props.groupClients);
+
+            //für jedes Element in scenePort wird scenePortModals um ein false erweitert
+            let temp = [];
+            groupClients.forEach(() => {
+                temp.push(false);
+            });
+            setScenePortModals(temp);
         }
     }, [props.groupClients, isOpen]);
 
@@ -243,6 +254,25 @@ function AddSceneDialog(props) {
                                             fontSize='lg'
                                             icon={<EditIcon />}
                                             ml={2}
+                                            onClick={()=>{
+                                                let temp = scenePortModals;
+                                                temp[index] = true;
+                                                setScenePortModals(temp);
+                                                setRerender(!rerender);
+                                            }}
+                                        />
+                                        <ControllerCommandsModal 
+                                            rerender={rerender}
+                                            openModal={scenePortModals[index]} 
+                                            closeModal={()=>{
+                                                console.log('close');
+                                                let temp = scenePortModals;
+                                                temp[index] = false;
+                                                setScenePortModals(temp);
+                                                setRerender(!rerender);
+                                            }}
+
+                                            client = {client}
                                         />
                                     </Flex>
                                 )

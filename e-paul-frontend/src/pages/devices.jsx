@@ -40,6 +40,7 @@ import Clock from 'react-live-clock';
 import {env} from '@/utils/env';
 import { useBreakpointValue } from "@chakra-ui/react";
 import React from "react";
+import ControllerCommandsModal from "@/components/controllerCommandsModal";
 
 
 function DeviceOverview() {
@@ -267,30 +268,50 @@ function DeviceOverview() {
     );
 }
 
+
+function DeviceCard({ clientName, client }) {
+
+    const [commandModal, setCommandModal] = useState(false);
+
+    return (
+        <>
+        <Button onClick={()=>{setCommandModal(true)}} bg={'transparent'} >
+            <Card
+            direction={{
+                base: "column",
+                sm: "row",
+            }}
+            overflow="hidden"
+            bg={"#3e5f74"}
+            color={"white"}
+            cursor="pointer"
+            w={'100%'}
+            >
+                <Center p={1} h={"100%"} w={"100%"}>
+                    <LuLamp size={"30px"} />
+                    <CardBody p={0}>
+                    <Text pl={2} fontSize={"xl"} fontWeight={"bold"}>
+                        {clientName}
+                    </Text>
+                    </CardBody>
+                    <MdArrowForwardIos align="end" size={"30px"} />
+                </Center>
+            </Card>
+        </Button>
+        <ControllerCommandsModal 
+            openModal={commandModal} 
+            closeModal={()=>{
+                setCommandModal(false)
+            }}
+            client = {client}
+        />
+        </>
+    );
+}
+
 function MyDevices({ accountClients, userClientIDs }) {
 
-    const DeviceCard = ({ clientName }) => (
-        <Card
-          direction={{
-            base: "column",
-            sm: "row",
-          }}
-          overflow="hidden"
-          bg={"#3e5f74"}
-          color={"white"}
-          cursor="pointer"
-        >
-          <Center p={1} h={"100%"} w={"100%"}>
-            <LuLamp size={"30px"} />
-            <CardBody p={0}>
-              <Text pl={2} fontSize={"xl"} fontWeight={"bold"}>
-                {clientName}
-              </Text>
-            </CardBody>
-            <MdArrowForwardIos align="end" size={"30px"} />
-          </Center>
-        </Card>
-    );
+    
     
     const DeviceList = ({ clients, userClientIDs, variant }) => {
         const [elementsToShow, setElementsToShow] = useState([]);
@@ -327,7 +348,7 @@ function MyDevices({ accountClients, userClientIDs }) {
                         <Text fontSize="xl" fontWeight="bold">Keine Geräte vorhanden</Text>
                     ) : (
                         elementsToShow.map((client) => (
-                            <DeviceCard key={encryptString(client.id.toString())}  clientName={client.name ? client.name : generateNameOutOfID(client.id)} clientType={client.type}/>
+                            <DeviceCard key={encryptString(client.id.toString())}  clientName={client.name ? client.name : generateNameOutOfID(client.id)} clientType={client.type} client={client}/>
                         ))
                     )}
                 </VStack>
@@ -526,11 +547,11 @@ function Group (props) {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
         if (userID) {
             let data= {
-                userId: userID,
+                executingUserId: userID,
                 groupId: props.group.id,
                 sceneId: sceneID
             }
-            fetch(env()["api-path"] + 'group/scene/execute', {
+            fetch(env()["api-path"] + 'group/scene/executeScene', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

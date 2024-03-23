@@ -501,11 +501,11 @@ function EditGroupDialog(props) {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
         if (userID) {
             let data= {
-                userId: userID,
+                executingUserId: userID,
                 groupId: props.id,
                 sceneId: sceneID
             }
-            fetch(env()["api-path"] + 'group/scene/execute', {
+            fetch(env()["api-path"] + 'group/scene/executeScene', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -521,7 +521,16 @@ function EditGroupDialog(props) {
                         duration: 1000,
                         isClosable: true,
                     })
-                }else{
+                
+                }else if(response.status === 420){
+                    toast({
+                        title: "Falscher Input",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                }
+                else{
                     toast({
                         title: "Fehler beim Ausführen der Szene",
                         status: "error",
@@ -555,9 +564,9 @@ function EditGroupDialog(props) {
         <>
         <Tooltip hasArrow label='Öffnen der Gruppeneinstellungen und Hinzufügen von Szenen' placement='auto' bg={'secondary.700'} color={'teal.100'} >
             <Button 
-                onClick={onOpen} 
-                variant={'solid'} 
-                color={'secondary.700'} 
+                onClick={onOpen}
+                variant={'solid'}
+                color={'secondary.700'}
                 bg={'teal.200'}
                 _hover={{bg: 'teal.100'}}
                 _active={{bg: 'secondary.500', color: 'teal.100'}}

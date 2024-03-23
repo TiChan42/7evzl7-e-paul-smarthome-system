@@ -27,6 +27,7 @@ import {EditIcon } from '@chakra-ui/icons'
 import React, { useState, useEffect } from 'react'
 import { decryptString } from '@/utils/encryptionUtils'
 import {env} from '@/utils/env'
+import ControllerCommandsModal from './controllerCommandsModal'
 
 
 
@@ -35,6 +36,8 @@ function EditSceneDialog(props) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
+    const [rerender, setRerender] = useState(false);
+
     const [sceneNameInUse, setSceneNameInUse] = useState(false);
     const [sceneNameValid, setSceneNameValid] = useState(false);
     const [sceneNameValue, setSceneNameValue] = useState('');
@@ -42,6 +45,8 @@ function EditSceneDialog(props) {
 
     const [ignoredPorts, setIgnoredPorts] = useState([])
     const [scenePorts, setScenePorts] = useState([])
+
+    const [scenePortModals, setScenePortModals] = useState([])
 
     //prüft ob der Szenenname bereits vergeben ist
     const checkSceneNameInUse = (sceneName) => {
@@ -183,6 +188,13 @@ function EditSceneDialog(props) {
                 }
             });
             setIgnoredPorts(temp);
+
+            //für jedes Element in scenePort wird scenePortModals um ein false erweitert
+            let temp2 = [];
+            groupClients.forEach(() => {
+                temp2.push(false);
+            });
+            setScenePortModals(temp2);
         }
         // eslint-disable-next-line
     }, [scenePorts]);
@@ -237,7 +249,7 @@ function EditSceneDialog(props) {
                     props.reloadScenes();
                     toast.closeAll();
                     toast({
-                        title: "Port erfolgreich hinzugefügt",
+                        title: "Client erfolgreich hinzugefügt",
                         status: "success",
                         duration: 3000,
                         isClosable: true,
@@ -245,7 +257,7 @@ function EditSceneDialog(props) {
                 }
                 else {
                     toast({
-                        title: "Port konnte nicht hinzugefügt werden",
+                        title: "Client konnte nicht hinzugefügt werden",
                         status: "error",
                         duration: 3000,
                         isClosable: true,
@@ -255,7 +267,7 @@ function EditSceneDialog(props) {
             .catch((error) => {
                 console.error('Error(addPortToScene):', error);
                 toast({
-                    title: "Port konnte nicht hinzugefügt werden",
+                    title: "Client konnte nicht hinzugefügt werden",
                     status: "error",
                     duration: 3000,
                     isClosable: true,
@@ -289,7 +301,7 @@ function EditSceneDialog(props) {
                     props.reloadScenes();
                     toast.closeAll();
                     toast({
-                        title: "Port erfolgreich ignoriert",
+                        title: "Client erfolgreich ignoriert",
                         status: "success",
                         duration: 3000,
                         isClosable: true,
@@ -297,7 +309,7 @@ function EditSceneDialog(props) {
                 }
                 else {
                     toast({
-                        title: "Port konnte nicht ignoriert werden",
+                        title: "Client konnte nicht ignoriert werden",
                         status: "error",
                         duration: 3000,
                         isClosable: true,
@@ -305,9 +317,9 @@ function EditSceneDialog(props) {
                 }
             })
             .catch((error) => {
-                console.error('Error(addPortToScene):', error);
+                console.error('Error(removePortFromScene):', error);
                 toast({
-                    title: "Port konnte nicht ignoriert werden",
+                    title: "Client konnte nicht ignoriert werden",
                     status: "error",
                     duration: 3000,
                     isClosable: true,
@@ -316,7 +328,52 @@ function EditSceneDialog(props) {
         }
     }
 
-
+    const updateState = (port) => {
+        let userID = decryptString(sessionStorage.getItem('executingUserID'));
+        if(userID){
+            let data = {
+                executingUserId: userID,
+                sceneId: props.scene.id,
+                portId: port
+            }
+            fetch(env()["api-path"] + 'group/scene/updateState', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if(response.status === 204)
+                {
+                    toast({
+                        title: "Client Status in der Szene erfolgreich aktualisiert",
+                        status: "success",
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                }
+                else {
+                    toast({
+                        title: "Client Status in der Szene konnte nicht aktualisiert werden",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    })
+                }
+            })
+            .catch((error) => {
+                console.error('Error(clientStatusChange):', error);
+                toast({
+                    title: "Client Status in der Szene konnte nicht aktualisiert werden",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                })
+            });
+        }
+    }
+    
 
     
     return (
@@ -401,7 +458,34 @@ function EditSceneDialog(props) {
                                             fontSize='lg'
                                             icon={<EditIcon />}
                                             ml={2}
+                                            onClick={()=>{
+                                                let temp = scenePortModals;
+                                                temp[index] = true;
+                                                setScenePortModals(temp);
+                                                setRerender(!rerender);
+                                            }}
                                         />
+                                        <ControllerCommandsModal 
+                                            rerender={rerender}
+                                            openModal={scenePortModals[index]} 
+                                            closeModal={()=>{
+                                                console.log('close');
+                                                let temp = scenePortModals;
+                                                temp[index] = false;
+                                                setScenePortModals(temp);
+                                                setRerender(!rerender);
+                                            }}
+
+                                            client = {client}
+
+                                            additionalButton = {true}
+                                            additionalButtonFunction = {() => {
+                                                console.log('in Szene übernehmen');
+                                                updateState(client.id);
+                                            }}
+                                            additionalButtonText = {'in Szene übernehmen'}
+                                        />
+
                                     </Flex>
                                 )
                             }

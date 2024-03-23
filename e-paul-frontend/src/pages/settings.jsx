@@ -1,7 +1,6 @@
-import { CloseButton, Tabs, FormControl, FormLabel, HStack, PinInput, PinInputField, show, Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
+import { CloseButton,  Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
 import { decryptString } from '@/utils/encryptionUtils';
-import React, { Component, useEffect, useState } from 'react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import React, { Component, useEffect} from 'react';
 
 function DeleteUserModal() {
     const executingUserID = sessionStorage.getItem('executingUserID');
