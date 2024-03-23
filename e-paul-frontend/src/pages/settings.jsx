@@ -4,7 +4,7 @@ import React, { Component, useEffect, useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function DeleteUserModal() {
-    const executingUserID = sessionStorage.getItem('executingUserID');
+    const executingUserID = decryptString(sessionStorage.getItem('executingUserID'));
     const accountID = decryptString(sessionStorage.getItem('accountID'));
     const userID = decryptString(sessionStorage.getItem('userToEdit'));
     const initialRef = React.useRef(null);
@@ -236,35 +236,40 @@ class Settings extends Component {
                             pin: this.state.newPin
                         })
                     })
-
-                    this.state.toastTitle = "Erfolg!"
-                    this.state.toastDescription = "Ihr PIN wurde erfolgreich geändert."
-                    this.state.toastStatus = "success"
-                    this.state.toastIsClosable = true
-                    this.state.toastDuration = 7000
-                    this.state.openToastTrigger = true
+                    this.setState({
+                        toastTitle: "Erfolg!",
+                        toastDescription: "Ihr PIN wurde erfolgreich geändert.",
+                        toastStatus: "success",
+                        toastIsClosable: true,
+                        toastDuration: 7000,
+                        openToastTrigger: true
+                    })
                 }
                 else {
                     // Invalid Old Pin
                     this.setState({ wrongPinOpen: true })
+                    this.setState({
+                        toastTitle: "PIN ist falsch!",
+                        toastDescription: "Ihr eingegebener PIN ist falsch. Bitte versuchen Sie es erneut.",
+                        toastStatus: "error",
+                        toastIsClosable: true,
+                        toastDuration: 7000,
+                        openToastTrigger: true
+                    })
                     console.log("old pin is not valid")
-                    this.state.toastTitle = "PIN ist falsch!"
-                    this.state.toastDescription = "Ihr eingegebener PIN ist falsch. Bitte versuchen Sie es erneut."
-                    this.state.toastStatus = "error"
-                    this.state.toastIsClosable = true
-                    this.state.toastDuration = 7000
-                    this.state.openToastTrigger = true
                 }
                 this.setState({ diffPinOpen: false })
             }
             else {
                 // Pins are different
-                this.state.toastTitle = "PINs sind verschieden!"
-                this.state.toastDescription = "Geben Sie zwei mal den gleichen PIN ein, um diesen zu ändern."
-                this.state.toastStaus = "error"
-                this.state.toastIsClosable = true
-                this.state.toastDuration = 7000
-                this.state.openToastTrigger = true
+                this.setState({
+                    toastTitle: "PINs sind verschieden!",
+                    toastDescription: "Geben Sie zwei mal den gleichen PIN ein, um diesen zu ändern.",
+                    toastStatus: "error",
+                    toastIsClosable: true,
+                    toastDuration: 7000,
+                    openToastTrigger: true
+                })
                 this.setState({ diffPinOpen: true })
                 console.log("new pins are different")
             }
