@@ -5,14 +5,18 @@ import json
 
 from paho.mqtt import client as mqtt_client
 
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../../.env"))
+
 class PythonClientPub:
     def __init__(self):
         self.topics_to_subscribe = []
-        self.broker = '195.90.215.140'
-        self.port = 1883
+        self.broker = os.getenv("MQTT_BROKER")
+        self.port = int(os.getenv("MQTT_PORT"))
         self.client_id = f'python-mqtt-{random.randint(0, 1000)}'
-        self.username = "7"
-        self.password = "WH7OV80P5OSZZASJIL4V"
+        self.username = os.getenv("MQTT_USER")
+        self.password = os.getenv("MQTT_PASSWORD")
         print("Client created")
         self.client = self.connect_mqtt()
         self.client.loop_start()
@@ -45,6 +49,7 @@ class PythonClientPub:
             "target": target,
             "command": command
         }
+        
         if brightness:
             message["brightness"] = brightness
         if rgb:
@@ -58,19 +63,10 @@ class PythonClientPub:
             print(f"Failed to send message to topic {pubTopic}")
 
 
-    def publishScene(self,pubTopic, target, white_flag, red, green, blue, brightness):
-        message = {
-            "type": 3,
-            "target": target,
-            "state":{"whiteFlag": white_flag,
-            "red": red,
-            "green": green,
-            "blue": blue,
-            "brightness": brightness}
-        }
-        messageJson = json.dumps(message)
-        result = self.client.publish(pubTopic, messageJson)
+    def publishScene(self, pubTopic, message):
+        result = self.client.publish(pubTopic, message)
         status = result[0]
+        
         if status == 0:
             print(f"Send message to topic {pubTopic}")
         else:
@@ -83,8 +79,6 @@ class PythonClientPub:
         print("Client disconnected")
 
 
-
-
 #tests
 
 #testcl = python_client_pub()
@@ -92,7 +86,7 @@ class PythonClientPub:
 #testcl.publish_command("robbe0503@t-online.de", 7, "switchOff")
 
 #testcl.publish_command("robbe0503@t-online.de", 7, "switchOn")
-#testcl.publish_command("robbe0503@t-online.de", 7, "changeLampBrightness", 500)
+#testcl.publish_command("robbe0503@t-online.de", 7, "changeLampBrightness", 200)
 #time.sleep(2)
 
 
