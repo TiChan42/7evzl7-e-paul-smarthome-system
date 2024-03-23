@@ -143,37 +143,21 @@ class ChangePin(APIView):
         
         try:
             user = User.objects.get(pk = userid)
-            executingUser = User.objects.get(pk = userid)
+            executingUser = User.objects.get(pk = executingUserId)
         except User.DoesNotExist:
             return Response(status = 400)
-        
-        userPin = user.pin
 
         if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
-            if not bool(userPin):   
-                if not bool(pin):
-                    user.pin = user.__class__._meta.get_field('pin').default
-                    user.save()
-                    return Response(status = 200)  
-                pin = pin.encode("utf-8")
-                pinHash = hashpw(pin, salt=gensalt())
-                pin = pinHash.decode("utf-8")
-                user.pin = pin
+            if not bool(pin):
+                user.pin = user.__class__._meta.get_field('pin').default
                 user.save()
-                return Response(status = 200)
-            else: 
-                oldPin = request.data["previousPin"]
-                if checkpw(oldPin.encode("utf-8"), userPin.encode("utf-8")):
-                    if not bool(pin):
-                        user.pin = user.__class__._meta.get_field('pin').default
-                        user.save()
-                        return Response(status = 200) 
-                    pin = pin.encode("utf-8")
-                    pinHash = hashpw(pin, salt=gensalt())
-                    pin = pinHash.decode("utf-8")
-                    user.pin = pin
-                    user.save()
-                    return Response(status = 200)
+                return Response(status = 200)  
+            pin = pin.encode("utf-8")
+            pinHash = hashpw(pin, salt=gensalt())
+            pin = pinHash.decode("utf-8")
+            user.pin = pin
+            user.save()
+            return Response(status = 200)
         else:
             return Response(status = 400)  
 """

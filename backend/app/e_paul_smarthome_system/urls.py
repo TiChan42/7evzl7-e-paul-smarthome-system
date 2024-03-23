@@ -7,11 +7,11 @@ from .views.login import Login, LoginUser
 from .views.signUp import SignUp, CreateUser, MicrocontrollerSignUp, EmailVerification
 from .views.logout import Logout
 from .views.home import HomeView
-from .views.devices import DeviceView, AddPort, UpdateCurrentState
+from .views.devices import DeviceView, AddPort, UpdateCurrentState, ExecuteCommand
 from .views.validate import ValidatePin, ValidateEmail, CheckPinRequired
 from .views.getData import GetUsers, GetVerified, GetGroups, GetPorts, GetUserRights, GetCommands, GetScenes, GetEmails, GetScenePorts
 from .views.group import AddPortToGroup, RemovePortFromGroup, AddGroup, DeleteGroup, ChangeGroupName
-from .views.scene import CreateScene, DeleteScene, ChangeSceneName, SceneAddPort, UpdateState, SceneRemovePort
+from .views.scene import CreateScene, DeleteScene, ChangeSceneName, SceneAddPort, UpdateState, SceneRemovePort, ExecuteScene
 from django.urls import path
 
 
@@ -24,17 +24,18 @@ urlpatterns = [
     path("user/<userId>",                               SingleUserView.as_view(),           name = "singleUser"),
     path("account",                                     AccountView.as_view(),              name = "group"),
     path("deleteAccount",                               DeleteAccount.as_view(),            name = "deleteAccount"),
-    path("aboutUs",                                     AboutUsView.as_view(),              name="aboutUs"),
-    path("signUp",                                      SignUp.as_view(),                   name="signUp"),
-    path("signUp/email",                                EmailVerification.as_view(),        name="signUpEmail"),
-    path("signUp/user",                                 CreateUser.as_view(),               name="signUpuser"),
-    path("signUp/microcontroller",                      MicrocontrollerSignUp.as_view(),    name="signUpMicrocontroller"),
-    path("login",                                       Login.as_view(),                    name="login"),
+    path("aboutUs",                                     AboutUsView.as_view(),              name = "aboutUs"),
+    path("signUp",                                      SignUp.as_view(),                   name = "signUp"),
+    path("signUp/email",                                EmailVerification.as_view(),        name = "signUpEmail"),
+    path("signUp/user",                                 CreateUser.as_view(),               name = "signUpuser"),
+    path("signUp/microcontroller",                      MicrocontrollerSignUp.as_view(),    name = "signUpMicrocontroller"),
+    path("login",                                       Login.as_view(),                    name = "login"),
     path("login/user",                                  LoginUser.as_view(),                name = "loginUser"),
     path("logout",                                      Logout.as_view(),                   name = "logout"),
-    path("home/<userId>",                               HomeView.as_view(),                 name="home"),
+    path("home/<userId>",                               HomeView.as_view(),                 name = "home"),
     path("devices",                                     DeviceView.as_view(),               name = "devices"),
     path("devices/addPort",                             AddPort.as_view(),                  name = "addPort"),
+    path("device/executeCommand",                       ExecuteCommand.as_view(),           name = "executeCommand"),
     path("validatePin",                                 ValidatePin.as_view(),              name = "validatePin"),
     path("validateEmail",                               ValidateEmail.as_view(),            name = "validateEmail"),
     path("pinRequired/<userid>",                        CheckPinRequired.as_view(),         name = "pinRequired"),
@@ -59,6 +60,7 @@ urlpatterns = [
     path("group/scene/changeName",                      ChangeSceneName.as_view(),          name = "changeSceneName"),
     path("group/scene/addPort",                         SceneAddPort.as_view(),             name = "addPortToScene"),
     path("group/scene/removePort",                      SceneRemovePort.as_view(),          name = "removePortFromScene"),
-    path("group/scene/UpdateState",                     UpdateState.as_view(),              name = "updateState"),
+    path("group/scene/updateState",                     UpdateState.as_view(),              name = "updateState"),
     path("group/scene/getPorts/<sceneId>",              GetScenePorts.as_view(),            name = "getPortsFromScene"),
+    path("group/scene/executeScene",                    ExecuteScene.as_view(),             name = "executeScene"),
     ]
