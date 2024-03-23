@@ -9,7 +9,7 @@ from ..model.portTemplate import PortTemplate
 from ..model.command import Command
 from ..model.commandOption import CommandOption
 
-from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
+from ..serializer.microcontrollerSerializer import MicrocontrollerSignUpSerializer
 
 #from ..functions.sendMail import send_email
 from django.core.mail import BadHeaderError, send_mail
@@ -310,7 +310,7 @@ class MicrocontrollerSignUp(APIView):
                 key = id_generator()
                 microcontroller = Microcontroller(name=name, account = account, key = key, type = type)
                 microcontroller.save()
-                """with open("/etc/mosquitto/authbuffer", "a") as myfile:
+                with open("/etc/mosquitto/authbuffer", "a") as myfile:
                     myfile.write(str(microcontroller.id) + ":" + key)
                 system("mosquitto_passwd -U /etc/mosquitto/authbuffer")
                 with open("/etc/mosquitto/authbuffer", "r+") as myfile:
@@ -318,7 +318,7 @@ class MicrocontrollerSignUp(APIView):
                     myfile.truncate(0)
                 with open("/etc/mosquitto/auth", "a") as myfile:
                     myfile.write(str(key))
-                system("sudo systemctl restart mosquitto")"""
+                system("sudo systemctl restart mosquitto")
                 portTemplates = PortTemplate.objects.filter(knownControllerType = knownControllerType)
                 for portTemplate in portTemplates:
                     port = Port(type = portTemplate.knownControllerType.type, microcontroller = microcontroller, name = microcontroller.name, portTemplate = portTemplate, currentStatus = portTemplate.status_default)
@@ -327,7 +327,7 @@ class MicrocontrollerSignUp(APIView):
                     assignmentGroup = Group.objects.get(user = superuser, groupType = "Assignment")
                     groupPort = GroupPort(group = assignmentGroup, port = port)
                     groupPort.save()
-                serializer = MicrocontrollerSerializer(microcontroller)    
+                serializer = MicrocontrollerSignUpSerializer(microcontroller)    
                 return Response(serializer.data, status=201)
             else:
                 return Response(status=400)

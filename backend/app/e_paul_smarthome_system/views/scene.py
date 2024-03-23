@@ -188,16 +188,18 @@ class SceneRemovePort(APIView):
             return Response(status = 400)
         
         try:
-            port = Port.objects.get(id = portId, state = scene.state)
+            state = State.objects.get(scene__id = sceneId, port__id = portId)
+        except State.DoesNotExist:
+            return Response(status = 400)
+                
+        try:
+            port = Port.objects.get(id = portId, state__id = state.id)
         except Port.DoesNotExist:
             return Response(status = 400)
         
-        try:
-            state = State.objects.get(scene = scene, port = port)
-            state.delete()
-            return Response(status = 204)
-        except State.DoesNotExist:
-            return Response(status = 400)
+        state.delete()
+        return Response(status = 204)
+
 
 class UpdateState(APIView):
     queryset = State.objects.all()
