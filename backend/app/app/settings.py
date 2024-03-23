@@ -37,7 +37,6 @@ ALLOWED_HOSTS = loads(os.getenv("DJANGO_ALLOWED_HOSTS"))
 
 INSTALLED_APPS = [
     'corsheaders',
-    'e_paul_smarthome_system',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'e_paul_smarthome_system',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +93,7 @@ REST_FRAMEWORK = {
 ]
 }
 
-
+DEFAULT_SETTINGS_MODULE = True
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
