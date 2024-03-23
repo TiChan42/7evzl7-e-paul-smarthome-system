@@ -1,57 +1,11 @@
 #include <EEPROM.h>
 
-void setup() {
-  Serial.begin(9600);
-  //delay(50);
-  /*writeResetCounterToEEPROM("0");
-  writeSSIDToEEPROM(0, "TEst0SSID");
-  writePasswordToEEPROM(0, "TEstPW");
-  writeTopicToEEPROM(0, "TEstTopic");
-  writeIDToEEPROM(0, "TEstID");
-  writeKeyToEEPROM(0, "TEstKey");
-  writeModeToEEPROM(0, "TEstMode");*/
-
-  readAll();
-
-  /*Serial.println("");
-  Serial.println(readResetCounterFromEEPROM());
-  Serial.println(readSSIDFromEEPROM(0));
-  Serial.println(readPasswordFromEEPROM(0));
-  Serial.println(readTopicFromEEPROM(0));
-  Serial.println(readIDFromEEPROM(0));
-  Serial.println(readKeyFromEEPROM(0));
-  Serial.println(readModeFromEEPROM(0));
-  Serial.println("");*/
-
-  char rst = readResetCounterFromEEPROM();
-  Serial.print("Reset Counter: ");
-  Serial.print(rst);
-  if (rst == '0') {
-    rst = '1';
-    writeResetCounterToEEPROM((String)rst);
-  } else if (rst == '1') {
-    rst = '2';
-    writeResetCounterToEEPROM((String)rst);
-  } else { //if (rst == '2') {
-    Serial.println("Clearen");
-    clearEEPROM();
-    writeResetCounterToEEPROM("0");
-    ESP.reset();
-  }
-  Serial.println(readResetCounterFromEEPROM());
-
-  delay(1000);
-  writeResetCounterToEEPROM("0");
-  Serial.println(readResetCounterFromEEPROM());
-
-  readAll();
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
+/*
+Der Aufbau der EEPROM ist folgender:
+---------------------------------------------------------------------------------
+ResetCounter\1SSID\0Password\0Topic\0ID\0Key\0Mode\0
+---------------------------------------------------------------------------------
+*/
 
 void clearEEPROM () {
   EEPROM.begin(512);
@@ -70,20 +24,10 @@ void readAll() {
     Serial.print(character);
   }
 }
-/*
-Der Aufbau der EEPROM ist folgender:
----------------------------------------------------------------------------------
-ResetCounter\1SSID\0Password\0Topic\0ID\0Key\0Mode\0
----------------------------------------------------------------------------------
-*/
 
 // Funktion zum Schreiben des modus nach der SSID, des Passworts, des Topics, der ID und des Key in den EEPROM
 void writeResetCounterToEEPROM(String data) {  
   EEPROM.begin(512);
-  Serial.print("Writing ");
-  Serial.print(data[0]);
-  Serial.print(" to eeprom");
-  Serial.println("");
   EEPROM.write(0, data[0]); // Schreibe jedes Zeichen des Strings in den EEPROM
   
   EEPROM.write(1, '\1'); // Terminierung hinzufügen
