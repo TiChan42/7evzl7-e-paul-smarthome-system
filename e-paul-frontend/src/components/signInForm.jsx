@@ -11,9 +11,9 @@ import {
     Heading
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { encryptString} from '../encryptionUtils';
+  import { encryptString} from '@/utils/encryptionUtils';
   import { ViewIcon, ViewOffIcon} from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
   //Form for signing in
 const SignInForm = (props) => {
@@ -122,7 +122,40 @@ const SignInForm = (props) => {
         }
         );
 
+        
     }
+    const references = [React.useRef(), React.useRef(), React.useRef()];
+    //Keylistener für das Drücken der Enter-Taste und Tab-Taste
+    const handleKeyDown = React.useCallback((e) => {
+        if (e.key === 'Enter' || e.key === 'Tab') {
+            e.preventDefault();
+            if (references[0].current === document.activeElement) {
+                if(!references[1].current.disabled) references[1].current.focus();
+            } else if (references[1].current === document.activeElement) {
+                if (!references[2].current.disabled) references[2].current.focus();
+            } else if (references[2].current === document.activeElement) {
+                signIn();
+            }
+        }
+        // eslint-disable-next-line
+    }, [references]);
+
+    useEffect(() => {
+        // Add event listener when the component mounts
+        window.addEventListener('keydown', handleKeyDown);
+    
+        // Remove event listener when the component unmounts
+        return () => {
+          window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleKeyDown]);
+
+
+    useEffect(() => {
+        references[0].current.focus();
+        // eslint-disable-next-line
+    }, []);
+
 
     return (
         <>
@@ -134,7 +167,9 @@ const SignInForm = (props) => {
                     onChange={e => setEmail(e.target.value)} 
                     placeholder='beispiel@epaul-smarthome.de' 
                     focusBorderColor='teal.500'
-                    ref={props.initialRef} 
+                    borderColor={'teal.200'}
+                    _hover={{borderColor: 'teal.300'}}
+                    ref={references[0]} 
                 />
                 {!isEmailError ? (
                     <FormHelperText>
@@ -154,6 +189,9 @@ const SignInForm = (props) => {
                         type={showPassword ? "text" : "password"} 
                         onChange={e => setPassword(e.target.value)}
                         focusBorderColor='teal.500'
+                        ref={references[1]}
+                        borderColor={'teal.200'}
+                        _hover={{borderColor: 'teal.300'}}
                     />
                     <InputRightElement width="4.5rem">
                         <Button h="1.75rem" size="sm" onClick={handlePasswordShowClick} isDisabled={emailWrongFormat || !email}>
@@ -173,7 +211,7 @@ const SignInForm = (props) => {
             </FormControl>
 
             <br/>
-            <Button colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} isDisabled={!showCreateButton || emailWrongFormat || !password || !email} onClick={signIn}>
+            <Button ref={references[2]} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} isDisabled={!showCreateButton || emailWrongFormat || !password || !email} onClick={signIn}>
                 Anmelden
             </Button>
 

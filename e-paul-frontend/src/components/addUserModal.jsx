@@ -17,10 +17,10 @@ import {
     useToast
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { decryptString } from '../encryptionUtils';
-  import { generateRandomUsername } from '../randomUsernameGenerator';
+  import { decryptString } from '@/utils/encryptionUtils';
+  import { generateRandomUsername } from '@/utils/randomUsernameGenerator';
   import { ViewIcon, ViewOffIcon,  RepeatIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 
 //Komponente für das Hinzufügen eines Benutzers (Modal)
@@ -40,7 +40,10 @@ const AddUserModal = (props) => {
     const [userName, setUserName] = useState(generatedName);
     const [password, setPassword] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    const [isAdmin, setIsAdmin] = useState(props.requireAdmin);
+    const [isAdmin, setIsAdmin] = useState(props.requireAdmin ? true : false);
+
+    //Executing User Rights
+    const [showMakeAdmin, setShowMakeAdmin] = useState(false);
 
     //Updater für den Benutzernamen
     useEffect(() => {
@@ -54,12 +57,15 @@ const AddUserModal = (props) => {
     useEffect(() => {
         if (userName.length > 0) {
             if (password === passwordRepeat) {
-                if (password.length >= 6) {
-                    setShowCreateButton(true);
-                }else if(!isAdmin){
-                    setShowCreateButton(true);
+                if (isAdmin) {
+                    if(password.length >= 6){
+                        setShowCreateButton(true);
+                    }else{
+                        setShowCreateButton(false);
+                    }
+                    
                 }else{
-                    setShowCreateButton(false);
+                    setShowCreateButton(true);
                 }
             } else {
                 setShowCreateButton(false);
@@ -70,37 +76,91 @@ const AddUserModal = (props) => {
     }, [password, passwordRepeat, isAdmin, userName]);
 
     //Erstellt den Benutzer basierend auf den Eingaben
-    function createUser(){
+    const createUser = () => {
         const data = {
+            executingUserId: sessionStorage.getItem('executingUserID')?decryptString(sessionStorage.getItem('executingUserID')):null,  
             username: userName,
             pin: password,
             isAdmin: isAdmin,
             accountId: decryptString(sessionStorage.getItem('accountID')),
             userImageName: "user_profile_0.jpg"
         }
-        console.log(data);
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
-        console.log(requestOptions);
         fetch(env()["api-path"] + "signUp/user", requestOptions)
         .then(response => {
             if(response.status === 201){
                 props.closeModal();
+                setGeneratedName(generateRandomUsername());
+                //Reet all useState Values
+                setUserName(generatedName);
+                setPassword("");
+                setPasswordRepeat("");
+                setIsAdmin(false);
+
+                toast({
+                    title: 'Benutzer erfolgreich erstellt',
+                    status: 'success',
+                    duration: 5000,
+                    isClosable: true,
+                });
             }
             else{
                 toast({
                     title: "Benutzer konnte nicht erstellt werden",
                     description: "Bitte versuchen Sie es erneut",
                     status: "error",
-                    duration: 9000,
+                    duration: 7000,
                     isClosable: true,
                 })
             }
         })
+        .catch(error => {
+            console.log(error);
+            toast({
+                title: "Benutzer konnte nicht erstellt werden",
+                description: "Bitte versuchen Sie es erneut",
+                status: "error",
+                duration: 7000,
+                isClosable: true,
+            })
+        })
     }
+
+    const getExecutingUserRights = () => {
+        const executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
+        if(executingUserID !== null && executingUserID !== "" && executingUserID !== undefined){
+            let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+            fetch(url, requestOptions)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                if(data["mayChangeUserType"] === 1){
+                    setShowMakeAdmin(true);
+                } else {
+                    setShowMakeAdmin(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Error(getExecutingUserRights):', error);
+            });
+        }
+    }
+
+    useEffect(() => {
+        getExecutingUserRights();
+    }, []);
+
 
     return (
         <>
@@ -190,16 +250,15 @@ const AddUserModal = (props) => {
                     </FormControl>
                     <br></br>
                     <FormControl display='flex' alignItems='center'>
-                        {props.requireAdmin &&
-                            <Checkbox isDisabled defaultChecked size='lg' colorScheme='teal' onChange={e=> setIsAdmin(e.target.value)}>
-                                Soll der Benutzer ein Admin sein?
-                            </Checkbox>
-                        }
-                        {!props.requireAdmin &&
-                            <Checkbox size='lg' colorScheme='teal' onChange={e=> setIsAdmin(e.target.value)}>
-                                Soll der Benutzer ein Admin sein?
-                            </Checkbox>
-                        }
+                        <Checkbox 
+                        isDisabled={props.requireAdmin || !showMakeAdmin} 
+                        defaultChecked={props.requireAdmin} 
+                        size='lg' 
+                        colorScheme='teal' 
+                        onChange={e=> setIsAdmin(e.target.checked)}
+                        >
+                            Soll der Benutzer ein Admin sein?
+                        </Checkbox>
                     </FormControl>
                 </ModalBody>
                 <ModalFooter>

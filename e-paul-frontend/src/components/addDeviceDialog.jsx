@@ -17,7 +17,7 @@ function AddDeviceDialog() {
     return (
       <>
         <Button onClick={onOpen}>
-            <AddIcon></AddIcon>
+            <AddIcon mr={2}></AddIcon>
             Hinzufügen
         </Button>
   

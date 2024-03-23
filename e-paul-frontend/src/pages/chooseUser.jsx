@@ -1,10 +1,10 @@
-import React, { Component,useState, useEffect } from 'react';
-import {Box, Text, Center, Spinner,Wrap,WrapItem} from "@chakra-ui/react";
-import {Avatar} from "@chakra-ui/avatar";
-import { encryptString, decryptString } from '../../encryptionUtils';
-import UserPinRequestModal from '../userPinRequestModal';
-import AddUserModal from '../addUserModal';
-import {env} from '../../env';
+import React, { Component, useState, useEffect } from 'react';
+import { Box, Text, Center, Spinner, Wrap, WrapItem } from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/avatar";
+import { encryptString, decryptString } from '@/utils/encryptionUtils';
+import UserPinRequestModal from '@/components/userPinRequestModal';
+import AddUserModal from '@/components/addUserModal';
+import { env } from '@/utils/env';
 
 
 //Komponente für die Auswahl des Benutzers
@@ -30,11 +30,11 @@ function Users() {
   //fetch users from backend
   function fetchUsers(accountID) {
     //fetch users from backend
-    const fetchPath = env()["api-path"] + "getUser/" + accountID; 
+    const fetchPath = env()["api-path"] + "getUsers/" + accountID; 
     
     fetch(fetchPath, {method: "GET"})
       .then(response => {
-        
+        console.log(response); // HTTP-Response ausgeben
         return response.json();
       })
       .then(data => {
@@ -148,7 +148,7 @@ function Users() {
                       size='2xl'
                       name={users[key].username}
                       src={env()["user-profile-images-path"] + users[key].userImageName}
-                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                      _groupHover={{ border: '8px', borderColor: 'teal.600' }}
                     />
                   </Center>
                   <Center>
@@ -180,7 +180,7 @@ function Users() {
                       borderBottomColor='Teal'
                       size='2xl'
                       src={env()["user-profile-images-path"] + 'user_settings.png'}
-                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                      _groupHover={{ border: '8px', borderColor: 'teal.600' }}
                     />
                   </Center>
                   <Center>

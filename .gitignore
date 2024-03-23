@@ -163,3 +163,5 @@ e-paul-frontend/.env.production.local
 e-paul-frontend/npm-debug.log*
 e-paul-frontend/yarn-debug.log*
 e-paul-frontend/yarn-error.log*
+e-paul-frontend/package-lock.json
+e-paul-frontend/package.json

@@ -16,9 +16,9 @@ import {
     InputRightElement,
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { encryptString, decryptString } from '../encryptionUtils';
+  import { encryptString, decryptString } from '@/utils/encryptionUtils';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 //Komponente für die Abfrage des Pins und (wenn nötig) des Benutzers
 const UserPinRequestModal = (props) => {
@@ -28,40 +28,37 @@ const UserPinRequestModal = (props) => {
     const [userSelectValue, setUserSelectValue] = useState(props.users[0].id)
     const handlePinShowClick = () => setShowPin(!showPin)
 
-    //Versuch den Pin zu validieren
-    const tryToSubmitPin = (event) => {
-        const pin = event.target.value;
+    //Versuch den Pin zu validieren 
+    const tryToSubmitPin = (target) => {
+        if(target == null) return;
+        const pin = target.value;
         const userID = (requireUserSelection) ? userSelectValue : decryptString(sessionStorage.getItem('executingUserID'));
         const data = {
             pin: pin,
             userId: userID,
             accountId: decryptString(sessionStorage.getItem('accountID'))
         }
-        console.log(data);
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }
-        console.log(requestOptions);
-        console.log(env()["api-path"] + "validatePin");
         fetch(env()["api-path"] + "validatePin", requestOptions)
         .then(response => {
-            console.log(response); // HTTP-Response ausgeben
             return response.json();
         })
         .then(data => {
             if(data.valid){
-                event.target.value = "";
+                target.value = "";
                 sessionStorage.setItem('executingUserID', encryptString(userID.toString()));
-                sessionStorage.setItem('userAuthorized', encryptString("true"));
+                sessionStorage.setItem('userAuthorized', encryptString("true")); 
                 props.closeModal();
                 props.executeIfValid();
             }
         })
         .catch(error => {
             console.log(error);
-            event.target.value = "";
+            target.value = "";
         })
     }
 
@@ -78,18 +75,20 @@ const UserPinRequestModal = (props) => {
         {
             setRequireUserSelection(false);
         }
+        tryToSubmitPin(inputRef.current)
+        // eslint-disable-next-line
     }, [props.users,props.openModal]);
 
-    const startFocusRef = React.createRef();
+    const inputRef = React.createRef();
     
     return (
         <Modal
         isOpen={props.openModal}
         onClose={props.closeModal}
-        initialFocusRef={startFocusRef}
+        initialFocusRef={inputRef}
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent bg={'teal.50'}>
                 {noPossibleUser && 
                     <React.Fragment>
                         <ModalHeader color='Red'>Keine Benutzer vorhanden</ModalHeader>
@@ -118,14 +117,17 @@ const UserPinRequestModal = (props) => {
                                     <Select 
                                     focusBorderColor='teal.500'
                                     onChange={(event) => {setUserSelectValue(event.target.value)}} 
+                                    borderColor={'teal.200'}
+                                    _hover={{borderColor: 'teal.300'}}
                                     >
                                         {props.users.map((user) => (
-                                            <>
+                                            <React.Fragment key={user.id+"UserPinRequestModal"}>
                                             {(user.role === "admin" || user.role === "superuser") &&
-                                                <option key={user.id} value={user.id}>
+                                                <option value={user.id}>
                                                     {user.username}
                                                 </option>
-                                            }</>
+                                            }
+                                            </React.Fragment>
                                         ))}
                                     </Select>
                                     <br></br>
@@ -139,9 +141,11 @@ const UserPinRequestModal = (props) => {
                                         type={showPin ? 'text' : 'password'}
                                         placeholder='Hier Pin eingeben...'
                                         maxLength='32'
-                                        onChange={tryToSubmitPin}
+                                        onChange={(event) => tryToSubmitPin(event.target)}
                                         focusBorderColor='teal.500'
-                                        ref={startFocusRef}
+                                        ref={inputRef}
+                                        borderColor={'teal.200'}
+                                        _hover={{borderColor: 'teal.300'}}
                                     />
                                     <InputRightElement width='4.5rem'>
                                         <Button h='1.75rem' size='sm' onClick={handlePinShowClick}>
@@ -156,7 +160,8 @@ const UserPinRequestModal = (props) => {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button onClick={props.closeModal}>Schließen</Button>
+                            <Button colorScheme='teal' mr={2} onClick={() => {tryToSubmitPin(inputRef.current)}}>Anmelden</Button>
+                            <Button onClick={props.closeModal} colorScheme={'teal'} variant={'outline'}>Schließen</Button>
                         </ModalFooter>
                     </React.Fragment>
                 }
