@@ -216,7 +216,7 @@ class UpdateState(APIView):
             return Response(status = 400)
           
         try:
-            port = Port.objects.get(id = portId, groupPort__group__user__id = executingUserId)
+            port = Port.objects.filter(id = portId, groupPort__group__user__id = executingUserId).first()
         except Port.DoesNotExist:
             return Response(status = 400)
               
@@ -234,7 +234,7 @@ class UpdateState(APIView):
 class ExecuteScene(APIView):
     queryset = Scene.objects.all()
     
-    def put(self, request):
+    def post(self, request):
         data = request.data
         
         try:

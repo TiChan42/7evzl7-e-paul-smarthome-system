@@ -14,6 +14,7 @@ from ..serializer.commandOptionSerializer import CommandOptionSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import re
 from ..mqttFunctions.python_client_pub import PythonClientPub
 
 class DeviceView(APIView):
@@ -121,24 +122,40 @@ class UpdateCurrentState(APIView):
 class ExecuteCommand(APIView):
     queryset = Port.objects.all()
     
-    def put(self, request):
+    def post(self, request):
         data = request.data
         try:
-            id = data["target"]
-            command = data["command"]
+            id = data["command"]["target"]
+            command = data["command"]["command"]
         except KeyError:
             return Response(status = 400)
         
         try:
-            brightness = data["brightness"]
+            brightness = data["command"]["brightness"]
         except KeyError:
             brightness = None
         
         try:
-            rgb = data["rgb"]
+            rgb = data["command"]["rgb"]
         except KeyError:
             rgb = None
-            
+        
+        if rgb == None:
+            pass
+        else:
+            if re.match(r'^#(?:[0-9a-fA-F]{3}){1,2}$', rgb):
+                pass
+            else:
+                return Response(status = 420)
+        
+        if brightness == None:
+            pass
+        else:
+            if re.match(r'\b\d{1,3}\b', brightness):
+                pass
+            else:
+                return Response(status = 420)
+        
         try:
             microcontroller = Microcontroller.objects.get(pk = id)
         except Microcontroller.DoesNotExist:
