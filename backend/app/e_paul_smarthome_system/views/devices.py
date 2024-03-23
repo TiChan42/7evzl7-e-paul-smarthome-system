@@ -4,12 +4,17 @@ from ..model.port import Port
 from ..model.user import User
 from ..model.group import Group
 from ..model.groupPort import GroupPort
+from ..model.commandOption import CommandOption
+from ..model.command import Command
 
 from ..serializer.accountSerializer import AccountMicrocontrollerSerializer
 from ..serializer.microcontrollerSerializer import MicrocontrollerSerializer
+from ..serializer.commandOptionSerializer import CommandOptionSerializer
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from ..mqttFunctions.python_client_pub import PythonClientPub
 
 class DeviceView(APIView):
     queryset = Account.objects.all()
@@ -85,19 +90,17 @@ class UpdateCurrentState(APIView):
             id = data["microcontrollerId"]
             currentStatus = data["state"]
         except KeyError:
-            return Response("lol",status = 400)
+            return Response(status = 400)
         
         try:
             microcontroller = Microcontroller.objects.get(pk = id)
         except Microcontroller.DoesNotExist:
-            return Response("mein",status = 400)
+            return Response(status = 400)
         
         try:
             port = Port.objects.get(microcontroller = microcontroller)
         except Port.DoesNotExist:
             return Response(status = 400)
-        
-        #microcontrollerKey = microcontroller.key.encode("utf-8")
         
         try:
             if password == microcontroller.key:
@@ -105,11 +108,62 @@ class UpdateCurrentState(APIView):
             else:
                 samePassword = 0
         except ValueError:
-            return Response("Code",status = 400)
+            return Response(status = 400)
         
         if samePassword == 0:
-            return Response("ist Scheiße",status = 400)
+            return Response(status = 400)
         else:
             port.currentStatus = currentStatus
             port.save()
             return Response(status = 204)
+
+
+class ExecuteCommand(APIView):
+    queryset = Port.objects.all()
+    
+    def put(self, request):
+        data = request.data
+        try:
+            id = data["target"]
+            command = data["command"]
+        except KeyError:
+            return Response(status = 400)
+        
+        try:
+            brightness = data["brightness"]
+        except KeyError:
+            brightness = None
+        
+        try:
+            rgb = data["rgb"]
+        except KeyError:
+            rgb = None
+            
+        try:
+            microcontroller = Microcontroller.objects.get(pk = id)
+        except Microcontroller.DoesNotExist:
+            return Response(status = 400)
+
+        email = Account.objects.get(microcontroller = microcontroller).email
+        
+        try:
+            commandOption = CommandOption.objects.filter(key = "command", value = command)
+        except CommandOption.DoesNotExist:
+            return Response(status = 400)
+        
+        testcl = PythonClientPub()
+
+        testcl.publish_command(email, id, command, brightness, rgb)
+        
+        return Response(status = 204)
+        
+    
+"""
+teststring:
+{
+    "target" : 1,
+    "command" : "changeLampBrightness",
+    "brightness" : 0,
+    "rgb" : 0
+}
+"""

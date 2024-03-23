@@ -4,12 +4,13 @@ from ..model.user import User
 from ..model.state import State
 from ..model.port import Port
 from ..model.microcontroller import Microcontroller
+from ..model.account import Account
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-
-
+import json
+from ..mqttFunctions.python_client_pub import PythonClientPub
 
 class CreateScene(APIView):
     queryset = Scene.objects.all()
@@ -208,33 +209,71 @@ class UpdateState(APIView):
         data = request.data
         
         try:
-            password = data["key"]
-            id = data["microcontrollerId"]
-            currentStatus = data["state"]
+            executingUserId = data["executingUserId"]
+            portId = data["portId"]
+            sceneId = data["sceneId"]
+        except KeyError:
+            return Response(status = 400)
+          
+        try:
+            port = Port.objects.get(id = portId, groupPort__group__user__id = executingUserId)
+        except Port.DoesNotExist:
+            return Response(status = 400)
+              
+        try: 
+            scene = Scene.objects.get(id = sceneId, group__user__id = executingUserId)
+        except Scene.DoesNotExist:
+            return Response(status = 400)
+        
+        state = State.objects.get(scene = scene, port = port)
+        state.state = port.currentStatus
+        state.save()
+        return Response(status = 204)
+
+
+class ExecuteScene(APIView):
+    queryset = Scene.objects.all()
+    
+    def put(self, request):
+        data = request.data
+        
+        try:
+            exectuingUserId = data["executingUserId"]
+            sceneId = data["sceneId"]
+            groupId = data["groupId"]
         except KeyError:
             return Response(status = 400)
         
         try:
-            microcontroller = Microcontroller.objects.get(pk = id)
-        except Microcontroller.DoesNotExist:
+            scene = Scene.objects.get(id = sceneId)
+        except Scene.DoesNotExist:
             return Response(status = 400)
         
-        try:
-            port = Port.objects.get(microcontroller = microcontroller)
-        except Port.DoesNotExist:
-            return Response(status = 400)
-              
-        try:
-            if password == microcontroller.key:
-                samePassword = 1
-            else:
-                samePassword = 0
-        except ValueError:
-            return Response(status = 400)
+        email = Account.objects.get(user__group__id = groupId).email
         
-        if samePassword == 0:
-            return Response(status = 400)
-        else:
-            port.currentStatus = currentStatus
-            port.save()
-            return Response(status = 204)
+        states = State.objects.filter(scene = scene)
+        
+        client = PythonClientPub()
+        
+        for state in states:
+            message = {
+                "type": 3,
+                "target": Microcontroller.objects.get(port = state.port).id,
+                "state": state.state
+            }
+            messageJson = json.dumps(message)
+            
+            print(messageJson)
+            
+            client.publishScene(email, messageJson)
+            
+        return Response(status = 204)
+    
+"""
+teststring:
+{
+"executingUserId": 4,
+"sceneId": 1,
+"groupId": 7
+}
+"""
