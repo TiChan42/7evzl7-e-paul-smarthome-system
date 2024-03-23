@@ -12,7 +12,7 @@ import {
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 
   //Form signing up
@@ -210,6 +210,8 @@ const SignUpForm = (props) => {
                     placeholder='beispiel@epaul-smarthome.de' 
                     focusBorderColor='teal.500'
                     ref={references[0]}
+                    borderColor={'teal.200'}
+                    _hover={{borderColor: 'teal.300'}}
                 />
                 {!isEmailError ? (
                     <FormHelperText>
@@ -230,6 +232,8 @@ const SignUpForm = (props) => {
                         onChange={e => setPassword(e.target.value)}
                         focusBorderColor='teal.500'
                         ref={references[1]}
+                        borderColor={'teal.200'}
+                        _hover={{borderColor: 'teal.300'}}
                     />
                     <InputRightElement width="4.5rem">
                         <Button h="1.75rem" size="sm" onClick={handlePasswordShowClick} isDisabled={isEmailError || !email}>
@@ -269,6 +273,8 @@ const SignUpForm = (props) => {
                         onChange={e => setPasswordRepeat(e.target.value)}
                         focusBorderColor='teal.500'
                         ref={references[2]}
+                        borderColor={'teal.200'}
+                        _hover={{borderColor: 'teal.300'}}
                     />
                     <InputRightElement width="4.5rem">
                         <Button h="1.75rem" size="sm" onClick={handlePasswordShowClick}  isDisabled={isPasswordError || !password || isEmailError || !email}>

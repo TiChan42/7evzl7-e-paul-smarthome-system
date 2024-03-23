@@ -16,8 +16,8 @@ import {
     Box
     } from '@chakra-ui/react'
 import React from 'react';
-import { decryptString } from '../encryptionUtils';
-import { env } from '../env';
+import { decryptString } from '@/utils/encryptionUtils';
+import { env } from '@/utils/env';
 
 
 //Column for the user rights

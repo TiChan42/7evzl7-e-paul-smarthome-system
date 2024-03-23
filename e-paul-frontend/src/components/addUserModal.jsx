@@ -17,10 +17,10 @@ import {
     useToast
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { decryptString } from '../encryptionUtils';
-  import { generateRandomUsername } from '../randomUsernameGenerator';
+  import { decryptString } from '@/utils/encryptionUtils';
+  import { generateRandomUsername } from '@/utils/randomUsernameGenerator';
   import { ViewIcon, ViewOffIcon,  RepeatIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 
 //Komponente für das Hinzufügen eines Benutzers (Modal)
@@ -95,6 +95,12 @@ const AddUserModal = (props) => {
             if(response.status === 201){
                 props.closeModal();
                 setGeneratedName(generateRandomUsername());
+                //Reet all useState Values
+                setUserName(generatedName);
+                setPassword("");
+                setPasswordRepeat("");
+                setIsAdmin(false);
+
                 toast({
                     title: 'Benutzer erfolgreich erstellt',
                     status: 'success',
@@ -126,7 +132,7 @@ const AddUserModal = (props) => {
 
     const getExecutingUserRights = () => {
         const executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
-        if(executingUserID != null && executingUserID != "" && executingUserID != undefined){
+        if(executingUserID !== null && executingUserID !== "" && executingUserID !== undefined){
             let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
             const requestOptions = {
                 method: 'GET',

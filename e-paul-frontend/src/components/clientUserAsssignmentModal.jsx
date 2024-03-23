@@ -23,10 +23,10 @@ import {
     Tooltip,
   } from '@chakra-ui/react'
   import React, {useState,useEffect} from 'react';
-  import {env} from '../env.js';
-  import {clientIconPath} from '../clientIconPaths';
+  import {env} from '@/utils/env.js';
+  import {clientIconPath} from '@/utils/clientIconPaths';
   import { ArrowForwardIcon, ArrowBackIcon} from '@chakra-ui/icons'
-import { decryptString, encryptString } from '../encryptionUtils.js';
+import { decryptString, encryptString } from '@/utils/encryptionUtils.js';
 
 //ClientElement
 const ClientElement = (props) => {
@@ -177,9 +177,9 @@ const ClientList = (props) => {
     }, [props.userClientIDs, props.clients, props.triggerRender]);
 
     const generateNameOutOfID = (id) => {
-        let temp = (id*2345+id*856+id*71)/id*id
+        let temp = (id*2345+id*856+id*71)/(id*id*id)
         //More complex function to generate a name out of the id
-        temp = (temp*2345+temp*856+temp*71)/temp*temp*temp;
+        temp = parseInt((temp*2345+temp*856+temp*71)/(id*id)) ;
         return 'Client_'+temp.toString();
     }
 
@@ -361,6 +361,7 @@ const ClientUserAssignmentModal = (props) => {
         if(props.openModal){
              reloadClients();
         }
+        // eslint-disable-next-line
     }, [props.openModal]);
 
     const reloadClients = async () => {
@@ -399,6 +400,7 @@ const ClientUserAssignmentModal = (props) => {
     }
     useEffect(() => {
         fetchExecutingUserClientIDs();
+        // eslint-disable-next-line
     }, [props.openModal]);
 
 

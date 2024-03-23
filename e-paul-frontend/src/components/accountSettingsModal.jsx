@@ -14,10 +14,10 @@ import {
     Text,
     Input,
     useToast
-} from '@chakra-ui/react'
-import React from 'react';
-import { decryptString } from '../encryptionUtils';
-import ValidateActionModal from './validateActionModal';
+  } from '@chakra-ui/react'
+  import React from 'react';
+import { decryptString } from '@/utils/encryptionUtils';
+import ValidateActionModal from '@/components/validateActionModal';
 
 //Modal for signing up and in
 const AccountSettingsModal = (props) => {

@@ -1,6 +1,7 @@
-import { Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
-import { decryptString } from '../../encryptionUtils';
+import { Tabs, FormControl, FormLabel, HStack, PinInput, PinInputField, show, Alert, AlertIcon, AlertTitle, AlertDescription, Text, Heading, Box, Card, Button, VStack, Stack, CardHeader, Image, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, Select, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
+import { decryptString } from '@/utils/encryptionUtils';
 import React, { Component, useEffect, useState } from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 function InitialFocus() {
     const executingUserID = sessionStorage.getItem('executingUserID');
@@ -26,10 +27,6 @@ function InitialFocus() {
         })
 
     };
-
-    useEffect(() => {
-        decryptString(sessionStorage.getItem('userToEdit'))
-    }, [])
 
     return (
         <>
@@ -87,7 +84,6 @@ class Settings extends Component {
 
     renderContent() {
         const { activeTab } = this.state;
-
         const updateUsername = async () => {
             if (this.state.newUsername) {
                 const res = await fetch('http://epaul-smarthome.de:8000/api/settings/changeUserInformation', {
@@ -168,6 +164,12 @@ class Settings extends Component {
         };
 
         const validatePin = async () => {
+            console.log(this.accountID, this.userID, this.state.oldPin);
+            console.log(JSON.stringify({
+                accountId: this.accountID,
+                userId: this.userID,
+                pin: this.state.oldPin
+            }))
             const res = await fetch('http://epaul-smarthome.de:8000/api/validatePin', {
                 method: 'POST',
                 headers: {
@@ -189,6 +191,8 @@ class Settings extends Component {
             validated = await validated.json()
             // end
             validated = validated["valid"]
+            console.log(typeof validated)
+            console.log(this.state.newPin, this.state.newPinRepeat)
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
                     this.setState({ wrongPinOpen: false })
@@ -212,7 +216,7 @@ class Settings extends Component {
                     this.state.toastDuration = 7000
                     this.state.openToastTrigger = true
                 }
-                else {
+                else{
                     // Invalid Old Pin
                     this.setState({ wrongPinOpen: true })
                     console.log("old pin is not valid")
@@ -225,7 +229,7 @@ class Settings extends Component {
                 }
                 this.setState({ diffPinOpen: false })
             }
-            else {
+            else{
                 // Pins are different
                 this.state.toastTitle = "PINs sind verschieden!"
                 this.state.toastDescription = "Geben Sie zwei mal den gleichen PIN ein, um diesen zu ändern."
@@ -235,8 +239,6 @@ class Settings extends Component {
                 this.state.openToastTrigger = true
                 this.setState({ diffPinOpen: true })
                 console.log("new pins are different")
-
-
             }
         };
 
@@ -302,6 +304,46 @@ class Settings extends Component {
                 </Card>
             );
         }
+        else if (activeTab === 'konto') {
+            return (
+                <Card bg={"#218395"} w='100%' h='100%'>
+                    <CardHeader>
+                        <Heading size='lg' color={"white"}>Konto</Heading>
+                    </CardHeader>
+                    <Box m={4} width={'80%'}>
+                        <Text color={"white"}>Hier können Sie Ihre Email-Adresse ändern:</Text>
+                        <Input
+                            isInvalid
+                            type="text"
+                            errorBorderColor='white'
+                            borderColor={'green'}
+                            placeholder='Aktuelle E-Mail-Adresse'
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}
+                            pattern="/^\S+@\S+\.\S+$/"
+                            marginTop={'2em'}
+                        />
+
+                        <Input
+                            isInvalid
+                            type="text"
+                            errorBorderColor='white'
+                            borderColor={'green'}
+                            placeholder='Neue E-Mail-Adresse'
+                            _placeholder={{ color: 'white' }}
+                            focusBorderColor={'red'}
+                            pattern="/^\S+@\S+\.\S+$/"
+                            marginTop={'2em'}
+                        />
+
+                        <Button margin={'2em'} align={'left'} colorScheme='whiteAlpha' variant='solid' fontSize={[12, 12, 16]}>Bestätigen</Button>
+                    </Box>
+                </Card>
+            );
+
+        }
+
+
         else if (activeTab === 'pin') {
 
             return (
@@ -349,6 +391,9 @@ class Settings extends Component {
                         </Button>
                         <Button color={'lightgray'} onClick={() => this.setState({ isDisabled: 'modus' })} colorScheme={activeTab === 'modus' ? "blue" : "gray"} width={'80%'}>
                             Modus
+                        </Button>
+                        <Button onClick={() => this.setState({ activeTab: 'konto' })} colorScheme={activeTab === 'konto' ? "blue" : "gray"} width={'80%'}>
+                            Konto
                         </Button>
                     </VStack>
                 </Box>

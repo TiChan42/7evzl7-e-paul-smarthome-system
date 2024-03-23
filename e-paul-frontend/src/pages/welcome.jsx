@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Heading, Text, Center } from '@chakra-ui/react';
-import SlideShow from "../carousel";
+import SlideShow from "@/components/carousel";
 
 const slides = [
     

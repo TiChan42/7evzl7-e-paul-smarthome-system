@@ -1,39 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Heading, Grid, GridItem, CloseButton, Button, ButtonGroup, useToast, Box, HStack, VStack, StackDivider, IconButton, Flex, Spacer} from '@chakra-ui/react';
-import {env} from '../../env';
-import { encryptString, decryptString } from '../../encryptionUtils';
+import {env} from '@/utils/env';
+import { encryptString, decryptString } from '@/utils/encryptionUtils';
 import {DeleteIcon, EditIcon, AddIcon} from '@chakra-ui/icons';
 import { Avatar } from "@chakra-ui/avatar";
-import ValidateActionModal from '../validateActionModal';
-import AddUserModal from '../addUserModal';
-import ClientUserAssignmentModal from '../clientUserAsssignmentModal';
+import ValidateActionModal from '@/components/validateActionModal';
+import AddUserModal from '@/components/addUserModal';
+import ClientUserAssignmentModal from '@/components/clientUserAsssignmentModal';
 import { FaMicrochip } from "react-icons/fa6";
 import { ImSection } from "react-icons/im";
-import UserRightSettingsModal from '../userRightSettingsModal';
-import AccountSettingsModal from '../accountSettingsModal';
+import UserRightSettingsModal from '@/components/userRightSettingsModal';
+import AccountSettingsModal from '@/components/accountSettingsModal';
+
 
 var userRightsTest = [
     {
-        "mayChangeUserSettings": 1,
-        "mayDeleteUser": 1,
-        "mayAssignController": 1,
+        "mayChangeUserSettings": 0,
+        "mayDeleteUser": 0,
+        "mayAssignController": 0,
         "mayChangeUserType": 0,
-        "mayChangeUserRights": 1,
+        "mayChangeUserRights": 0,
 
-        "mayAddUser": 1,
-        "mayChangeAccountSettings": 1,
+        "mayAddUser": 0,
+        "mayChangeAccountSettings": 0,
 
         "mayChangeOwnUserSettings": 0,
-        "mayDeleteSelf": 1,
+        "mayDeleteSelf": 0,
 
-        "mayEditControllers": 1,
-        "mayDeleteControllers": 1
+        "mayEditControllers": 0,
+        "mayDeleteControllers": 0
 
     }
 ]
 
 function Header() {
-	const[siteBefore,setSiteBefore] = useState(window.history.length-1)
+	const siteBefore = window.history.length-1
 return <header>
 <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}> 
 <h1>Benutzerverwaltung</h1> 
@@ -45,14 +46,13 @@ return <header>
 function UserCol(props) {
 	const editRights = props.editRights
     const[isAdmin,setIsAdmin] = useState(props.user.role==='admin'||props.user.role==='superuser')
-    const[isdelete,setdelete] = useState(false)
 	const [userModuleModal, setUserModuleModal] = useState(false)
 	const [userRightModal, setUserRightModal] = useState(false)
 
 	const toast = useToast()
 
 	function deleteUser() {
-		if (decryptString(sessionStorage.getItem('userAuthorized'))=='false'){
+		if (decryptString(sessionStorage.getItem('userAuthorized'))==='false'){
 			return
 		}
 		let executingUser = decryptString(sessionStorage.getItem('executingUserID'))
@@ -109,7 +109,6 @@ function UserCol(props) {
         props.openValidateModal(props.user.username + ' löschen?',
         'Sind Sie sich sicher, dass Sie '+props.user.username+' löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
         ()=>{
-          setdelete(true)
 		  deleteUser();
       }) 
     }
@@ -237,6 +236,7 @@ function UserAdministration() {
     const [users, setUsers] = useState(null);
     useEffect(()=>{
     	fetchUsers(accountID)
+		//eslint-disable-next-line
     },[accountID]); //Variablen die es auslösen
 
     const[validationModal,setValidationModal] = useState()
@@ -251,50 +251,28 @@ function UserAdministration() {
       setValidationModal(true)
     }
 
-    //fetch users from backend
-    function fetchUsers(accountID) {
+    
+	function fetchUsers(accountID) {
       //fetch users from backend
       //später auf 0 prüfen und dann nicht laden
-      const fetchPath = env()["api-path"] + "getUsers/" + accountID;
-      fetch(fetchPath, {method: "GET"})
-        .then(response => {
-          	return response.json();
-        })
-        .then(data => {
-          	setUsers(data["user"]);
-			if (data["user"][0] == null) {
-				console.log('Kein Benutzer vorhanden')
-			}
-        })
-        .catch(error => {
-			toast({
-				title: 'error',
-				status: 'error',
-				isClosable: true,
-			});
-        });
-    };
-	 function fetchUsers(accountID) {
-      //fetch users from backend
-      //später auf 0 prüfen und dann nicht laden
-      const fetchPath = env()["api-path"] + "getUsers/" + accountID;
-      fetch(fetchPath, {method: "GET"})
-        .then(response => {
-          	return response.json();
-        })
-        .then(data => {
-          	setUsers(data["user"]);
-			if (data["user"][0] == null) {
-				console.log('Kein Benutzer vorhanden')
-			}
-        })
-        .catch(error => {
-			console.log('ausgeführt')
-			toast({
-				title: 'error',
-				status: 'error',
-				isClosable: true,
-			});
+		const fetchPath = env()["api-path"] + "getUsers/" + accountID;
+		fetch(fetchPath, {method: "GET"})
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				setUsers(data["user"]);
+				if (data["user"][0] == null) {
+					console.log('Kein Benutzer vorhanden')
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				toast({
+					title: 'error',
+					status: 'error',
+					isClosable: true,
+				});
         });
     };
 
@@ -354,6 +332,7 @@ function UserAdministration() {
 			
 		}
 	}
+	// eslint-disable-next-line
 	useEffect(() => {getUserRights()}, [])
 
 
@@ -385,9 +364,9 @@ function UserAdministration() {
 		{users && users[0] &&
 		<>
 			{Object.keys(users).map((key, index) => (
-				<Box width={'100%'} borderRadius={'xl'} background={'teal.50'} m={1} mb={2} p={2}>
-			<UserCol key={index} openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]} editRights={editRights} refresh={() => {triggerRefresh()}}/>
-			</Box>
+				<Box key={index} width={'100%'} borderRadius={'xl'} background={'teal.50'} m={1} mb={2} p={2}>
+					<UserCol openValidateModal={(a,b,c)=>{openValidationModal(a,b,c)}} user={users[key]} editRights={editRights} refresh={() => {triggerRefresh()}}/>
+				</Box>
 			))}
 		</>
 		}

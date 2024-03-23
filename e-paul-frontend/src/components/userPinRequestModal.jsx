@@ -16,9 +16,9 @@ import {
     InputRightElement,
   } from '@chakra-ui/react'
   import React, { useState, useEffect } from 'react';
-  import { encryptString, decryptString } from '../encryptionUtils';
+  import { encryptString, decryptString } from '@/utils/encryptionUtils';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-  import {env} from '../env';
+  import {env} from '@/utils/env';
 
 //Komponente für die Abfrage des Pins und (wenn nötig) des Benutzers
 const UserPinRequestModal = (props) => {
@@ -76,6 +76,7 @@ const UserPinRequestModal = (props) => {
             setRequireUserSelection(false);
         }
         tryToSubmitPin(inputRef.current)
+        // eslint-disable-next-line
     }, [props.users,props.openModal]);
 
     const inputRef = React.createRef();
@@ -87,7 +88,7 @@ const UserPinRequestModal = (props) => {
         initialFocusRef={inputRef}
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent bg={'teal.50'}>
                 {noPossibleUser && 
                     <React.Fragment>
                         <ModalHeader color='Red'>Keine Benutzer vorhanden</ModalHeader>
@@ -116,6 +117,8 @@ const UserPinRequestModal = (props) => {
                                     <Select 
                                     focusBorderColor='teal.500'
                                     onChange={(event) => {setUserSelectValue(event.target.value)}} 
+                                    borderColor={'teal.200'}
+                                    _hover={{borderColor: 'teal.300'}}
                                     >
                                         {props.users.map((user) => (
                                             <React.Fragment key={user.id+"UserPinRequestModal"}>
@@ -141,6 +144,8 @@ const UserPinRequestModal = (props) => {
                                         onChange={(event) => tryToSubmitPin(event.target)}
                                         focusBorderColor='teal.500'
                                         ref={inputRef}
+                                        borderColor={'teal.200'}
+                                        _hover={{borderColor: 'teal.300'}}
                                     />
                                     <InputRightElement width='4.5rem'>
                                         <Button h='1.75rem' size='sm' onClick={handlePinShowClick}>
@@ -156,7 +161,7 @@ const UserPinRequestModal = (props) => {
 
                         <ModalFooter>
                             <Button colorScheme='teal' mr={2} onClick={() => {tryToSubmitPin(inputRef.current)}}>Anmelden</Button>
-                            <Button onClick={props.closeModal}>Schließen</Button>
+                            <Button onClick={props.closeModal} colorScheme={'teal'} variant={'outline'}>Schließen</Button>
                         </ModalFooter>
                     </React.Fragment>
                 }
