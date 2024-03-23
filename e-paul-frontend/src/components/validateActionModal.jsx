@@ -23,7 +23,7 @@ const ValidateActionModal = (props) => {
         >
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader textColor={'red'}>
+                <ModalHeader textColor={'red'} maxW={'90%'}>
                     {props.title}
                 </ModalHeader>
                 <ModalCloseButton />

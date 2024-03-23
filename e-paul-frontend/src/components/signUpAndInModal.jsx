@@ -34,12 +34,23 @@ const SignUpAndInModal = (props) => {
         initialFocusRef={initialRef}
         >
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent bg={'teal.50'}>
             <Tabs align='start' variant='enclosed' colorScheme='teal' defaultIndex={props.entrySite} isLazy={true} >
                 <ModalHeader>
-                    <TabList>
-                        <Tab onMouseDown={(e) => e.preventDefault()}>Registrieren</Tab>
-                        <Tab ref={signInRef} onMouseDown={(e) => e.preventDefault()}>Anmelden</Tab>
+                    <TabList borderColor={'teal.200'} colorScheme='teal'>
+                        <Tab 
+                            onMouseDown={(e) => e.preventDefault()}
+                            _selected={{borderBottomColor: 'teal.50', borderTopColor: 'teal.200', borderLeftColor: 'teal.200', borderRightColor: 'teal.200', color: 'teal.500'}}
+                        >
+                            Registrieren
+                        </Tab>
+                        <Tab 
+                            ref={signInRef} 
+                            onMouseDown={(e) => e.preventDefault()} 
+                            _selected={{borderBottomColor: 'teal.50', borderTopColor: 'teal.200', borderLeftColor: 'teal.200', borderRightColor: 'teal.200', color: 'teal.500'}}
+                        >
+                            Anmelden
+                        </Tab>
                     </TabList>
                 </ModalHeader>
                 <ModalCloseButton />

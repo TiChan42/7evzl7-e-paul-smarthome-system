@@ -148,7 +148,7 @@ function Users() {
                       size='2xl'
                       name={users[key].username}
                       src={env()["user-profile-images-path"] + users[key].userImageName}
-                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                      _groupHover={{ border: '8px', borderColor: 'teal.600' }}
                     />
                   </Center>
                   <Center>
@@ -180,7 +180,7 @@ function Users() {
                       borderBottomColor='Teal'
                       size='2xl'
                       src={env()["user-profile-images-path"] + 'user_settings.png'}
-                      _groupHover={{ border: '8px', borderColor: 'teal.300' }}
+                      _groupHover={{ border: '8px', borderColor: 'teal.600' }}
                     />
                   </Center>
                   <Center>
