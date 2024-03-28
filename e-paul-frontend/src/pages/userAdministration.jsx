@@ -221,7 +221,7 @@ function UserAdministration() {
     const accountID = decryptString(sessionStorage.getItem("accountID")); 
     const [addUserModal, setAddUserModal] = useState(false);
 	const [accountSettingModal, setAccountSettingModal] = useState(false);
-	const [editRights, setEditRights] = useState(userRightsTest[0]); //zum testen
+	const [editRights, setEditRights] = useState(userRightsTest[0]);
 
 	const handleUserSettingClick = () => {
 		sessionStorage.setItem('userToEdit',sessionStorage.getItem('executingUserID'))
@@ -254,7 +254,6 @@ function UserAdministration() {
     
 	function fetchUsers(accountID) {
       //fetch users from backend
-      //später auf 0 prüfen und dann nicht laden
 		const fetchPath = env()["api-path"] + "getUsers/" + accountID;
 		fetch(fetchPath, {method: "GET"})
 			.then(response => {
@@ -281,8 +280,6 @@ function UserAdministration() {
 		let executingUserID = decryptString(sessionStorage.getItem('executingUserID'))
 
 		if (executingUserID != null){
-
-			//setEditRights(userRightsTest[0]) //rauslöschen sobald es im backend steht
 			
 			let url = env()["api-path"] + 'getUserRights/' + executingUserID + '/' + executingUserID
 			await fetch(url, {
@@ -347,7 +344,9 @@ function UserAdministration() {
 		gap='1'
 		color='blackAlpha.700'
 		fontWeight='bold'>  
+
 		{/* Header*/}
+
 		<GridItem pl='2' area={'header'}>
 		<Header />
 		</GridItem>
