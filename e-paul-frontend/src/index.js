@@ -1,10 +1,10 @@
-import React, { StrictMode } from "react"
-import { ColorModeScript } from '@chakra-ui/react'
-import ReactDom from "react-dom/client"
-import App from "./App";
-import theme from '@/styles/theme.js'
+import React, { StrictMode } from 'react';
+import { ColorModeScript } from '@chakra-ui/react';
+import ReactDom from 'react-dom/client';
+import App from './App';
+import theme from './styles/theme';
 
-const rootElement = document.getElementById('root')
+const rootElement = document.getElementById('root');
 ReactDom.createRoot(rootElement).render(
     <>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
@@ -12,4 +12,4 @@ ReactDom.createRoot(rootElement).render(
             <App />
         </StrictMode>
     </>
-)
+);

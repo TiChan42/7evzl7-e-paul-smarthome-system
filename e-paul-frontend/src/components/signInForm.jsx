@@ -8,44 +8,44 @@ import {
     InputGroup,
     InputRightElement,
     useToast,
-    Heading
-  } from '@chakra-ui/react'
-  import React, { useState, useEffect } from 'react';
-  import { encryptString} from '@/utils/encryptionUtils';
-  import { ViewIcon, ViewOffIcon} from '@chakra-ui/icons'
-  import {env} from '@/utils/env';
+    Heading,
+} from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { encryptString } from '../utils/encryptionUtils';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { env } from '../utils/env';
 
-  //Form for signing in
+//Form for signing in
 const SignInForm = (props) => {
-    const toast = useToast()
+    const toast = useToast();
 
     //Indikator ob das Passwort angezeigt werden soll
-    const [showPassword, setShowPassword] = React.useState(false)
-    const handlePasswordShowClick = () => setShowPassword(!showPassword)
+    const [showPassword, setShowPassword] = React.useState(false);
+    const handlePasswordShowClick = () => setShowPassword(!showPassword);
 
     //Eingabefelder
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     //Indikator ob der Erstellen-Button angezeigt werden soll
     const [showCreateButton, setShowCreateButton] = useState(false);
 
     //Überprüft ob die E-Mail-Adresse und das Passwort gültig sind
-    const checkEmail = (email) => { 
+    const checkEmail = (email) => {
         const re = /\S+@\S+\.\S+/;
         return re.test(email);
-    }
+    };
 
     //E-Mail-Überprüfungs Flags
     const [emailWrongFormat, setEmailWrongFormat] = useState(false);
     const [wrongEmailOrPassword, setWrongEmailOrPassword] = useState(false);
-    useEffect(() => {setWrongEmailOrPassword(false)}, [email,password]);
-
-    
+    useEffect(() => {
+        setWrongEmailOrPassword(false);
+    }, [email, password]);
 
     //Überprüfungs-Flags werden zusammengefasst
-    const isEmailError = (emailWrongFormat || wrongEmailOrPassword);
-    const isPasswordError = (wrongEmailOrPassword);
+    const isEmailError = emailWrongFormat || wrongEmailOrPassword;
+    const isPasswordError = wrongEmailOrPassword;
 
     //Überprüft ob die Eingaben korrekt sind und setzt die Flags
     useEffect(() => {
@@ -57,7 +57,7 @@ const SignInForm = (props) => {
                 if (!wrongEmailOrPassword) {
                     if (password.length > 0) {
                         setShowCreateButton(true);
-                    }else{
+                    } else {
                         setShowCreateButton(false);
                     }
                 } else {
@@ -67,7 +67,7 @@ const SignInForm = (props) => {
                 setShowCreateButton(false);
                 setEmailWrongFormat(true);
             }
-        }else{
+        } else {
             setShowCreateButton(false);
         }
     }, [email, password, wrongEmailOrPassword]);
@@ -75,126 +75,141 @@ const SignInForm = (props) => {
     const signIn = async () => {
         const data = {
             email: email,
-            password: password
-        }
+            password: password,
+        };
         const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        }
-        fetch(env()["api-path"] + "login", requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            if(data["falseEmailPassword"] === 0){
-                console.log("Email or password is wrong");
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        };
+        fetch(env()['api-path'] + 'login', requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data['falseEmailPassword'] === 0) {
+                    console.log('Email or password is wrong');
+                    toast({
+                        title: 'Anmeldung fehlgeschlagen',
+                        description: 'Email und/oder Passwort ist falsch',
+                        status: 'error',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    setWrongEmailOrPassword(true);
+                } else {
+                    console.log('Signed in successfully');
+                    toast({
+                        title: 'Anmeldung erfolgreich',
+                        description: 'Sie werden nun im Konto angemeldet',
+                        status: 'success',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+
+                    sessionStorage.setItem(
+                        'accountID',
+                        encryptString(data['id'].toString())
+                    );
+                    props.executeSuccessfulSignIn();
+                }
+            })
+            .catch((error) => {
+                console.error('There was an error!', error);
                 toast({
                     title: 'Anmeldung fehlgeschlagen',
-                    description: "Email und/oder Passwort ist falsch",
+                    description:
+                        'Es gab Verarbeitungsprobleme, bitte erneut versuchen',
                     status: 'error',
                     duration: 5000,
                     isClosable: true,
-                })
-                setWrongEmailOrPassword(true);
-              }else{
-                console.log("Signed in successfully");
-                toast({
-                    title: 'Anmeldung erfolgreich',
-                    description: "Sie werden nun im Konto angemeldet",
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true,
-                })
-
-                sessionStorage.setItem('accountID', encryptString(data["id"].toString()));
-                props.executeSuccessfulSignIn();
-                
-            }
-        })
-        .catch(error => {
-            console.error('There was an error!', error);
-            toast({
-                title: 'Anmeldung fehlgeschlagen',
-                description: "Es gab Verarbeitungsprobleme, bitte erneut versuchen",
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            })
-        }
-        );
-
-        
-    }
+                });
+            });
+    };
     const references = [React.useRef(), React.useRef(), React.useRef()];
     //Keylistener für das Drücken der Enter-Taste und Tab-Taste
-    const handleKeyDown = React.useCallback((e) => {
-        if (e.key === 'Enter' || e.key === 'Tab') {
-            e.preventDefault();
-            if (references[0].current === document.activeElement) {
-                if(!references[1].current.disabled) references[1].current.focus();
-            } else if (references[1].current === document.activeElement) {
-                if (!references[2].current.disabled) references[2].current.focus();
-            } else if (references[2].current === document.activeElement) {
-                signIn();
+    const handleKeyDown = React.useCallback(
+        (e) => {
+            if (e.key === 'Enter' || e.key === 'Tab') {
+                e.preventDefault();
+                if (references[0].current === document.activeElement) {
+                    if (!references[1].current.disabled)
+                        references[1].current.focus();
+                } else if (references[1].current === document.activeElement) {
+                    if (!references[2].current.disabled)
+                        references[2].current.focus();
+                } else if (references[2].current === document.activeElement) {
+                    signIn();
+                }
             }
-        }
-        // eslint-disable-next-line
-    }, [references]);
+            // eslint-disable-next-line
+        },
+        [references]
+    );
 
     useEffect(() => {
         // Add event listener when the component mounts
         window.addEventListener('keydown', handleKeyDown);
-    
+
         // Remove event listener when the component unmounts
         return () => {
-          window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keydown', handleKeyDown);
         };
     }, [handleKeyDown]);
-
 
     useEffect(() => {
         references[0].current.focus();
         // eslint-disable-next-line
     }, []);
 
-
     return (
         <>
             <Heading size='md'>Hier anmelden</Heading>
-            <FormControl isInvalid={isEmailError} isRequired>
+            <FormControl
+                isInvalid={isEmailError}
+                isRequired
+            >
                 <FormLabel>Email</FormLabel>
-                <Input 
-                    type='email' 
-                    onChange={e => setEmail(e.target.value)} 
-                    placeholder='beispiel@epaul-smarthome.de' 
-                    focusBorderColor='teal.500'
+                <Input
+                    ref={references[0]}
                     borderColor={'teal.200'}
-                    _hover={{borderColor: 'teal.300'}}
-                    ref={references[0]} 
+                    _hover={{ borderColor: 'teal.300' }}
+                    focusBorderColor='teal.500'
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder='beispiel@epaul-smarthome.de'
+                    type='email'
                 />
                 {!isEmailError ? (
-                    <FormHelperText>
-                        Email des E-Paul Kontos
-                    </FormHelperText>
+                    <FormHelperText>Email des E-Paul Kontos</FormHelperText>
                 ) : (
                     <FormErrorMessage>
-                        {emailWrongFormat ? "Die Email hat das falsche Format" : "Email oder Passwort ist falsch"}
+                        {emailWrongFormat
+                            ? 'Die Email hat das falsche Format'
+                            : 'Email oder Passwort ist falsch'}
                     </FormErrorMessage>
                 )}
             </FormControl>
-            <br/>
-            <FormControl isInvalid={isPasswordError} isRequired isDisabled={emailWrongFormat || !email}>
+            <br />
+            <FormControl
+                isDisabled={emailWrongFormat || !email}
+                isInvalid={isPasswordError}
+                isRequired
+            >
                 <FormLabel>Passwort</FormLabel>
                 <InputGroup size='md'>
-                    <Input 
-                        type={showPassword ? "text" : "password"} 
-                        onChange={e => setPassword(e.target.value)}
-                        focusBorderColor='teal.500'
+                    <Input
                         ref={references[1]}
                         borderColor={'teal.200'}
-                        _hover={{borderColor: 'teal.300'}}
+                        _hover={{ borderColor: 'teal.300' }}
+                        focusBorderColor='teal.500'
+                        onChange={(e) => setPassword(e.target.value)}
+                        type={showPassword ? 'text' : 'password'}
                     />
-                    <InputRightElement width="4.5rem">
-                        <Button h="1.75rem" size="sm" onClick={handlePasswordShowClick} isDisabled={emailWrongFormat || !email}>
+                    <InputRightElement w='4.5rem'>
+                        <Button
+                            h='1.75rem'
+                            isDisabled={emailWrongFormat || !email}
+                            onClick={handlePasswordShowClick}
+                            size='sm'
+                        >
                             {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                         </Button>
                     </InputRightElement>
@@ -210,12 +225,21 @@ const SignInForm = (props) => {
                 )}
             </FormControl>
 
-            <br/>
-            <Button ref={references[2]} colorScheme='teal' variant='solid' fontSize={[12, 12, 16]} padding={[1, 4]} isDisabled={!showCreateButton || emailWrongFormat || !password || !email} onClick={signIn}>
+            <br />
+            <Button
+                ref={references[2]}
+                p={[1, 4]}
+                fontSize={[12, 12, 16]}
+                colorScheme='teal'
+                isDisabled={
+                    !showCreateButton || emailWrongFormat || !password || !email
+                }
+                onClick={signIn}
+                variant='solid'
+            >
                 Anmelden
             </Button>
-
         </>
-        )
-}
+    );
+};
 export default SignInForm;

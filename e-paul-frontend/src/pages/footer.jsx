@@ -1,50 +1,53 @@
-import React, { Component } from "react";
-import { Box, Flex, Link, SimpleGrid } from "@chakra-ui/react";
+import React, { Component } from 'react';
+import { Box, Flex, Link, SimpleGrid } from '@chakra-ui/react';
 
 class Footer extends Component {
     render() {
         return (
             <Flex
-                bg={"#00697B"}
-                position={"fixed"}
-                w={"100%"}
-                bottom={"0px"}
-                h={"50px"}
-                borderTop={"1px"}
-                borderTopColor={"#f8fafc"}
-                alignItems="center"
+                pos={'fixed'}
+                bottom={'0px'}
+                align='center'
+                w={'100%'}
+                h={'50px'}
+                bg={'#00697B'}
+                borderTop={'1px'}
+                borderTopColor={'#f8fafc'}
             >
-                <SimpleGrid templateColumns="repeat(3, 1fr)" w={"100%"}>
+                <SimpleGrid
+                    templateColumns='repeat(3, 1fr)'
+                    w={'100%'}
+                >
                     <Box>
                         <Link
-                            href="/imprint"
-                            pl={"4"}
-                            color={"whitesmoke"}
+                            pl={'4'}
+                            color={'whitesmoke'}
+                            fontWeight={'bold'}
                             _hover={{}}
-                            fontWeight={"bold"}
+                            href='/imprint'
                         >
                             Impressum
                         </Link>
                     </Box>
 
-                    <Box align="center">
+                    <Box align='center'>
                         <Link
-                            href="mailto:support@epaul-smarthome.de"
-                            color={"whitesmoke"}
+                            color={'whitesmoke'}
+                            fontWeight={'bold'}
                             _hover={{}}
-                            fontWeight={"bold"}
+                            href='mailto:support@epaul-smarthome.de'
                         >
                             Support
                         </Link>
                     </Box>
 
-                    <Box align="end">
+                    <Box align='end'>
                         <Link
-                            href="/about"
-                            pr={"4"}
-                            color={"whitesmoke"}
+                            pr={'4'}
+                            color={'whitesmoke'}
+                            fontWeight={'bold'}
                             _hover={{}}
-                            fontWeight={"bold"}
+                            href='/about'
                         >
                             Über uns
                         </Link>
