@@ -14,7 +14,7 @@ void controllerAnswer(String answer){
   key = readKeyFromEEPROM(eepromStart);
   controllerMode = readModeFromEEPROM(eepromStart);
 
-  //Bauen des Status abhängig davon in welchem modus sich der Controller befindet
+  // Bauen des Status abhängig davon in welchem modus sich der Controller befindet
   if(controllerMode == "lamp"){
     status = "{\"whiteFlag\":\"" + String(int(white_flag)) + "\", \"red\":\"" + String(int(global_red)) + "\", \"green\":\"" + String(int(global_green)) + "\", \"blue\":\"" + String(int(global_blue)) + "\", \"brightness\":\"" + String(int(global_brightness)) + "\"}";
   }else if (controllerMode == "button"){
@@ -22,9 +22,7 @@ void controllerAnswer(String answer){
   } else {
     Serial.println("kein gültiger Modus");
   }
-
-
-
+  
   answerJson = "{\"type\":" + String(messageType) + ", \"microcontrollerId\":" + ownID + ",\"key\":\"" + key + "\", \"answerCode\":\"" + answer + "\", \"state\":" + status + "}";
 
   snprintf (msg, MSG_BUFFER_SIZE, answerJson.c_str());

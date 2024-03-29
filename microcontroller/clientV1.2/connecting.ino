@@ -1,52 +1,42 @@
-//versucht eine Verbindung mit dem Netzwerk aufzubauen, falls das Netzwerk bekannt ist
+// Methode zum Aufbauen einer Verbindung, falls das Netzwerk bekannt ist
 bool tryToConnectToWifi(){
 
-  //die Adresse des Passworts im EEPROM
+  // Adresse des Passworts im EEPROM
   int ssidPasswordAddress = 0;
   
-  //Variable die speichert ob eine Verbindung aufgebaut ist
+  // Variable die den Verbindungsstatus speichert
   bool connected = false;
 
-  //Variable die überprüft wie lange die Verbindung bereits versucht wurde
+  // Variable die überprüft, wie lange der Verbindungsaufbau bereits versucht wurde
   int timeoutCounter;
 
-  //maximale Zeit in 0,5 ms die es dauern darf sich zu verbinden
+  // Maximale Anzahl an 0,5ms-Intervallen die es dauern darf, sich zu verbinden
   int maxRetries = 30;
 
-  //Daten zum log in im wlan aus dem EEPROM
+  // Daten zum log in im WLAN aus dem EEPROM lesen
   String ssid = readSSIDFromEEPROM(ssidPasswordAddress);
   String password = readPasswordFromEEPROM(ssidPasswordAddress);
 
   Serial.println(ssid);
   Serial.println(password);
 
-  //versuche eine Verbindung mit dem Wlan aufzubauen
+  // Verbinden mit dem WLAN-Netzwerk
   Serial.println("Try to connect with WiFi: \nSSID: " + ssid + " \nPassword: " + password);
-
   delay(500);
   
-  //versuche mit Netzwerk zu verbinden
   WiFi.begin(ssid, password);
-
   Serial.print("Connecting");
-
   timeoutCounter = 0;
-  
-    while ((WiFi.status() != WL_CONNECTED) && (timeoutCounter <= maxRetries))
-    {
-      delay(500);
-      Serial.print(".");
-      
-      timeoutCounter += 1;
-      Serial.print(timeoutCounter);
-      
-    }
+  while ((WiFi.status() != WL_CONNECTED) && (timeoutCounter <= maxRetries)) {
+    delay(500);
+    Serial.print(".");
+    timeoutCounter += 1;
+    Serial.print(timeoutCounter);
+  }
 
-  //überprüfen ob verbindung erfolgreich war
+  // Überprüfen des Verbindungsaufbaus
   if (timeoutCounter <= maxRetries){
-
     connected = true;
-
     Serial.println();
     Serial.print("Connected, IP address: ");
     Serial.println(WiFi.localIP());
@@ -58,7 +48,5 @@ bool tryToConnectToWifi(){
   Serial.println();
   Serial.println(connected);
 
-  //zurückgeben ob verbunden
   return connected;
-
 }

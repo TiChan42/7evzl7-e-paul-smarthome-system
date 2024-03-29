@@ -1,44 +1,39 @@
-
+// Methode , um den Client am Server zu registrieren
 bool testLogIn(String user, String password){
-  //diese Methode registriert den controller unter einem konto
 
-  //hat die registrierung funktioniert?
   bool success = false;
 
-  //der Modus des controllers, also aktuell lamp oder button
+  // Aktueller Modus des Controllers (lamp oder button)
   String controllerType = controllerMode;
 
   //aktuell noch ein default controller name, muss angepasst werden, damit das mitgegeben werden kann
   String controllerName = "Testname";
 
-  //standartmäßig benötigen alle EEPROM Methoden einen startpunkt, dieser sollte immer null sein
+  //Startpunkt der EEPROM-Methoden
   int eepromStart = 0;
 
-  //die eindeutige ID des Conrollers, welche vom Server übergeben wird
+  // Eindeutige ID des Conrollers, welche vom Server übergeben wird
   int controllerId;
 
-  //Das zur ID passende Passwort, wird ebenfalls übergeben und vom Broker zur Authentifizierung benötigt
+  // Das zur ID passende Passwort, wird ebenfalls übergeben und vom Broker zur Authentifizierung benötigt
   const char* key = "";
 
-  //checkt zuerst ob überhaupt eine Wlan verbindung existiert
+  // Checkt, ob eine WLAN-Verbindung existiert
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;  // Erstellt ein WiFiClient-Objekt
-
+    WiFiClient client;
     HTTPClient http;
-
     
     if (http.begin(client, serverLoginApiUrl)) {
       http.addHeader("Content-Type", "application/json");
       
-      
-      // Die JSON-Daten die an den Server gesychickt werden
+      // JSON-Daten, die an den Server geschickt werden
       String postData = "{\"email\":\""+ user +"\", \"password\":\""+ password +"\", \"name\":\"" + controllerName + "\", \"type\":\""+ controllerType +"_1\"}";
       Serial.println(postData);
 
-      // Sende den POST-Request und erfasse die Antwort
+      // Senden der POST-Request und erfassen der Antwort
       int httpResponseCode = http.POST(postData);
 
-      //interpretiert die antwort des Servers
+      // Interpretieren der Serverantwort
       if (httpResponseCode > 0) {
         Serial.print("HTTP Response code: ");
         Serial.println(httpResponseCode);
@@ -46,7 +41,6 @@ bool testLogIn(String user, String password){
         String response = http.getString();
         Serial.println(response);
         if (httpResponseCode == 201){
-          //wenn die funktion erfolgreich ist, soll sie true zurückgeben
           success = true;
 
           DynamicJsonDocument jsonDoc(1024);
@@ -81,20 +75,15 @@ bool testLogIn(String user, String password){
           Serial.println(readModeFromEEPROM(eepromStart));
 
           ESP.reset();          
-
         }
-
-        
       } else {
         //bei fehler im http request
         Serial.print("Error in HTTP POST request: ");
         Serial.println(httpResponseCode);
       }
-
       // Beende die Anfrage
       http.end();
-  }
-
+    }
     delay(5000);  // Warte 5 Sekunden
   }
   return success;

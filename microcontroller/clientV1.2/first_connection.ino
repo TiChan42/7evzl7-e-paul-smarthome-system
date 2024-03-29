@@ -10,7 +10,6 @@ void setUpWiFiAccessPoint(){
   server.begin();
   delay(10);
 
-  // Informationen
   Serial.println();
   Serial.println("WLAN-Netzwerk aufgesetzt. IP-Adresse:");
   Serial.println(WiFi.softAPIP());
@@ -18,10 +17,9 @@ void setUpWiFiAccessPoint(){
 
 void handleGET() {
   Serial.println("Get empfangen");
-  //Definieren von Variablen
+  // Definieren von Variablen
   String ssid = "",password = "",user = "";
   int ssidIndex = 0,state = 0;
-
   String answer = "200";
 
   // Überprüfe, ob es Variablen gibt
@@ -42,7 +40,7 @@ void handleGET() {
             status++;
             password = webServer.arg(3);
         }
-      }else if(state == 1){
+      } else if(state == 1){
         status++;
         if(webServer.argName(1).equals("user")){
             status++;
@@ -50,16 +48,11 @@ void handleGET() {
         }
         if(webServer.argName(2).equals("password")){
             status++;
-            //@timo hab das to int geändert weil das passwort nicht unbedingt ein int sein muss
             password = webServer.arg(2);
-            
-
         }
       }
     }
-    
   }
-
 
   if(status < 3){
     answer = "400";
@@ -68,34 +61,25 @@ void handleGET() {
   }
 
   if(state == 0){
-    //versuche eine Verbindung mit dem Wlan aufzubauen
+    // Versuche eine Verbindung mit dem Wlan aufzubauen
     Serial.println("Try to connect with WiFi: SSID: " + ssid + " Password: " + password);
-    
-    
     WiFi.begin(ssid, password);
-
     Serial.print("Connecting");
     int maxConnectionTrys = 20;
     int connectionTryCtr = 0;
-    while ((WiFi.status() != WL_CONNECTED) && (connectionTryCtr < maxConnectionTrys))
-    {
+    while ((WiFi.status() != WL_CONNECTED) && (connectionTryCtr < maxConnectionTrys)) {
       ++connectionTryCtr;
       delay(500);
       Serial.print(".");
     }
     if(maxConnectionTrys <= connectionTryCtr){
       answer = "420";
-    }else{
-      //speichern der Daten zur Anmeldung im EEPROM
-      int ssidPasswordAddress = 0;
-
-      writeSSIDToEEPROM(ssidPasswordAddress, ssid);
-      writePasswordToEEPROM(ssidPasswordAddress, password);
+    } else {
+      // Speichern der Daten zur Anmeldung im EEPROM
+      writeSSIDToEEPROM(0, ssid);
+      writePasswordToEEPROM(0, password);
     }
-  }
-  else
-  {
-    //TODO @Hannes@Mathi muss zur weiterverarbeitung angepasst werden
+  } else {
     Serial.println(user);
     Serial.println("hier");
     Serial.println(password);
@@ -104,14 +88,11 @@ void handleGET() {
     }
   }
 
-  // feedback geben
+  // Feedback geben
   answerWebClientRequest(answer);
-
-  //ESP.reset();
 }
 
-
-
+// Methode zum Senden einer Antwort an die Website
 void answerWebClientRequest(String answer){
   // Setze die CORS-Header (nötig zur Fehlervermeidung)
   webServer.sendHeader("Access-Control-Allow-Origin", "*");
@@ -122,10 +103,9 @@ void answerWebClientRequest(String answer){
   webServer.send(200, "text/plain", answer);
 }
 
-//generiert eine Anzeige für die Empfangsstärke
-//@var stength 
-void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize = 5, int min = -120, int max = -40 ){
-  //Fange Extremwerte/Fehler ab
+// Generiert eine Anzeige für die Empfangsstärke
+void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize = 5, int min = -120, int max = -40 ) {
+  // Fange Extremwerte/Fehler ab
   if(strength < min) strength = min;
   if(strength > max) strength = max;
   if(htmlString.length() == 0) htmlString ="";
@@ -133,7 +113,7 @@ void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize 
   // Normalisiere den Wert strength auf den Bereich von 0 bis 1
   float normalized_strength = static_cast<float>(strength - min) / (max - min);
 
-  //Teile Wert ein in Kategorien 0-3 (Strenggenommen kann beim Maxwert 4 rauskommen, ist aber egal)
+  // Teile Wert ein in Kategorien 0-3 (Strenggenommen kann beim Maxwert 4 rauskommen, ist aber egal)
   int scaled_strength = static_cast<int>(normalized_strength * static_cast<float>(viewSize));
 
   htmlString+= "<span class=\"ts\">"; 
@@ -143,40 +123,33 @@ void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize 
   htmlString+= "</span>";
 }
 
-//Einrichtung Netzwerk
+// Einrichtung des Netzwerks
 void tryToSetupViaWebserver(){
-  bool setupted = false;
-  //main-loop zur Einrichtung
-  while(setupted == false){
+  bool setupDone = false;
+  while(setupDone == false){
     webServer.handleClient();
     // Überprüfen, ob ein Client verbunden ist
     WiFiClient client = server.available();
-    if (!client) 
-    {
+    if (!client) {
       continue;
     }
     Serial.println("new client");
     // Warten, bis der Client Daten sendet
-    
     unsigned long ultimeout = millis()+timeOutMillis;
-    while(!client.available() && (millis()<ultimeout) )
-    {
+    while(!client.available() && (millis()<ultimeout)) {
       delay(1);
     }
-    if(millis()>ultimeout) 
-    { 
+    if(millis()>ultimeout) { 
       Serial.println("client connection time-out!");
       continue; 
     }
 
     // Die erste Zeile der Anfrage lesen
     String sRequest = client.readStringUntil('\r');
-    
     client.flush();
     
     // Client stoppen, wenn die Anfrage leer ist
-    if(sRequest=="")
-    {
+    if(sRequest=="") {
       Serial.println("empty request! - stopping client");
       client.stop();
       continue;
@@ -187,35 +160,28 @@ void tryToSetupViaWebserver(){
     String sGetstart="GET ";
     int iStart,iEndSpace,iEndQuest;
     iStart = sRequest.indexOf(sGetstart);
-    if (iStart>=0)
-    {
+    if (iStart>=0) {
       iStart+=+sGetstart.length();
       iEndSpace = sRequest.indexOf(" ",iStart);
       iEndQuest = sRequest.indexOf("?",iStart);
       
-      // are there parameters?
-      if(iEndSpace>0)
-      {
-        if(iEndQuest>0)
-        {
-          // Es gibt Parameter
+      // Abfrage nach Parametern
+      if(iEndSpace>0) {
+        if(iEndQuest>0) {
+          // Parameter vorhanden
           sPath  = sRequest.substring(iStart,iEndQuest);
           sParam = sRequest.substring(iEndQuest,iEndSpace);
-        }
-        else
-        {
-          // KEINE Parameter
+        } else {
+          // Keine Parameter vorhanden
           sPath  = sRequest.substring(iStart,iEndSpace);
         }
       }
     }
 
     // Parameter auf der seriellen Schnittstelle ausgeben
-    if(sParam.length()>0)
-    {
+    if(sParam.length()>0) {
       int iEqu=sParam.indexOf("=");
-      if(iEqu>=0)
-      {
+      if(iEqu>=0) {
         sCmd = sParam.substring(iEqu+1,sParam.length());
         Serial.println(sCmd);
       }
@@ -226,8 +192,7 @@ void tryToSetupViaWebserver(){
     int sResponseLength1=0,sResponseLength2=0,sResponseLength3=0,sResponseLength4=0,sResponseLength5=0;
 
     // 404 für nicht übereinstimmenden Pfad
-    if(sPath!="/")
-    {
+    if (sPath!="/") {
       sResponse1="<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL was not found on this server.</p></body></html>";
       
       sHeader  = "HTTP/1.1 404 Not found\r\n";
@@ -237,29 +202,20 @@ void tryToSetupViaWebserver(){
       sHeader += "Content-Type: text/html\r\n";
       sHeader += "Connection: close\r\n";
       sHeader += "\r\n";
-    
 
-    //Send answer
-    client.print(sHeader);
-    client.print(sResponse1);
-    }
-    else
-    {
+      //Send answer
+      client.print(sHeader);
+      client.print(sResponse1);
+    } else {
       ulReqcount++;
-      
-
-
       // WLAN-Netzwerke scannen und auf der Webseite anzeigen
-
-
-      
-      //sortiert und filtert SSIDs
+      // Sortiert und filtert SSIDs
       int networkCount = WiFi.scanNetworks();
       // Array initialisieren
       int indices_v1[networkCount];
       for(int i = 0 ; i < networkCount ; ++i) indices_v1[i] = i;
 
-      //sortiere von stärkstem zu schwächstem signal (Bubblesort)
+      // Sortiere von stärkstem zu schwächstem signal (Bubblesort)
       for (int i = 0; i < networkCount-1; ++i) {
         for (int j = 0; j < networkCount-i-1; ++j) {
           // Tausche die Indizes, wenn der Wert von WiFi.RSSI(j) kleiner als WiFi.RSSI(j+1) ist
@@ -271,37 +227,31 @@ void tryToSetupViaWebserver(){
         }
       }
       
-      //filtern
-      //Erstellt ein Array ohne Duplikate und zählt die nicht duplizierten Netzwerke
+      // Filtern
+      // Erstellt ein Array ohne Duplikate und zählt die nicht duplizierten Netzwerke
       int actualNetworkCount = 0;
       int indices_v2[networkCount];
 
-      for (int i = 0; i < networkCount; ++i){
-
-        //ist der Wert bisher schon vorgekommen?
+      for (int i = 0; i < networkCount; ++i) {
         bool duplicated = false;
-        for (int j = 0 ; j < i ; ++j){
+        for (int j = 0 ; j < i ; ++j) {
             if(WiFi.SSID(indices_v1[i]).equals(WiFi.SSID(indices_v1[j]))){
               duplicated = true;
               break;
             }
         }
-        //Trage das v2 Array den Wert ein und erhöhe den Counter
         if(!duplicated){
           indices_v2[actualNetworkCount] = indices_v1[i];
           ++actualNetworkCount;
         }
       }
 
-      //Erstelle ein Array in der richtigen Größe und übertrage werte
+      // Erstelle ein Array in der richtigen Größe und übertrage werte
       int networkIndices[actualNetworkCount];
       for(int i = 0 ; i < actualNetworkCount ; ++i) networkIndices[i] = indices_v2[i];
 
-      //HTML String mit inhalt generieren
-
-
-
-      //Oberer Website-Teil
+      // HTML String mit inhalt generieren
+      // Oberer Website-Teil
       sResponse1  = String(R"(
         <html lang="en"><head>
         <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0" >
@@ -362,7 +312,7 @@ void tryToSetupViaWebserver(){
       sResponseLength1 = sResponse1.length();
 
 
-      //generieren der gescannten Netzwerke als bausteine
+      // Generieren der gescannten Netzwerke als Bausteine
       for (int i = 0; i < actualNetworkCount; ++i) {
         String SSIDCache = WiFi.SSID(networkIndices[i]);
         int signalStrength = WiFi.RSSI(networkIndices[i]);
@@ -376,7 +326,7 @@ void tryToSetupViaWebserver(){
 
       sResponseLength2 = sResponse2.length();
 
-      //header generieren
+      // Header generieren
       sHeader  = "HTTP/1.1 200 OK\r\n";
       sHeader += "Content-Length: ";
       sHeader += 17854 + sResponseLength2; // die 17854 ergibt sich aus der größe der Statischen elemente
@@ -385,7 +335,7 @@ void tryToSetupViaWebserver(){
       sHeader += "Connection: close\r\n";
       sHeader += "\r\n";
 
-      //senden von Header + 2 ersten Parts
+      // Senden von Header + 2 ersten Parts
       client.print(sHeader);
       delay(2);   // Kleine Verzögerung
       client.print(sResponse1);
@@ -393,27 +343,23 @@ void tryToSetupViaWebserver(){
       client.print(sResponse2);
       delay(5); 
 
-      //Löschen von den Texten
+      // Löschen der Texte
       sResponse1 = "";
       sResponse2 = "";
 
-      //@timo hab die maxlength von 12 auf 30 geändert weil robins mail länger ist
-      //generieren des unteren statischen Website-Teils
+      // Generieren des unteren statischen Website-Teils
       sResponse3 += String(R"(
         </span>
-
         <!--Account-Name-->
         <div class="account-container hidden" >
         <input type="text"name="account"id="account"placeholder="Konto-Anmeldename"maxlength="30">
         </div>
-
         <!--Password-->
         <div class="password-container hidden" >
         <input type="password"name="password"id="password"placeholder="WiFi-Passwort" maxlength="64"autocomplete="off"><div for="password"class="show-password" >
         <svg xmlns="http://www.w3.org/2000/svg"width="30px"height="30px"fill="currentColor"class="bi bi-eye"viewBox="0 0 16 16">
         <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
         </svg></div></div>
-
         <!--Submit Button-->
         <button class="submit-button hidden" onclick="clickSubmitButton() ">Verbinden</button>
         <div class="error-message hidden"></div>
@@ -438,29 +384,23 @@ void tryToSetupViaWebserver(){
             "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye\" viewBox=\"0 0 16 16\">" +
             "<path d=\"M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z\"/>" +
             "<path d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0\"/></svg>";}});
-
         function sendSuccessMessage(){document.querySelector(".success-message").classList.remove("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.add("hidden");};
         function sendErrorMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.remove("hidden");document.querySelector(".loading-message").classList.add("hidden");};
         function sendLoadingMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.remove("hidden");};
         function sendHideMessage(){document.querySelector(".success-message").classList.add("hidden");document.querySelector(".error-message").classList.add("hidden");document.querySelector(".loading-message").classList.add("hidden");};
-
         )");
         sResponseLength3 = sResponse3.length();
         //senden von Website Teil 3 und reinigen
         client.print(sResponse3);
         delay(5); 
         sResponse3 = "";
-
-
         sResponse4 += String(R"(
-
         function clickSubmitButton(){
           if (site_state == 0){
             sendLoadingMessage();
             let ssid = document.querySelector("input[name=\"sortType\"]:checked").value;
             let password = document.querySelector("#password").value;
             let ssidIndex = document.querySelector("input[name=\"sortType\"]:checked").id.split("-")[1];
-            
             // URL der API und Daten, die gesendet werden sollen
             var apiUrl = 'http://192.168.4.1:50000';
             var data = {
@@ -469,25 +409,20 @@ void tryToSetupViaWebserver(){
               ssidIndex: ssidIndex,
               password: password
             };
-
             // Erstellt die vollständige URL mit den Daten als Query-Parameter
             var fullUrl = apiUrl + '?' + objectToQueryString(data);
             console.log(fullUrl);
             // Erstellt ein XMLHttpRequest-Objekt
             var xhr = new XMLHttpRequest();
-
             // Setze die maximale Antwortzeit (Timeout) auf 30 Sekunden
             xhr.timeout = 30000; // Beispiel: 30 Sekunden
-
             xhr.ontimeout = function () {
               document.querySelector(".error-message").innerHTML = "Timeout! Verbindung zum Modul überprüfen und Seite reloaden!";
               sendHideMessage();
               sendErrorMessage();
             };
-
             // Konfiguriere die Anfrage mit der GET-Methode und der erstellten URL
             xhr.open('GET', fullUrl, true);
-
             // Setze die Callback-Funktion für die Antwort
             xhr.onreadystatechange = function () {
               if (xhr.readyState == 4 && xhr.status == 200) {
@@ -505,19 +440,16 @@ void tryToSetupViaWebserver(){
                   sendHideMessage();
                   sendSuccessMessage();
                   init_state_1()
-
                 }
                 console.log(xhr.responseText);
               }
             };
-
             // Sende die Anfrage
             xhr.send();
           }else{
             sendLoadingMessage();
             let user = document.querySelector("#account").value;
             let password = document.querySelector("#password").value;
-            
             // URL der API und Daten, die gesendet werden sollen
             var apiUrl = 'http://192.168.4.1:50000';
             var data = {
@@ -525,25 +457,20 @@ void tryToSetupViaWebserver(){
               user : user,
               password: password
             };
-
             // Erstellt die vollständige URL mit den Daten als Query-Parameter
             var fullUrl = apiUrl + '?' + objectToQueryString(data);
             console.log(fullUrl);
             // Erstellt ein XMLHttpRequest-Objekt
             var xhr = new XMLHttpRequest();
-
             // Setze die maximale Antwortzeit (Timeout) auf 10 Sekunden
             xhr.timeout = 10000; // Beispiel: 10 Sekunden
-
             xhr.ontimeout = function () {
               document.querySelector(".error-message").innerHTML = "Timeout! Verbindung zum Modul überprüfen und Seite reloaden!";
               sendHideMessage();
               sendErrorMessage();
             };
-
             // Konfiguriere die Anfrage mit der GET-Methode und der erstellten URL
             xhr.open('GET', fullUrl, true);
-
             // Setze die Callback-Funktion für die Antwort
             xhr.onreadystatechange = function () {
               if (xhr.readyState == 4 && xhr.status == 200) {
@@ -559,14 +486,13 @@ void tryToSetupViaWebserver(){
                 console.log(xhr.responseText);
               }
             };
-
             // Sende die Anfrage
             xhr.send();
           }
         }
         )");
         sResponseLength4 = sResponse4.length();
-        //senden von Website Teil 4 und reinigen
+        // Senden von Website Teil 4 und reinigen
         client.print(sResponse4);
         delay(5); 
         sResponse4 = "";
@@ -593,16 +519,10 @@ void tryToSetupViaWebserver(){
         client.print(sResponse5);
         delay(5); 
         sResponse5 = "";
-      
-      
-
     }
 
     // Die Antwort an den Client senden
-
     Serial.println(sHeader);
-
-   
     Serial.print("Lange sResponse 1: ");
     Serial.print(sResponseLength1);
     Serial.println();
@@ -622,10 +542,6 @@ void tryToSetupViaWebserver(){
     Serial.print("Lange statische Elemente(immer überall im Dokument anpassen wenn nicht 17854): ");
     Serial.print(staticHTMLPartsLength);
     Serial.println();
-
-
-
-
 
     delay(timeOutMillis);
     

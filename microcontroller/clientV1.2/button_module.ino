@@ -1,30 +1,7 @@
-//Definition der Ports
-/*
-#define ONBOARD_LED 2          
-#define BUTTON      0   
-
-//Standartmäßiges setzen der Flags (Standart-Modus: Schalter)
-bool state = 0;
-bool testState = 1;
-bool mode = 0;
-bool showStateOnLED = 1;
-
-//Initialisierung der Pins
-void setup() {
-  pinMode(ONBOARD_LED, OUTPUT);
-  pinMode(BUTTON, INPUT);  
-  digitalWrite(ONBOARD_LED, HIGH);
-}
-
-//überprüfen des Knopfes
-void loop() {
-  checkButton();
-}
-*/
-
+// Importieren einer Methode
 void controllerAnswer(String answer);
 
-//Überprüft den Knopf und führt bei änderung die dem Modus entsprechende Aktion aus
+//Überprüft den Knopf und führt bei Änderung die dem Modus entsprechende Aktion aus
 void checkButton(){
   bool actualButtonstate =digitalRead(BUTTON);
   if(actualButtonstate != testState){
@@ -37,37 +14,32 @@ void checkButton(){
       else sendButtonReleased();
     }
     
-    //Latch: ändert State bei Pusitiver Flanke
+    //Latch: ändert State bei positiver Flanke
     else if(!actualButtonstate){ 
       state = !state;
       writeLED(state);
       if(state) sendButtonPressed();
       else sendButtonReleased();
     }
-    delay(100); // zum entprellen
+    delay(100); // Entprellung überspringen
   }
 }
-//schreibt die LED auf ledState wenn der Status über Led angezeigt werden soll
+
+// Schreibt die LED auf ledState wenn der Status über Led angezeigt werden soll
 void writeLED(bool ledState){
   if(showStateOnLED){
     digitalWrite(ONBOARD_LED, !ledState);
   }
 }
 
-//###############################
-//@Mathi Die Methoden brauchst du
-//###############################
-
-
-
-//Resettet den Status des Moduls und Setzt den Knopf-Modus
+// Resettet den Status des Moduls und setzt den Knopf-Modus
 void setButtonMode(){
   mode = 1;
   state = 0;
   testState = 1;
 }
 
-//Resettet den Status des Moduls und Setzt den Schalter-Modus
+// Resettet den Status des Moduls und setzt den Schalter-Modus
 void setLatchMode(){
   mode = 0;
   state = 0;
@@ -84,23 +56,19 @@ void switchButtonOn(){
   controllerAnswer("Der Knopf wurde eingeschalten");  
 }
 
-//das auch
 //Setzt die Flag dass der Status des Schalters an der LED angezeigt werden soll
 void setShowState(){
   showStateOnLED = 1;
 }
 
-//??? das noch als ausführbarer befehl
 //Setzt die Flag zurrück, dass der Status des Schalters an der LED angezeigt werden soll
 void removeShowState(){
   showStateOnLED = 0;
 }
 
-
-//???
+// Noch nicht implementiert/ist das überhaupt notwendig???????????????????????????????????????????????
 //Sendet Aktuellen Modus
 void sendCurrentMode(){
-  //Mathi dein Code
   if(mode){
     //Button Mode
   }else{
@@ -108,17 +76,16 @@ void sendCurrentMode(){
   }
 }
 
-//Sendet dass der Status auf gedrückt gesetzt wurde
+// Sendet, dass der Status auf gedrückt gesetzt wurde
 void sendButtonPressed(){
   controllerAnswer("Der Knopf wurde gedrückt");
   Serial.println("Der Knopf wurde gedrückt!");
 }
 
-//Sendet dass der Status auf losgelassen gesetzt wurde
+// Sendet, dass der Status auf losgelassen gesetzt wurde
 void sendButtonReleased(){
   controllerAnswer("Der Knopf wurde logelassen");
   Serial.println("Der Knopf wurde losgelassen!");
-  
 }
 
 void switchButtonMode(){
@@ -132,6 +99,5 @@ void buttonScene(String sceneState, String sceneTestState, String sceneMode, Str
   testState = sceneTestState.toInt();
   mode = sceneMode.toInt();
   showStateOnLED = sceneShowStateOnLED.toInt();
-  controllerAnswer("szene geändert");
-
+  controllerAnswer("Szene geändert");
 }

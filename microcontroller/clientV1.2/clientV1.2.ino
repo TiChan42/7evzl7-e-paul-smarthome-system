@@ -7,34 +7,33 @@
 const char* ownSSID = "E_Paul_Module_WiFi";
 const char* ownSSIDpassword = "";
 
-// für Anmeldung im Heimnetz
+// Variablen für die Anmeldung im Heimnetz
 char* loginSSID;
 char* loginSSIDpassword;
 
-//api auf den server für die registrierung des controllers auf den account
+// Api für die Registrierung des Controllers auf den Account
 const char* serverLoginApiUrl = "http://www.epaul-smarthome.de:8000/api/signUp/microcontroller"; 
 
-//link auf den mqtt broker
+// Link zum MQTT-Broker
 const char* mqtt_server = "195.90.215.140";
 
 String mqttUsr=""; //esp8266
 String mqttPw=""; //testpw123
 
-//das topic auf das der controller published, auch die mail des benutzers
+// Das Topic auf welches der Controller published, auch die Mail des Benutzers
 String topic="";
 
-//der Startpunkt des EEPROM, sollte auf 0 gehalten werden
+// Der Startpunkt des EEPROM, sollte auf 0 gehalten werden
 int eepromStart = 0;
 
 unsigned long ulReqcount;
 unsigned long timeOutMillis;
 
-//variablen für die module
-//lamp or button
-String controllerMode = "lamp";
+// Variablen für die Module
+String controllerMode = "lamp"; // lamp oder button
 
-//alles bereit machen für das button modul
-//Standartmäßiges setzen der Flags (Standart-Modus: Schalter)
+// Vorbereitungen für das Button-Modul
+// Standartmäßiges setzen der Flags (Standart-Modus: Schalter)
 bool state = 0; //back
 bool testState = 1; //back
 bool mode = 0; //back
@@ -43,7 +42,7 @@ bool showStateOnLED = 1; //back
 #define ONBOARD_LED 2          
 #define BUTTON      0
 
-//alles bereit machen für das LED Modul
+// Vorbereitungen für das LED Modul
 // Initialisiere Pins für LEDs
 #define LED_RED   4
 #define LED_GREEN 5
@@ -62,21 +61,22 @@ bool showStateOnLED = 1; //back
 char global_red=0,global_green=0,global_blue=0,global_brightness=100; //back
 bool white_flag = true; //back
 
-
 // Erstelle eine Instanz des Servers auf Port 80
 WiFiServer server(80);
 ESP8266WebServer webServer(50000);
 
+// Erstellen der Clients für WLAN und MQTT
 WiFiClient espClient;
 PubSubClient client(espClient);
+
+// Definieren von Variablen für MQTT
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(200)
 char msg[MSG_BUFFER_SIZE];
 
 void clearEEPROM();
 
-void setup() 
-{ 
+void setup() { 
   // Initialisiere globale Variablen
   ulReqcount = 0;
   timeOutMillis = 500;
@@ -84,9 +84,11 @@ void setup()
   // Starte die serielle Kommunikation
   Serial.begin(9600);
 
+  // Auslesen und handling der Reset-Variable im EEPROM
   char rst = readResetCounterFromEEPROM();
   Serial.print("Reset Counter: ");
   Serial.print(rst);
+  Serial.print("\n");
   if (rst == '0') {
     rst = '1';
     writeResetCounterToEEPROM((String)rst);
@@ -107,17 +109,16 @@ void setup()
 
   readAll();
 
-
   delay(1);
-  // kann geändert werden um die seite trotz verfügbarem Netzwerk anzuzeigen
+
+  // Zum debuggen der Loginpage bei bestehender Netzwerkverbindung auf true setzen
   bool debugLoginPageOnce = false;
 
-  //zur kontrolle ob noch genug speicher vorhanden ist
+  // Zur Kontrolle des freien Speichers
   delay(5000);
   Serial.print("Freier Speicher: ");
   Serial.println(ESP.getFreeHeap());
 
-  
   bool connected = false;
   if(debugLoginPageOnce == false){
     //überprüft ob die SSID im EEPROM verwendet werden kann
@@ -147,18 +148,16 @@ void setup()
   //nur für debugging um zu überprüfen ob der Mode richtig im EEPROM liegt
   Serial.println(readModeFromEEPROM(eepromStart));
 
-  //initialisieren der Variablen für die module
+  // Initialisieren der Variablen für die Module
   controllerMode = readModeFromEEPROM(eepromStart);
 
-
-
-  //button modul
+  // Button modul
   if(controllerMode == "button"){
     pinMode(ONBOARD_LED, OUTPUT);
     pinMode(BUTTON, INPUT);  
     digitalWrite(ONBOARD_LED, HIGH);
   } else if (controllerMode == "lamp"){
-    //Initialisiere digitale Pins als Ausgänge für LEDs
+    // Initialisiere digitale Pins als Ausgänge für LEDs
     pinMode(LED_RED, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_BLUE, OUTPUT);
@@ -170,10 +169,6 @@ void setup()
     digitalWrite(LED_BLUE, HIGH);  
     digitalWrite(LED_WHITE, HIGH); 
   }
-
-
-
-
 }
 
 bool mqttJsonInterpretation(String mqttJsonSignal);
@@ -183,7 +178,6 @@ void mqttChangeBrightness();
 
 //löschen nach testen:
 void mqttChangeColor();
-
 
 void callback(char* topic, byte* payload, unsigned int length) {
   bool executed = false;
