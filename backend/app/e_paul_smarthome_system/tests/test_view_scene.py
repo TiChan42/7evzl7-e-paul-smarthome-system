@@ -294,7 +294,7 @@ class TestSceneAddPort(TestCase):
     def setUp(self):
         self.account1 = Account.objects.create(email='test11@example.com', password="123")
         self.user1 = User.objects.create(username='test_user1', account=self.account1, role=User.Role.admin)
-        self.group1 = Group.objects.create(user=self.user1, name="testgroup")
+        self.group1 = Group.objects.create(user=self.user1, name="testgroup", groupType = "Assignment")
         self.microcontroller1 = Microcontroller.objects.create(key="test_key11", name="test_micro", type="type", account=self.account1)
         self.knownControllerType1 = KnownControllerType.objects.create(account=self.account1, type="type")
         self.portTemplate1 = PortTemplate.objects.create(knownControllerType=self.knownControllerType1)
@@ -307,8 +307,93 @@ class TestSceneAddPort(TestCase):
     def test_add_valid_data(self):
         data = {
             "executingUserId": self.user1.id,
-            "sceneId": self.scene1.id
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
         }
         request = self.factory.post('/addPortToScene/', data=data, content_type='application/json')
         response = SceneAddPort.as_view()(request)
+        self.assertEqual(response.status_code, 201)
+
+    def test_add_invalid_key(self):
+        data = {
+            "invalid_key": self.user1.id,
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/addPortToScene/', data=data, content_type='application/json')
+        response = SceneAddPort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_no_user(self):
+        data = {
+            "executingUserId": 99,
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/addPortToScene/', data=data, content_type='application/json')
+        response = SceneAddPort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_no_scene(self):
+        data = {
+            "executingUserId": self.user1.id,
+            "sceneId": 99,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/addPortToScene/', data=data, content_type='application/json')
+        response = SceneAddPort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_no_port(self):
+        data = {
+            "executingUserId": self.user1.id,
+            "sceneId": self.scene1.id,
+            "portId": 99
+        }
+        request = self.factory.post('/addPortToScene/', data=data, content_type='application/json')
+        response = SceneAddPort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+
+class TestSceneRemovePort(TestCase):
+    def setUp(self):
+        self.account1 = Account.objects.create(email='test11@example.com', password="123")
+        self.user1 = User.objects.create(username='test_user1', account=self.account1, role=User.Role.admin)
+        self.group1 = Group.objects.create(user=self.user1, name="testgroup", groupType = "Assignment")
+        self.microcontroller1 = Microcontroller.objects.create(key="test_key11", name="test_micro", type="type", account=self.account1)
+        self.knownControllerType1 = KnownControllerType.objects.create(account=self.account1, type="type")
+        self.portTemplate1 = PortTemplate.objects.create(knownControllerType=self.knownControllerType1)
+        self.port1 = Port.objects.create(name="test_micro", type="type" ,microcontroller=self.microcontroller1, portTemplate=self.portTemplate1, currentStatus={})
+        self.scene1 = Scene.objects.create(group=self.group1, name="scene1")
+        self.state1 = State.objects.create(scene=self.scene1, port=self.port1, state={"state":"nostate"})
+        self.groupPort1 = GroupPort.objects.create(group=self.group1, port=self.port1, name="groupport1")
+        self.factory = RequestFactory(raise_request_exception=False)
+
+    def test_remove_valid_data(self):
+        data = {
+            "executingUserId": self.user1.id,
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/removePortFromScene/', data=data, content_type='application/json')
+        response = SceneRemovePort.as_view()(request)
         self.assertEqual(response.status_code, 204)
+
+    def test_remove_invalid_key(self):
+        data = {
+            "invalid_key": self.user1.id,
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/removePortFromScene/', data=data, content_type='application/json')
+        response = SceneRemovePort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+
+    def test_remove_no_user(self):
+        data = {
+            "executingUserId": 99,
+            "sceneId": self.scene1.id,
+            "portId": self.port1.id
+        }
+        request = self.factory.post('/removePortFromScene/', data=data, content_type='application/json')
+        response = SceneRemovePort.as_view()(request)
+        self.assertEqual(response.status_code, 400)
