@@ -22,7 +22,7 @@ class RightsSettings(APIView):
             userId = request.data["userId"]
             executingUserId = request.data["executingUserId"]
         except KeyError:
-            return Response()
+            return Response(status = 400)
         
         try:
             user = User.objects.get(pk = userId)

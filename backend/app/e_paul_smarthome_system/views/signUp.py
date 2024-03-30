@@ -304,6 +304,9 @@ class MicrocontrollerSignUp(APIView):
         except KnownControllerType.DoesNotExist:
             return Response(status=400)
         
+        if(Account.objects.get(id=account.id).microcontroller.count() > 500):
+            return Response(status=400)
+        
         if account and knownControllerType:
             samePassword = checkpw(password.encode("utf-8"), account.password.encode("utf-8"))
             if samePassword == 1:
