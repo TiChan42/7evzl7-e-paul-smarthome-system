@@ -92,22 +92,18 @@ function DeviceOverview() {
                 'Content-Type': 'application/json',
             },
         })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setAccountClients(data);
-            })
-            .catch((error) => {
-                console.error('Error(fetchAccountClients):', error);
-                setAccountClients([]);
-                toast({
-                    title: 'Geräte konnten nicht geladen werden',
-                    status: 'error',
-                    duration: 10000,
-                    isClosable: true,
-                });
-            });
+        .then(response => {
+            console.log(response);
+            return response.json();
+        })
+        .then(data => {
+            setAccountClients(data);
+        })
+        .catch((error) => {
+            console.error('Error(fetchAccountClients):', error);
+            setAccountClients([]);  
+            
+        });
     };
 
     const fetchUserClientIDs = () => {
