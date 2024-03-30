@@ -1,4 +1,21 @@
-import { 
+
+
+/**
+ * Komponente für die Mehrfachauswahl.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {Array} props.items - Die Liste der Elemente zur Auswahl.
+ * @param {Array} props.preSelectValues - Die vorab ausgewählten Werte.
+ * @param {string} props.colorScheme - Das Farbschema der Komponente.
+ * @param {string} props.placeHolder - Der Platzhaltertext, der angezeigt wird, wenn keine Elemente ausgewählt sind.
+ * @param {function} props.onSelect - Die Callback-Funktion, die aufgerufen wird, wenn Elemente ausgewählt werden.
+ * @returns {JSX.Element} Die gerenderte Mehrfachauswahl-Komponente.
+ * @require chakra-ui/react
+ * @require react
+ * 
+ */
+import {
     Button,
     Menu,
     MenuButton,
@@ -10,11 +27,12 @@ import {
     Box,
     Checkbox,
     Center,
-    Input
- } from "@chakra-ui/react"
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
+    Input,
+} from '@chakra-ui/react';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import React, { useState, useEffect, useRef } from 'react';
 
+//MultiSelect Komponente
 export default function MultiSelect(props) {
     const [selectedItems, setSelectedItems] = useState([]);
     const [items, setItems] = useState(props.items);
@@ -33,7 +51,11 @@ export default function MultiSelect(props) {
     useEffect(() => {
         setChangeInit(true);
         if (props.preSelectValues && props.preSelectValues.length > 0) {
-            setSelectedItemsWithoutDuplicates(props.preSelectValues.map((value) => props.items.find((item) => item['value'] === value)))
+            setSelectedItemsWithoutDuplicates(
+                props.preSelectValues.map((value) =>
+                    props.items.find((item) => item['value'] === value)
+                )
+            );
         }
         // eslint-disable-next-line
     }, []);
@@ -47,7 +69,7 @@ export default function MultiSelect(props) {
             }
         });
         setSelectedItems(result);
-    }
+    };
 
     //lädt die Items neu, wenn sich die props.items ändern
     useEffect(() => {
@@ -59,40 +81,58 @@ export default function MultiSelect(props) {
         // eslint-disable-next-line
     }, [selectedItems]);
 
-
     return (
         <Menu w={'100%'}>
             {({ isOpen }) => (
                 <Box w={'100%'}>
                     <MenuButton
-                        isActive={isOpen}
                         as={Button}
-                        rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                        overflowY={'hidden'}
                         w={'100%'}
-                        variant={'outline'}
-                        borderColor={props.colorScheme}
                         h={'100%'}
                         minH={'40px'}
                         maxH={'210px'}
-                        overflowY={'hidden'}
-                        onWheel={handleScroll}
+                        borderColor={props.colorScheme}
                         _hover={{ bg: props.colorScheme + '.150' }}
                         _active={{ bg: props.colorScheme + '.250' }}
+                        isActive={isOpen}
+                        onWheel={handleScroll}
+                        rightIcon={
+                            isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />
+                        }
+                        variant={'outline'}
                     >
                         {selectedItems[0] ? (
                             <Box
+                                ref={contentRef}
+                                overflowY={'auto'}
                                 w={'100%'}
                                 maxH={'210px'}
-                                overflowY={'auto'}
-                                ref={contentRef} 
-                                css={{ '&::-webkit-scrollbar': { display: 'none'}}}
+                                css={{
+                                    '&::-webkit-scrollbar': { display: 'none' },
+                                }}
                             >
-                                <Wrap mt={2} mb={2}>
+                                <Wrap
+                                    mt={2}
+                                    mb={2}
+                                >
                                     {selectedItems.map((item, index) => {
                                         return (
-                                            <WrapItem key={'MultiSelect-Preview' + index}>
-                                                <Tag bg={props.colorScheme + '.400'}>
-                                                    <TagLabel>{item['name']}</TagLabel>
+                                            <WrapItem
+                                                key={
+                                                    'MultiSelect-Preview' +
+                                                    index
+                                                }
+                                            >
+                                                <Tag
+                                                    bg={
+                                                        props.colorScheme +
+                                                        '.400'
+                                                    }
+                                                >
+                                                    <TagLabel>
+                                                        {item['name']}
+                                                    </TagLabel>
                                                 </Tag>
                                             </WrapItem>
                                         );
@@ -103,73 +143,119 @@ export default function MultiSelect(props) {
                             <>{props.placeHolder}</>
                         )}
                     </MenuButton>
-                    <MenuList w={'100%'} borderColor={props.colorScheme} maxH ={'250px'} overflow={'hidden'} css={{ '&::-webkit-scrollbar': { display: 'none' } }} bg={props.colorScheme + '.100'}>
-                    
-                        <Center  mb={2} >
+                    <MenuList
+                        overflow={'hidden'}
+                        w={'100%'}
+                        maxH={'250px'}
+                        bg={props.colorScheme + '.100'}
+                        borderColor={props.colorScheme}
+                        css={{ '&::-webkit-scrollbar': { display: 'none' } }}
+                    >
+                        <Center mb={2}>
                             <Input
-                                focusBorderColor={props.colorScheme+'.500'}
-                                size= 'sm'
-                                type="text"
-                                placeholder="Suche..."
-                                borderColor={props.colorScheme+'.200'}
-                                _hover={{ borderColor: props.colorScheme+'.300' }}
+                                w={'90%'}
+                                borderColor={props.colorScheme + '.200'}
+                                _hover={{
+                                    borderColor: props.colorScheme + '.300',
+                                }}
+                                focusBorderColor={props.colorScheme + '.500'}
                                 onChange={(event) => {
                                     let search = event.target.value;
-                                    let filteredItems = props.items.filter((item) => {
-                                        return item['name'].toLowerCase().includes(search.toLowerCase());
-                                    });
+                                    let filteredItems = props.items.filter(
+                                        (item) => {
+                                            return item['name']
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase());
+                                        }
+                                    );
                                     setItems(filteredItems);
                                 }}
-                                w={'90%'}
+                                placeholder='Suche...'
+                                size='sm'
+                                type='text'
                             />
                         </Center>
                         <Box w={'100%'}>
                             <Checkbox
-                                borderBottom={'1px'}
-                                borderColor={props.colorScheme+'.500'}
                                 w={'100%'}
                                 mb={1}
+                                pr={4}
+                                pl={5}
+                                borderColor={props.colorScheme + '.500'}
+                                borderBottom={'1px'}
+                                colorScheme={props.colorScheme}
+                                isChecked={
+                                    selectedItems.length === items.length
+                                }
                                 onChange={(event) => {
                                     if (event.target.checked) {
-                                        setSelectedItemsWithoutDuplicates(items);
+                                        setSelectedItemsWithoutDuplicates(
+                                            items
+                                        );
                                     } else {
                                         setSelectedItemsWithoutDuplicates([]);
                                     }
                                 }}
-                                isChecked={selectedItems.length === items.length}
-                                colorScheme={props.colorScheme}
-                                pl={5}
-                                pr={4}
                             >
                                 Alle auswählen
                             </Checkbox>
                         </Box>
-                        <Box m={2} w={'100%'}overflowY={'auto'} overflowX={'hidden'} maxH={'210px'} __css={{  '&::-webkit-scrollbar': { backgroundColor: 'transparent', width: '3px'}, '&::-webkit-scrollbar-thumb': { backgroundColor: 'teal.600', borderRadius: 'full'}}} pb={'40px'}>
-                            
+                        <Box
+                            overflowX={'hidden'}
+                            overflowY={'auto'}
+                            w={'100%'}
+                            maxH={'210px'}
+                            m={2}
+                            pb={'40px'}
+                            __css={{
+                                '&::-webkit-scrollbar': {
+                                    backgroundColor: 'transparent',
+                                    width: '3px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: 'teal.600',
+                                    borderRadius: 'full',
+                                },
+                            }}
+                        >
                             {items.map((item, index) => {
                                 return (
-                                    <Box w={'100%'} key={'MultiSelect-Item'+index}>
+                                    <Box
+                                        key={'MultiSelect-Item' + index}
+                                        w={'100%'}
+                                    >
                                         <Checkbox
-                                            onChange={(event) => {
-                                                if (event.target.checked) {
-                                                    setSelectedItemsWithoutDuplicates([...selectedItems, item]);
-                                                } else {
-                                                    setSelectedItemsWithoutDuplicates(selectedItems.filter((value) => value !== item));
-                                                }
-                                            }}
-                                            borderBottom={'1px'}
-                                            borderColor={props.colorScheme+'.200'}
                                             w={'90%'}
                                             mb={2}
-                                            pb={2}
-                                            isChecked={selectedItems.includes(item)}
-                                            colorScheme={props.colorScheme}
-                                            pl={3}
                                             pr={4}
+                                            pb={2}
+                                            pl={3}
+                                            borderColor={
+                                                props.colorScheme + '.200'
+                                            }
+                                            borderBottom={'1px'}
+                                            colorScheme={props.colorScheme}
+                                            isChecked={selectedItems.includes(
+                                                item
+                                            )}
+                                            onChange={(event) => {
+                                                if (event.target.checked) {
+                                                    setSelectedItemsWithoutDuplicates(
+                                                        [...selectedItems, item]
+                                                    );
+                                                } else {
+                                                    setSelectedItemsWithoutDuplicates(
+                                                        selectedItems.filter(
+                                                            (value) =>
+                                                                value !== item
+                                                        )
+                                                    );
+                                                }
+                                            }}
                                         >
                                             {item['name']}
                                         </Checkbox>
-                                    </Box >
+                                    </Box>
                                 );
                             })}
                         </Box>

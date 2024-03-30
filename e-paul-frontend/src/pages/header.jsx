@@ -1,4 +1,17 @@
-import React from "react";
+
+/**
+ * Komponente für den Header der Seite.
+ * 
+ * @returns {JSX.Element} Das JSX-Element des Headers.
+ * 
+ * @requires react
+ * @requires @chakra-ui/react
+ * @requires react-router-dom
+ * @requires ../components/signUpAndInModal
+ * @requires ../utils/env
+ * @requires ../utils/encryptionUtils
+ */
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Button,
@@ -12,35 +25,42 @@ import {
     MenuItem,
     MenuList,
     MenuButton,
-} from "@chakra-ui/react";
-import { Route, Routes } from "react-router-dom";
-import SignUpAndInModal from "@/components/signUpAndInModal";
-import { env } from "@/utils/env";
-import { decryptString, encryptString } from "@/utils/encryptionUtils";
-import { useState, useEffect } from "react";
-import { useBreakpointValue } from "@chakra-ui/react";
+    useBreakpointValue,
+} from '@chakra-ui/react';
+import { Route, Routes } from 'react-router-dom';
+import SignUpAndInModal from '../components/signUpAndInModal';
+import { env } from '../utils/env';
+import { decryptString, encryptString } from '../utils/encryptionUtils';
 
+//Header der Seite
 function Header() {
     const [openSignUpAndInModal, setOpenSignUpAndInModal] = useState(false);
     const [signUpAndInModalSite, setSignUpAndInModalSite] = useState(0);
     const isSmallScreen = useBreakpointValue({ base: true, md: false });
     const [accountLoggedIn, setAccountLoggedIn] = useState(
-        sessionStorage.getItem("accountID") !== "" &&
-        sessionStorage.getItem("accountID") !== null
+        sessionStorage.getItem('accountID') !== '' &&
+            sessionStorage.getItem('accountID') !== null
     );
 
+    //Überprüfung ob der Zugriff auf die Seite erlaubt ist
     useEffect(() => {
         const checkIfAccessAllowed = () => {
-            let acceptedPath = env()["non-SignedIn-accessible-Pages"];
-            if (!accountLoggedIn && !acceptedPath.includes(window.location.pathname)) {
-                window.location.href = "/";
-            } else if (accountLoggedIn && 
-                (decryptString(sessionStorage.getItem("executingUserID")) === "" || 
-                decryptString(sessionStorage.getItem("executingUserID")) === null) && 
-                window.location.pathname !== "/chooseuser" && 
+            let acceptedPath = env()['non-SignedIn-accessible-Pages'];
+            if (
+                !accountLoggedIn &&
                 !acceptedPath.includes(window.location.pathname)
             ) {
-                window.location.href = "/chooseuser";
+                window.location.href = '/';
+            } else if (
+                accountLoggedIn &&
+                (decryptString(sessionStorage.getItem('executingUserID')) ===
+                    '' ||
+                    decryptString(sessionStorage.getItem('executingUserID')) ===
+                        null) &&
+                window.location.pathname !== '/chooseuser' &&
+                !acceptedPath.includes(window.location.pathname)
+            ) {
+                window.location.href = '/chooseuser';
             }
         };
 
@@ -52,222 +72,245 @@ function Header() {
         };
     }, [accountLoggedIn]);
 
+    //Funktionen zum Öffnen der Modalen
     const openSignUpModal = () => {
         setSignUpAndInModalSite(0);
         setOpenSignUpAndInModal(true);
     };
 
+    //Funktionen zum Öffnen der Modalen
     const openSignInModal = () => {
         setSignUpAndInModalSite(1);
         setOpenSignUpAndInModal(true);
     };
 
+    //Funktionen zum An- und Abmelden
     const signInAccount = () => {
-        console.log("Account signed in");
         setAccountLoggedIn(true);
-        sessionStorage.setItem("historyLengthBeforeSignIn", encryptString(window.history.length.toString()));
-        window.location.href = "/chooseuser";
+        sessionStorage.setItem(
+            'historyLengthBeforeSignIn',
+            encryptString(window.history.length.toString())
+        );
+        window.location.href = '/chooseuser';
     };
 
     const signOutAccount = () => {
         console.log(
-            "Account signed out: " +
-                decryptString(sessionStorage.getItem("accountID"))
+            'Account signed out: ' +
+                decryptString(sessionStorage.getItem('accountID'))
         );
         const data = {
-            accountId: decryptString(sessionStorage.getItem("accountID")),
+            accountId: decryptString(sessionStorage.getItem('accountID')),
         };
         const requestOptions = {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         };
-        fetch(env()["api-path"] + "logout", requestOptions)
+        fetch(env()['api-path'] + 'logout', requestOptions)
             .then((response) => {
                 if (response.status === 204) {
                     setAccountLoggedIn(false);
-                    sessionStorage.removeItem("accountID");
-                    sessionStorage.removeItem("executingUserID");
-                    sessionStorage.removeItem("userAuthorized");
-                    window.location.href = "/";
+                    sessionStorage.removeItem('accountID');
+                    sessionStorage.removeItem('executingUserID');
+                    sessionStorage.removeItem('userAuthorized');
+                    window.location.href = '/';
                 } else {
-                    console.log("Error while signing out");
+                    console.log('Error while signing out');
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error('Error:', error);
             });
     };
 
+    //Funktionen zum Abmelden des Benutzers
     const signOutUser = () => {
-        sessionStorage.removeItem("executingUserID");
-        sessionStorage.removeItem("userAuthorized");
-        window.location.href = "/chooseuser";
-    }
+        sessionStorage.removeItem('executingUserID');
+        sessionStorage.removeItem('userAuthorized');
+        window.location.href = '/chooseuser';
+    };
 
+    //Funktionen zum Abmelden des Accounts
     const signOut = () => {
-        if (decryptString(sessionStorage.getItem("executingUserID")) !== "" && decryptString(sessionStorage.getItem("executingUserID")) !== null){
+        if (
+            decryptString(sessionStorage.getItem('executingUserID')) !== '' &&
+            decryptString(sessionStorage.getItem('executingUserID')) !== null
+        ) {
             signOutUser();
-        }else{
+        } else {
             signOutAccount();
         }
-    }
+    };
 
+    //Funktion zum Öffnen des Dashboards
     const openDashboard = () => {
-        console.log(decryptString(sessionStorage.getItem("userAuthorized")));
-        if (decryptString(sessionStorage.getItem("userAuthorized")) === "true" && sessionStorage.getItem("executingUserID") !== "" && sessionStorage.getItem("executingUserID") !== null){
-            window.location.href = "/devices";
-        }else{
-            window.location.href = "/chooseuser";
+        console.log(decryptString(sessionStorage.getItem('userAuthorized')));
+        if (
+            decryptString(sessionStorage.getItem('userAuthorized')) ===
+                'true' &&
+            sessionStorage.getItem('executingUserID') !== '' &&
+            sessionStorage.getItem('executingUserID') !== null
+        ) {
+            window.location.href = '/devices';
+        } else {
+            window.location.href = '/chooseuser';
         }
-    }
+    };
 
     return (
         <Flex
-            bg={"#00697B"}
-            alignItems="center"
-            verticalAlign="middle"
-            position={"sticky"}
-            w={"100%"}
-            h="70px"
+            pos={'sticky'}
             zIndex={2}
-            top={"0px"}
+            top={'0px'}
+            align='center'
+            verticalAlign='middle'
+            w={'100%'}
+            h='70px'
+            bg={'#00697B'}
         >
             <Link
-                href="/"
-                display={"flex"}
+                alignItems='center'
+                display={'flex'}
                 p={[2, 4]}
-                alignItems="center"
-                _hover={"false"}
+                _hover={{}}
+                href='/'
             >
                 <Image
-                    src="assets/img/clearLogoWhite.png"
-                    alt="Logo"
-                    width="30"
-                    height="30"
-                    display={"inline-block"}
-                    m={"1"}
+                    display={'inline-block'}
+                    w='30'
+                    h='30'
+                    m={'1'}
+                    alt='Logo'
+                    src='assets/img/clearLogoWhite.png'
                 />
                 <Text
-                    color={"whitesmoke"}
-                    fontSize={["sm", "md", "xl"]}
-                    as={"b"}
-                    display={"inline-block"}
+                    as={'b'}
+                    display={'inline-block'}
+                    color={'whitesmoke'}
+                    fontSize={['sm', 'md', 'xl']}
                     _hover={{}}
                 >
-                    {" "}
+                    {' '}
                     E-Paul
                 </Text>
             </Link>
-            <Divider orientation="vertical" h={"70%"} borderWidth={1} />
-            <Box textAlign={"center"} p={[2, 4]}>
+            <Divider
+                h={'70%'}
+                borderWidth={1}
+                orientation='vertical'
+            />
+            <Box
+                p={[2, 4]}
+                textAlign={'center'}
+            >
                 <Routes>
                     <Route
-                        path="/"
+                        path='/'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Willkommen
                             </Text>
                         }
                     />
                     <Route
-                        path="/about"
+                        path='/about'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Über uns
                             </Text>
                         }
                     />
                     <Route
-                        path="/chooseuser"
+                        path='/chooseuser'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Benutzer
                             </Text>
                         }
                     />
                     <Route
-                        path="/imprint"
+                        path='/imprint'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Impressum
                             </Text>
                         }
                     />
                     <Route
-                        path="/devices"
+                        path='/devices'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Mein Smart-Home
                             </Text>
                         }
                     />
                     <Route
-                        path="/faq"
+                        path='/faq'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 FAQ
                             </Text>
                         }
                     />
                     <Route
-                        path="/userSettings"
+                        path='/userSettings'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Benutzereinstellungen
                             </Text>
                         }
                     />
                     <Route
-                        path="/userAdministration"
+                        path='/userAdministration'
                         element={
                             <Text
-                                as={"b"}
-                                fontSize={["sm", "md", "xl"]}
-                                color={"white"}
+                                as={'b'}
+                                color={'white'}
+                                fontSize={['sm', 'md', 'xl']}
                             >
                                 Benutzerverwaltung
                             </Text>
                         }
                     />
                     <Route
-                        path="/settings"
+                        path='/settings'
                         element={
-                            <Text 
-                                as={"b"}
-                                fontSize={['md','xl','3xl']} 
+                            <Text
+                                as={'b'}
                                 color={'white'}
-                            > 
+                                fontSize={['md', 'xl', '3xl']}
+                            >
                                 Einstellungen
                             </Text>
                         }
@@ -275,33 +318,40 @@ function Header() {
                 </Routes>
             </Box>
             <Spacer />
-            <Box
-                align={{ base: "center", lg: "end" }}
-                justifyContent={{ base: "center", lg: "flex-end" }}
-                display="flex"
+            <Flex
+                align={{ base: 'center', lg: 'end' }}
+                justify={{ base: 'center', lg: 'flex-end' }}
             >
                 {isSmallScreen ? (
                     <Menu>
                         <MenuButton
                             as={Button}
-                            colorScheme="teal"
-                            variant="solid"
-                            fontSize={{ base: "sm", lg: "md" }}
-                            padding={{ base: [1, 2], lg: [1, 4] }}
                             mr={{ base: 2, lg: 4 }}
+                            p={{ base: [1, 2], lg: [1, 4] }}
+                            fontSize={{ base: 'sm', lg: 'md' }}
+                            colorScheme='teal'
+                            variant='solid'
                         >
-                            {!accountLoggedIn ? "Zugang" : "Konto"}
+                            {!accountLoggedIn ? 'Zugang' : 'Konto'}
                         </MenuButton>
                         <MenuList>
                             {!accountLoggedIn ? (
                                 <>
-                                    <MenuItem onClick={openSignUpModal}>Registrieren</MenuItem>
-                                    <MenuItem onClick={openSignInModal}>Anmelden</MenuItem>
+                                    <MenuItem onClick={openSignUpModal}>
+                                        Registrieren
+                                    </MenuItem>
+                                    <MenuItem onClick={openSignInModal}>
+                                        Anmelden
+                                    </MenuItem>
                                 </>
                             ) : (
                                 <>
-                                    <MenuItem onClick={openDashboard}>Dashboard</MenuItem>
-                                    <MenuItem onClick={signOut}>Abmelden</MenuItem>
+                                    <MenuItem onClick={openDashboard}>
+                                        Dashboard
+                                    </MenuItem>
+                                    <MenuItem onClick={signOut}>
+                                        Abmelden
+                                    </MenuItem>
                                 </>
                             )}
                         </MenuList>
@@ -311,22 +361,22 @@ function Header() {
                         {!accountLoggedIn ? (
                             <>
                                 <Button
-                                    colorScheme="teal"
-                                    variant="solid"
-                                    fontSize={{ base: "sm", lg: "md" }}
-                                    padding={{ base: [1, 2], lg: [1, 4] }}
                                     mr={{ base: 2, lg: 4 }}
+                                    p={{ base: [1, 2], lg: [1, 4] }}
+                                    fontSize={{ base: 'sm', lg: 'md' }}
+                                    colorScheme='teal'
                                     onClick={openSignUpModal}
+                                    variant='solid'
                                 >
                                     Registrieren
                                 </Button>
                                 <Button
-                                    colorScheme="whiteAlpha"
-                                    variant="solid"
-                                    fontSize={{ base: "sm", lg: "md" }}
-                                    padding={{ base: [1, 2], lg: [1, 4] }}
                                     mr={{ base: 2, lg: 4 }}
+                                    p={{ base: [1, 2], lg: [1, 4] }}
+                                    fontSize={{ base: 'sm', lg: 'md' }}
+                                    colorScheme='whiteAlpha'
                                     onClick={openSignInModal}
+                                    variant='solid'
                                 >
                                     Anmelden
                                 </Button>
@@ -334,22 +384,22 @@ function Header() {
                         ) : (
                             <>
                                 <Button
-                                    colorScheme="teal"
-                                    variant="solid"
-                                    fontSize={{ base: "sm", lg: "md" }}
-                                    padding={{ base: [1, 2], lg: [1, 4] }}
                                     mr={{ base: 2, lg: 4 }}
+                                    p={{ base: [1, 2], lg: [1, 4] }}
+                                    fontSize={{ base: 'sm', lg: 'md' }}
+                                    colorScheme='teal'
                                     onClick={openDashboard}
+                                    variant='solid'
                                 >
                                     Dashboard
                                 </Button>
                                 <Button
-                                    colorScheme="whiteAlpha"
-                                    variant="solid"
-                                    fontSize={{ base: "sm", lg: "md" }}
-                                    padding={{ base: [1, 2], lg: [1, 4] }}
                                     mr={{ base: 2, lg: 4 }}
+                                    p={{ base: [1, 2], lg: [1, 4] }}
+                                    fontSize={{ base: 'sm', lg: 'md' }}
+                                    colorScheme='whiteAlpha'
                                     onClick={signOut}
+                                    variant='solid'
                                 >
                                     Abmelden
                                 </Button>
@@ -364,7 +414,7 @@ function Header() {
                     onSignIn={signInAccount}
                     onSignUp={() => {}}
                 />
-            </Box>
+            </Flex>
         </Flex>
     );
 }

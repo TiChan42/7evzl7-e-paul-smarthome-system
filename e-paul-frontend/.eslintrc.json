@@ -1,0 +1,58 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2015, // Hier wird die ECMAScript-Version angegeben
+    "sourceType": "module", // Hier wird das Modulformat angegeben (z. B. 'module' für ES-Module)
+    "ecmaFeatures": {
+      "jsx": true // Diese Option aktiviert JSX-Support
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+      ],
+      "plugins": [
+        "import",
+        "@typescript-eslint",
+        "chakra-ui",
+        "prettier"
+      ],
+      "settings": {
+        "import/resolver": {
+          "node": {
+            "extensions": [".js", ".jsx", ".ts", ".tsx"]
+          }
+        }
+      },
+      "rules": {
+        "no-unused-vars": "off",
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "js": "never",
+            "jsx": "never",
+            "ts": "never",
+            "tsx": "never"
+          }
+        ],
+        "prettier/prettier": "error",
+        "chakra-ui/props-order": 2,
+        "chakra-ui/props-shorthand": 2,
+        "chakra-ui/require-specific-component": 2
+      }
+    },
+    {
+      "files": ["src/App.jsx"],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    }
+  ]
+}
