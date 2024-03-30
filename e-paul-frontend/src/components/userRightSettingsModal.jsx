@@ -67,7 +67,7 @@ const UserRightColumn = (props) => {
     );
 };
 
-//Modal for signing up and in
+//Modal für die Benutzerrechte
 const UserRightSettingsModal = (props) => {
     const toast = useToast();
     const [userRights, setUserRights] = React.useState([]);
@@ -75,6 +75,7 @@ const UserRightSettingsModal = (props) => {
     const [updateFlag, setUpdateFlag] = React.useState(false);
     const updateModal = () => setUpdateFlag(!updateFlag);
 
+    //Holt die Benutzerrechte von einem Benutzer
     const getUserRights = async (userID) => {
         let executingUserID = decryptString(
             sessionStorage.getItem('executingUserID')
@@ -140,6 +141,7 @@ const UserRightSettingsModal = (props) => {
         }
     };
 
+    //Setzt ein Benutzerrecht eines Benutzers
     const setUserRight = async (userID, userRightKey, value) => {
         let executingUserID = decryptString(
             sessionStorage.getItem('executingUserID')
@@ -203,12 +205,14 @@ const UserRightSettingsModal = (props) => {
         }
     };
 
+    //Aktualisiert ein Benutzerrecht
     const updateUserRight = async (userID, userRightKey, value) => {
         await setUserRight(userID, userRightKey, value);
         await getUserRights(userID);
         updateModal();
     };
 
+    //Lädt die Benutzerrechte neu
     const reloadModal = async (userID) => {
         await getUserRights(
             decryptString(sessionStorage.getItem('executingUserID'))
@@ -217,6 +221,7 @@ const UserRightSettingsModal = (props) => {
         updateModal();
     };
 
+    //Lädt die Benutzerrechte beim Start oder öffnen des Modals
     React.useEffect(() => {
         if (props.openModal) {
             reloadModal(props.userID);

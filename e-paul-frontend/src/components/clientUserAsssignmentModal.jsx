@@ -192,6 +192,7 @@ const ClientList = (props) => {
     const [elementsToShow, setElementsToShow] = useState([]);
     const [largerSide, setLargerSide] = useState(false);
 
+    // useEffect um die Elemente zu filtern
     useEffect(() => {
         if (props.variant) {
             var temp = [];
@@ -229,6 +230,7 @@ const ClientList = (props) => {
         props.triggerRender,
     ]);
 
+    // useEffect um zu bestimmen, ob die Seite größer ist
     useEffect(() => {
         if (
             Object.keys(props.clients).length - props.userClientIDs.length >
@@ -240,6 +242,7 @@ const ClientList = (props) => {
         }
     }, [props.userClientIDs, props.clients, props.triggerRender]);
 
+    // Funktion um einen Namen aus der ID zu generieren
     const generateNameOutOfID = (id) => {
         let temp = (id * 2345 + id * 856 + id * 71) / (id * id * id);
         //More complex function to generate a name out of the id

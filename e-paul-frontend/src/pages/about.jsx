@@ -56,6 +56,7 @@ const slides = [
     },
 ];
 
+//Zeigt die Über uns Seite an
 class About extends Component {
     render() {
         return (

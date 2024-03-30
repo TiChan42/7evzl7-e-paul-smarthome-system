@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Box, Flex, Link, SimpleGrid } from '@chakra-ui/react';
 
+//Footer der Seite
 class Footer extends Component {
     render() {
         return (

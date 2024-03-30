@@ -19,9 +19,8 @@ import React from 'react';
 import { decryptString } from '../utils/encryptionUtils';
 import ValidateActionModal from './validateActionModal';
 
-//Modal for signing up and in
+//Modal zum Ändern der Account-Einstellungen
 const AccountSettingsModal = (props) => {
-    //AccountId
     const [accountID, setAccountID] = React.useState(
         decryptString(sessionStorage.getItem('accountID'))
     );
@@ -29,8 +28,6 @@ const AccountSettingsModal = (props) => {
         React.useState(false);
     const [openChangeMail, setopenChangeMail] = React.useState(false);
     const [newMail, setNewMail] = React.useState('');
-    //const [validEmail, setValidEmail] = React.useState(true);
-    //Hier die ganzen Funktionen Hinpacken
 
     const executingUserID = decryptString(
         sessionStorage.getItem('executingUserID')
@@ -38,10 +35,10 @@ const AccountSettingsModal = (props) => {
     const toast = useToast();
 
     const initialRef = React.useRef();
-
+    
+    //Funktion zum Ändern der E-Mail-Adresse
     const updateEmail = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        //setValidEmail(emailRegex.test(newMail));
         if (emailRegex.test(newMail)) {
             const res = await fetch(
                 'http://epaul-smarthome.de:8000/api/settings/changeMail',
@@ -76,8 +73,8 @@ const AccountSettingsModal = (props) => {
         }
     };
 
+    //Funktion zum Löschen des Accounts
     const deleteAccount = async () => {
-        // API Request
         const res = await fetch(
             'http://epaul-smarthome.de:8000/api/deleteAccount',
             {
@@ -93,9 +90,9 @@ const AccountSettingsModal = (props) => {
             }
         );
         console.log(res);
-        // Clear Session Storage
+        //Löschen der Session
         sessionStorage.clear();
-        // Toast and Page reload
+        //Neuladen der Seite
         var waitTime = 2000;
         toast({
             title: 'Account erfolgreich gelöscht',

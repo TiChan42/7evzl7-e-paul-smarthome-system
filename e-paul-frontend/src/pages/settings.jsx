@@ -27,6 +27,7 @@ import {
 import { decryptString } from '../utils/encryptionUtils';
 import React, { Component, useEffect } from 'react';
 
+//Modal zum Löschen eines Users
 function DeleteUserModal() {
     const executingUserID = sessionStorage.getItem('executingUserID');
     const accountID = decryptString(sessionStorage.getItem('accountID'));
@@ -94,10 +95,9 @@ function DeleteUserModal() {
     );
 }
 
+// hinzufügen eines Toasts
 function AddToast(props) {
     const toast = useToast();
-    // console.log(props.title + " " + props.status + " " + props.duration + " " + props.isClosable + " " + props.description)
-    // console.log(props.trigger)
     useEffect(() => {
         if (props.trigger) {
             if (
@@ -570,6 +570,7 @@ class Settings extends Component {
 
 export default Settings;
 
+//Header Komponente
 function Header() {
     const siteBefore = window.history.length - 1;
     return (
@@ -590,7 +591,7 @@ function Header() {
         </header>
     );
 }
-
+//PasswordInput Komponente
 export function PasswordInput(props) {
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);

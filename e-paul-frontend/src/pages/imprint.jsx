@@ -7,10 +7,10 @@ import {
     Heading,
     Text,
     Flex,
-    Box,
     Center,
 } from '@chakra-ui/react';
 
+// Impressum Seite
 class Impressum extends Component {
     render() {
         return (

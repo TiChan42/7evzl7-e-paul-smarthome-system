@@ -22,6 +22,7 @@ import React, { useState, useEffect } from 'react';
 import { decryptString } from '../utils/encryptionUtils';
 import { env } from '../utils/env';
 
+//Dialog zum Hinzufügen einer Gruppe
 function AddGroupDialog(props) {
     const toast = useToast();
 
@@ -34,6 +35,7 @@ function AddGroupDialog(props) {
         useState([]);
     const [selectedClientIDs, setSelectedClientIDs] = useState([]);
 
+    //Funktionen zum Abrufen der Clients des Accounts
     const fetchAccountClients = () => {
         let accountID = decryptString(sessionStorage.getItem('accountID'));
         if (accountID) {
@@ -48,16 +50,15 @@ function AddGroupDialog(props) {
                 })
                 .then((data) => {
                     setAccountClients(data);
-                    //setUpdateAssignedUserClients(!updateAssignedUserClients);
                 })
                 .catch((error) => {
                     console.error('Error(fetchAccountClients):', error);
                     setAccountClients([]);
-                    //setUpdateAssignedUserClients(!updateAssignedUserClients);
                 });
         }
     };
 
+    //Funktion zum Abrufen der Client-IDs des Users
     const fetchUserClientIDs = () => {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
         if (userID) {
@@ -70,15 +71,15 @@ function AddGroupDialog(props) {
                 .then((response) => response.json())
                 .then((data) => {
                     setUserClientIDs(data[1]);
-                    //setUpdateAssignedUserClients(!updateAssignedUserClients);
                 })
                 .catch((error) => {
                     console.error('Error(fetchUserClientIDs):', error);
                     setUserClientIDs([]);
-                    //setUpdateAssignedUserClients(!updateAssignedUserClients);
                 });
         }
     };
+
+    //Funktion zum Filtern der Clients des Accounts nach den Client-IDs des Users
     useEffect(() => {
         let temp = [];
         if (
@@ -96,12 +97,15 @@ function AddGroupDialog(props) {
         setAssignedUserClients(temp);
     }, [userClientIDs, accountClients]);
 
+    //Funktion zum Generieren eines Namens aus der ID
     const generateNameOutOfID = (id) => {
         let temp = (id * 2345 + id * 856 + id * 71) / (id * id * id);
         //More complex function to generate a name out of the id
         temp = parseInt((temp * 2345 + temp * 856 + temp * 71) / (id * id));
         return 'Client_' + temp.toString();
     };
+
+    //Funktion zum Vorbereiten der Clients des Users für die Multiselect-Komponente
     useEffect(() => {
         let temp = [];
         if (assignedUserClients && assignedUserClients[0]) {
@@ -120,7 +124,8 @@ function AddGroupDialog(props) {
     const [groupNameInUse, setGroupNameInUse] = useState(false);
     const [groupNameValid, setGroupNameValid] = useState(false);
     const [groupNameValue, setGroupNameValue] = useState('');
-    //Test if the given Group-Name is already in use for the executingUserID
+
+    //Testen ob der Gruppenname bereits vergeben ist
     const isGroupNameInUse = (groupName) => {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
         if (userID) {
@@ -147,18 +152,21 @@ function AddGroupDialog(props) {
         }
     };
 
+    //Funktion zum Ändern des Gruppennamens nach Eingabe
     const handleGroupNameChange = (event) => {
         let groupName = event.target.value;
         isGroupNameInUse(groupName);
         setGroupNameValue(groupName);
     };
 
+    //Funktionen zum Abrufen der Clients des Accounts und der Client-IDs des Users
     useEffect(() => {
         fetchAccountClients();
         fetchUserClientIDs();
         setGroupNameValid(false);
     }, [isOpen]);
 
+    //Funktion zum Hinzufügen einer Gruppe
     const addGroup = () => {
         let userID = decryptString(sessionStorage.getItem('executingUserID'));
         if (userID) {

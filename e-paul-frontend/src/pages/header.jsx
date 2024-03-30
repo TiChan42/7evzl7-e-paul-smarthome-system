@@ -19,6 +19,7 @@ import SignUpAndInModal from '../components/signUpAndInModal';
 import { env } from '../utils/env';
 import { decryptString, encryptString } from '../utils/encryptionUtils';
 
+//Header der Seite
 function Header() {
     const [openSignUpAndInModal, setOpenSignUpAndInModal] = useState(false);
     const [signUpAndInModalSite, setSignUpAndInModalSite] = useState(0);
@@ -28,6 +29,7 @@ function Header() {
             sessionStorage.getItem('accountID') !== null
     );
 
+    //Überprüfung ob der Zugriff auf die Seite erlaubt ist
     useEffect(() => {
         const checkIfAccessAllowed = () => {
             let acceptedPath = env()['non-SignedIn-accessible-Pages'];
@@ -57,16 +59,19 @@ function Header() {
         };
     }, [accountLoggedIn]);
 
+    //Funktionen zum Öffnen der Modalen
     const openSignUpModal = () => {
         setSignUpAndInModalSite(0);
         setOpenSignUpAndInModal(true);
     };
 
+    //Funktionen zum Öffnen der Modalen
     const openSignInModal = () => {
         setSignUpAndInModalSite(1);
         setOpenSignUpAndInModal(true);
     };
 
+    //Funktionen zum An- und Abmelden
     const signInAccount = () => {
         console.log('Account signed in');
         setAccountLoggedIn(true);
@@ -109,12 +114,14 @@ function Header() {
             });
     };
 
+    //Funktionen zum Abmelden des Benutzers
     const signOutUser = () => {
         sessionStorage.removeItem('executingUserID');
         sessionStorage.removeItem('userAuthorized');
         window.location.href = '/chooseuser';
     };
 
+    //Funktionen zum Abmelden des Accounts
     const signOut = () => {
         if (
             decryptString(sessionStorage.getItem('executingUserID')) !== '' &&
@@ -126,6 +133,7 @@ function Header() {
         }
     };
 
+    //Funktion zum Öffnen des Dashboards
     const openDashboard = () => {
         console.log(decryptString(sessionStorage.getItem('userAuthorized')));
         if (

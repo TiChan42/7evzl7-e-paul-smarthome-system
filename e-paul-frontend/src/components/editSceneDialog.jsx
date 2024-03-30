@@ -29,6 +29,7 @@ import { decryptString } from '../utils/encryptionUtils';
 import { env } from '../utils/env';
 import ControllerCommandsModal from './controllerCommandsModal';
 
+//Dialog zum Bearbeiten einer Szene
 function EditSceneDialog(props) {
     const toast = useToast();
 

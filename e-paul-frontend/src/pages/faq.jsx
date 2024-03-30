@@ -14,6 +14,7 @@ import {
     Flex,
 } from '@chakra-ui/react';
 
+//FAQ Seite
 class FAQ extends Component {
     state = { activeTab: 'faq' };
 

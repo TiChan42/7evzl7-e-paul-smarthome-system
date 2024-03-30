@@ -13,10 +13,9 @@ import {
     Center,
     IconButton,
 } from '@chakra-ui/react';
-
-//icons
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-
+// Carousel Komponente
+// Pfeil nach rechts
 function NextArrow(props) {
     return (
         <div
@@ -37,6 +36,7 @@ function NextArrow(props) {
     );
 }
 
+//Pfeil nach links
 function PrevArrow(props) {
     return (
         <div
@@ -58,6 +58,7 @@ function PrevArrow(props) {
     );
 }
 
+// Farben für die Slides
 function getSlideColorString(slideNumber) {
     const slideColorStrings = [
         'teal.200',
@@ -74,6 +75,7 @@ function getSlideColorString(slideNumber) {
     ];
 }
 
+// SlideShow Komponente
 export default function SlideShow(props) {
     const settings = {
         dots: true,

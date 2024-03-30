@@ -30,12 +30,9 @@ const slides = [
         text: 'Unser intuitives Benutzerinterface ermöglicht es Ihnen, mühelos durch die Räume ihres Hauses zu navigieren und ihre Smart-Home Geräte nach ihren Vorlieben anzupassen. Sie können zB bestimmte Lichter an- und ausschalten, sowie deren Helligkeit anpassen.',
         image: '../../assets/img/welcome_images/user-interface.svg',
     },
-    {
-        title: 'Sicherheit',
-        text: 'Die Verbindungssicherheit steht bei uns an erster Stelle. Deshalb verwendet unser System fortschrittliche Verschlüsselungstechnologien, um die Sicherheit ihrer wichtigen Daten zu gewährleisten. So können Sie sich entspannt zurücklehnen und sorgenlos Ihr smartes Zuhause genießen.',
-        image: '../../assets/img/welcome_images/cyber-security.svg',
-    },
 ];
+
+//Zeigt die Willkommensseite an
 class Welcome extends Component {
     state = {};
     render() {

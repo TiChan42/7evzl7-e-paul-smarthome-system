@@ -40,6 +40,7 @@ import Clock from 'react-live-clock';
 import { env } from '../utils/env';
 import ControllerCommandsModal from '../components/controllerCommandsModal';
 
+//Übersichtsseite für Geräte
 function DeviceOverview() {
     const [userID, setUserID] = useState(
         decryptString(sessionStorage.getItem('executingUserID'))
@@ -72,6 +73,7 @@ function DeviceOverview() {
         // eslint-disable-next-line
     }, []);
 
+    //Daten asynchron laden
     const fetchData = async () => {
         await setAccountID(decryptString(sessionStorage.getItem('accountID')));
         await setUserID(
@@ -85,6 +87,7 @@ function DeviceOverview() {
         await fetchUserRights(userID);
     };
 
+    //Alle Clients des Accounts asynchron laden
     const fetchAccountClients = () => {
         fetch(env()['api-path'] + 'getPorts/' + accountID, {
             method: 'GET',
@@ -106,6 +109,7 @@ function DeviceOverview() {
         });
     };
 
+    //die ClientIDs des Benutzers asynchron laden
     const fetchUserClientIDs = () => {
         fetch(env()['api-path'] + 'getGroup/Assignment/' + userID, {
             method: 'GET',
@@ -131,6 +135,7 @@ function DeviceOverview() {
             });
     };
 
+    //Benutzerdaten asynchron laden
     const fetchUser = (userID) => {
         fetch(env()['api-path'] + 'user/' + userID, {
             method: 'GET',
@@ -154,6 +159,7 @@ function DeviceOverview() {
             });
     };
 
+    //Die ClientGruppn des Benutzers asynchron laden
     const fetchUserGroups = () => {
         fetch(env()['api-path'] + 'getGroup/Favorite/' + userID, {
             method: 'GET',
@@ -172,6 +178,7 @@ function DeviceOverview() {
             });
     };
 
+    //Die Benutzerrechte asynchron laden
     const fetchUserRights = () => {
         fetch(env()['api-path'] + 'getUserRights/' + userID + '/' + userID, {
             method: 'GET',
@@ -365,10 +372,14 @@ function DeviceCard({ clientName, client }) {
     );
 }
 
+//Meine Geräte Rubrik
 function MyDevices({ accountClients, userClientIDs }) {
+
+    //Liste der Geräte
     const DeviceList = ({ clients, userClientIDs, variant }) => {
         const [elementsToShow, setElementsToShow] = useState([]);
 
+        //Geräte filtern
         useEffect(() => {
             if (variant) {
                 var temp = [];
@@ -401,9 +412,9 @@ function MyDevices({ accountClients, userClientIDs }) {
             }
         }, [clients, variant, userClientIDs]);
 
+        //Generiert einen Namen aus der ID
         const generateNameOutOfID = (id) => {
             let temp = ((id * 2345 + id * 856 + id * 71) / id) * id;
-            //More complex function to generate a name out of the id
             temp =
                 ((temp * 2345 + temp * 856 + temp * 71) / temp) * temp * temp;
             return 'Client_' + temp.toString();
@@ -469,10 +480,13 @@ function MyDevices({ accountClients, userClientIDs }) {
     );
 }
 
+//Einstellungen Button
 function SettingsButton(props) {
     const openSettings = () => {
+        //Wenn der Benutzer Admin oder Superuser ist, wird er zur Benutzerverwaltung weitergeleitet
         if (props.userRole === 'admin' || props.userRole === 'superuser') {
             window.location.href = '/userAdministration';
+            //Wenn der Benutzer nur Benutzerrechte hat, wird er zu seinen Einstellungen weitergeleitet
         } else {
             sessionStorage.setItem(
                 'userToEdit',
@@ -505,6 +519,7 @@ function SettingsButton(props) {
     );
 }
 
+//Favoriten Rubrik
 function Favourites({ favoriteClients, isSmallScreen, radius }) {
     const FavoriteCard = (key, client) => {
         return (
@@ -560,6 +575,7 @@ function Favourites({ favoriteClients, isSmallScreen, radius }) {
     );
 }
 
+//Statusmeldung
 // eslint-disable-next-line
 function Status({}) {
     const current = new Date();
@@ -598,6 +614,7 @@ function Status({}) {
     );
 }
 
+//Gruppen Rubrik
 function Groups(props) {
     const [standardGroups, setStandardGroups] = useState([]);
 
@@ -684,6 +701,7 @@ function Groups(props) {
     );
 }
 
+//Darstellung der einzelnen Gruppen
 function Group(props) {
     const toast = useToast();
 
@@ -887,6 +905,7 @@ function Group(props) {
     );
 }
 
+//Komponente zur Darstellung der Dashboardseite
 class Devices extends Component {
     render() {
         return (

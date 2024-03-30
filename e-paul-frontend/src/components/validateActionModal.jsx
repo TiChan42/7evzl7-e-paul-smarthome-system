@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 
-//Modal for signing up and in
+//Modal zur Nachfrage, ob eine Aktion wirklich ausgeführt werden soll
 const ValidateActionModal = (props) => {
     const initialRef = React.useRef();
     return (

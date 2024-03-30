@@ -16,7 +16,7 @@ import React from 'react';
 import SignUpForm from './signUpForm';
 import SignInForm from './signInForm';
 
-//Modal for signing up and in
+//Modal für die Registrierung und Anmeldung
 const SignUpAndInModal = (props) => {
     const initialRef = React.useRef();
     const signInRef = React.useRef();

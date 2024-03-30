@@ -7,6 +7,7 @@ import { encryptString, decryptString } from '../utils/encryptionUtils';
 import AccountSettingsModal from '../components/accountSettingsModal';
 import UserRightSettingsModal from '../components/userRightSettingsModal';
 
+// Testseite für die Modals
 function SignUpControllerButton() {
     const signUpController = () => {
         console.log('Sign Up Controller');
@@ -40,6 +41,7 @@ function SignUpControllerButton() {
     );
 }
 
+// Modals für die Benutzer-Module, Account-Einstellungen und Benutzer-Rechte
 function Modals() {
     const [userModuleModal, setUserModuleModal] = useState(false);
     const [userRightsModal, setUserRightsModal] = useState(false);

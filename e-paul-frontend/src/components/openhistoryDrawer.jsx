@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 
+//Drawer für den Verlauf
 function OpenHistoryDrawer(props) {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -18,6 +19,7 @@ function OpenHistoryDrawer(props) {
                 color='white'
                 bg='#3e5f74'
                 onClick={onOpen}
+                isDisabled
             >
                 <HamburgerIcon m={1} /> {props.Text}{' '}
             </Button>

@@ -4,6 +4,7 @@ const config = {
     initialColorMode: 'light',
 };
 
+//Festlegung der Farben
 const colors = {
     blue1: 'rgba(33, 131, 149, 1.0)',
     blue2: 'rgba(33, 131, 149, 0.8)', //rgba(33, 131, 149, 0.8)

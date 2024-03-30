@@ -29,6 +29,7 @@ import { decryptString } from '../utils/encryptionUtils';
 import { env } from '../utils/env';
 import ControllerCommandsModal from './controllerCommandsModal';
 
+//Dialog zum Hinzufügen einer Szene
 function AddSceneDialog(props) {
     const toast = useToast();
 

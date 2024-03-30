@@ -18,7 +18,7 @@ import {
 import React, { useState, useEffect, useRef } from 'react';
 import { env } from '../utils/env';
 
-//Modal for signing up and in
+//Modal zum Anzeigen und Ausführen von Controller-Befehlen
 const ControllerCommandsModal = (props) => {
     const [controllerCommands, setControllerCommands] = useState([]); // [ {name: 'name', command: 'command'}, ...
 
@@ -26,14 +26,14 @@ const ControllerCommandsModal = (props) => {
 
     const initialRef = useRef();
 
+    // holt die Controller-Befehle vom Server beim Öffnen des Modals
     useEffect(() => {
         if (!props.openModal) return;
-        // fetch controller commands
-        // setControllerCommands([...]);
         console.log('fetching controller commands: ', props.client.id);
         fetchControllerCommands();
     }, [props.openModal]);
 
+    // holt die Controller-Befehle vom Server
     const fetchControllerCommands = () => {
         fetch(env()['api-path'] + 'getCommands/' + props.client.id, {
             method: 'GET',
@@ -83,6 +83,7 @@ const ControllerCommandsModal = (props) => {
             });
     };
 
+    // sendet den Befehl an den Server
     const executeCommand = (command) => {
         console.log('executing command: ', command);
         fetch(env()['api-path'] + 'device/executeCommand', {

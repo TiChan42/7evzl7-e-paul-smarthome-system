@@ -46,6 +46,7 @@ var userRightsTest = [
     },
 ];
 
+//Header
 function Header() {
     const siteBefore = window.history.length - 1;
     return (
@@ -72,6 +73,7 @@ function Header() {
     );
 }
 
+//Eizelne Einstellungszeile für einen Benutzer
 function UserCol(props) {
     const editRights = props.editRights;
     const [isAdmin, setIsAdmin] = useState(
@@ -81,7 +83,8 @@ function UserCol(props) {
     const [userRightModal, setUserRightModal] = useState(false);
 
     const toast = useToast();
-
+    
+    //Funktion zum Löschen eines Benutzers
     function deleteUser() {
         if (
             decryptString(sessionStorage.getItem('userAuthorized')) === 'false'
@@ -145,6 +148,7 @@ function UserCol(props) {
             });
     }
 
+    //Funktion zum Löschen eines Benutzers
     const deleteUserModal = () => {
         props.openValidateModal(
             props.user.username + ' löschen?',
@@ -157,6 +161,7 @@ function UserCol(props) {
         );
     };
 
+    //Funktion zum Ändern des Adminstatus eines Benutzers
     const updateAdminStatus = (userID, admin) => {
         let url = env()['api-path'] + 'user/changeRole';
         let adminData = 'user';
@@ -215,6 +220,7 @@ function UserCol(props) {
             });
     };
 
+    //Funktion zum Ändern des Adminstatus eines Benutzers
     const handleAdminSwitch = () => {
         if (isAdmin) {
             props.openValidateModal(
@@ -239,6 +245,7 @@ function UserCol(props) {
         }
     };
 
+    //Funktion zum Öffnen der Benutzereinstellungen
     const handleUserSettingClick = (id) => {
         sessionStorage.setItem('userToEdit', encryptString(id.toString()));
         window.location.href = '/settings';
@@ -345,13 +352,14 @@ function UserCol(props) {
     );
 }
 
-//Haupt function
+//Benutzerverwaltung 
 function UserAdministration() {
     const accountID = decryptString(sessionStorage.getItem('accountID'));
     const [addUserModal, setAddUserModal] = useState(false);
     const [accountSettingModal, setAccountSettingModal] = useState(false);
     const [editRights, setEditRights] = useState(userRightsTest[0]);
 
+    //Funktion zum Öffnen der Benutzereinstellungen
     const handleUserSettingClick = () => {
         sessionStorage.setItem(
             'userToEdit',
@@ -360,6 +368,7 @@ function UserAdministration() {
         window.location.href = '/settings';
     };
 
+    //Funktion zum Aktualisieren der Benutzerliste
     const triggerRefresh = () => {
         fetchUsers(accountID);
     };
@@ -378,6 +387,7 @@ function UserAdministration() {
         return () => {};
     });
 
+    //Funktion zum Öffnen des Validierungsfensters
     function openValidationModal(
         validationModalTitle,
         validationModalText,
@@ -391,6 +401,7 @@ function UserAdministration() {
         setValidationModal(true);
     }
 
+    //Funktion zum Abrufen der Benutzer
     function fetchUsers(accountID) {
         //fetch users from backend
         const fetchPath = env()['api-path'] + 'getUsers/' + accountID;
@@ -414,6 +425,7 @@ function UserAdministration() {
             });
     }
 
+    //Funktion zum Abrufen der Benutzerrechte
     const getUserRights = async () => {
         let executingUserID = decryptString(
             sessionStorage.getItem('executingUserID')

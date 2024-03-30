@@ -15,6 +15,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import React, { useState, useEffect, useRef } from 'react';
 
+//MultiSelect Komponente
 export default function MultiSelect(props) {
     const [selectedItems, setSelectedItems] = useState([]);
     const [items, setItems] = useState(props.items);

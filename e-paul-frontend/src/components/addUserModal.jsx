@@ -132,6 +132,7 @@ const AddUserModal = (props) => {
             });
     };
 
+    //Holt sich die Rechte des ausführenden Benutzers
     const getExecutingUserRights = () => {
         const executingUserID = decryptString(
             sessionStorage.getItem('executingUserID')
@@ -170,6 +171,7 @@ const AddUserModal = (props) => {
         }
     };
 
+    //Holt sich die Rechte des ausführenden Benutzers beim Laden der Komponente
     useEffect(() => {
         getExecutingUserRights();
     }, []);

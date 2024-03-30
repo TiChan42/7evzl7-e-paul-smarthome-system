@@ -4,6 +4,7 @@ import Footer from '../pages/footer';
 import { Box, ChakraProvider } from '@chakra-ui/react';
 import theme from '../styles/theme';
 
+//Layout für die gesamte Seite
 export default function RootLayout() {
     return (
         <ChakraProvider theme={theme}>
