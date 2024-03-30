@@ -29,7 +29,6 @@ const ControllerCommandsModal = (props) => {
     // holt die Controller-Befehle vom Server beim Öffnen des Modals
     useEffect(() => {
         if (!props.openModal) return;
-        console.log('fetching controller commands: ', props.client.id);
         fetchControllerCommands();
     }, [props.openModal]);
 
@@ -42,7 +41,6 @@ const ControllerCommandsModal = (props) => {
             },
         })
             .then((response) => {
-                console.log(response);
                 if (response.status == 200) {
                     return response.json();
                 }
@@ -51,8 +49,6 @@ const ControllerCommandsModal = (props) => {
             .then((data) => {
                 if (data) {
                     setControllerCommands(data);
-                    console.log('Success:', data);
-
                     let temp = [];
                     for (let i = 0; i < data.length; i++) {
                         let command = data[i];
@@ -74,7 +70,6 @@ const ControllerCommandsModal = (props) => {
                         temp.push(commandOption);
                     }
                     setCommands(temp);
-                    console.log('commands:', temp);
                 }
             })
             .catch((error) => {
@@ -85,7 +80,6 @@ const ControllerCommandsModal = (props) => {
 
     // sendet den Befehl an den Server
     const executeCommand = (command) => {
-        console.log('executing command: ', command);
         fetch(env()['api-path'] + 'device/executeCommand', {
             method: 'POST',
             headers: {
@@ -94,7 +88,6 @@ const ControllerCommandsModal = (props) => {
             body: JSON.stringify({ command: command }),
         })
             .then((response) => {
-                console.log(response);
                 if (response.status == 200) {
                     return response.json();
                 }

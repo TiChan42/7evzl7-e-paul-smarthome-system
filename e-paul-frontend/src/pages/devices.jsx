@@ -95,18 +95,16 @@ function DeviceOverview() {
                 'Content-Type': 'application/json',
             },
         })
-        .then(response => {
-            console.log(response);
-            return response.json();
-        })
-        .then(data => {
-            setAccountClients(data);
-        })
-        .catch((error) => {
-            console.error('Error(fetchAccountClients):', error);
-            setAccountClients([]);  
-            
-        });
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setAccountClients(data);
+            })
+            .catch((error) => {
+                console.error('Error(fetchAccountClients):', error);
+                setAccountClients([]);
+            });
     };
 
     //die ClientIDs des Benutzers asynchron laden
@@ -374,7 +372,6 @@ function DeviceCard({ clientName, client }) {
 
 //Meine Geräte Rubrik
 function MyDevices({ accountClients, userClientIDs }) {
-
     //Liste der Geräte
     const DeviceList = ({ clients, userClientIDs, variant }) => {
         const [elementsToShow, setElementsToShow] = useState([]);

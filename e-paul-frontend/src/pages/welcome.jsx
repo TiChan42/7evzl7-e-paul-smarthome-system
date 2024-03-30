@@ -10,7 +10,6 @@ const slides = [
         button: {
             text: 'zum Shop',
             onClick: () => {
-                console.log('zum Shop');
                 alert('Der Shop ist leider noch nicht verfügbar.');
             },
         },

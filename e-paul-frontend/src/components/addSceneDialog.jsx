@@ -338,9 +338,6 @@ function AddSceneDialog(props) {
                                                             ]
                                                         }
                                                         closeModal={() => {
-                                                            console.log(
-                                                                'close'
-                                                            );
                                                             let temp =
                                                                 scenePortModals;
                                                             temp[index] = false;

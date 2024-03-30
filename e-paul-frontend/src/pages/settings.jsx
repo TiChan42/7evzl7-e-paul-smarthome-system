@@ -37,7 +37,6 @@ function DeleteUserModal() {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const deleteUser = async () => {
-        console.log(executingUserID, accountID, userID);
         const res = await fetch(
             'http://epaul-smarthome.de:8000/api/user/deleteUser',
             {
@@ -184,7 +183,6 @@ class Settings extends Component {
                     }
                 );
                 if (res.status == 204) {
-                    console.log('Erfolg');
                     this.setState({
                         toastTitle: 'Erfolg!',
                         toastDescription:
@@ -198,7 +196,6 @@ class Settings extends Component {
                 } else {
                     var message = await res.json();
                     if (message.error == 'Username existiert bereits.') {
-                        console.log('Username existiert bereits');
                         this.setState({
                             toastTitle: 'Ungültige Eingabe',
                             toastDescription:
@@ -209,7 +206,6 @@ class Settings extends Component {
                             openToastTrigger: true,
                         });
                     } else {
-                        console.log('fehler');
                         this.setState({
                             toastTitle: 'Fehler',
                             toastDescription: 'Es ist ein Fehler aufgetreten.',
@@ -288,7 +284,6 @@ class Settings extends Component {
             validated = validated['valid'];
             if (this.state.newPin == this.state.newPinRepeat) {
                 if (validated == 1) {
-                    console.log(String(this.state.newPin));
                     this.setState({ wrongPinOpen: false });
                     const res = await fetch(
                         'http://epaul-smarthome.de:8000/api/settings/pin',
@@ -316,7 +311,6 @@ class Settings extends Component {
                 } else {
                     // Invalid Old Pin
                     this.setState({ wrongPinOpen: true });
-                    console.log('old pin is not valid');
                     this.state.toastTitle = 'PIN ist falsch!';
                     this.state.toastDescription =
                         'Ihr eingegebener PIN ist falsch. Bitte versuchen Sie es erneut.';
@@ -336,7 +330,6 @@ class Settings extends Component {
                 this.state.toastDuration = 7000;
                 this.state.openToastTrigger = true;
                 this.setState({ diffPinOpen: true });
-                console.log('new pins are different');
             }
         };
 
@@ -553,7 +546,6 @@ class Settings extends Component {
                             >
                                 PIN
                             </Button>
-                            
                         </VStack>
                     </Box>
                     <Box

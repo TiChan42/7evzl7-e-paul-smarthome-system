@@ -73,7 +73,6 @@ function Header() {
 
     //Funktionen zum An- und Abmelden
     const signInAccount = () => {
-        console.log('Account signed in');
         setAccountLoggedIn(true);
         sessionStorage.setItem(
             'historyLengthBeforeSignIn',
@@ -163,7 +162,7 @@ function Header() {
                 alignItems='center'
                 display={'flex'}
                 p={[2, 4]}
-                _hover={'false'}
+                _hover={{}}
                 href='/'
             >
                 <Image

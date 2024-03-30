@@ -10,7 +10,6 @@ import UserRightSettingsModal from '../components/userRightSettingsModal';
 // Testseite für die Modals
 function SignUpControllerButton() {
     const signUpController = () => {
-        console.log('Sign Up Controller');
         let url = 'signUp/microcontroller';
         let data = {
             email: 'user',

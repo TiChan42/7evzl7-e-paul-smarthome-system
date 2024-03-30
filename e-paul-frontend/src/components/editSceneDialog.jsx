@@ -522,9 +522,6 @@ function EditSceneDialog(props) {
                                                             ]
                                                         }
                                                         closeModal={() => {
-                                                            console.log(
-                                                                'close'
-                                                            );
                                                             let temp =
                                                                 scenePortModals;
                                                             temp[index] = false;
@@ -538,9 +535,6 @@ function EditSceneDialog(props) {
                                                         client={client}
                                                         additionalButton={true}
                                                         additionalButtonFunction={() => {
-                                                            console.log(
-                                                                'in Szene übernehmen'
-                                                            );
                                                             updateState(
                                                                 client.id
                                                             );

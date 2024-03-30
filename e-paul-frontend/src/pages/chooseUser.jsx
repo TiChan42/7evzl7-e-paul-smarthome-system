@@ -42,7 +42,6 @@ function Users() {
 
         fetch(fetchPath, { method: 'GET' })
             .then((response) => {
-                console.log(response); // HTTP-Response ausgeben
                 return response.json();
             })
             .then((data) => {
@@ -64,7 +63,6 @@ function Users() {
 
     //Managed das Array für die Pin-Modals (öffnen)
     function openPinModal(index) {
-        console.log('openPinModal: ' + index);
         const nextPinModals = pinModals.map((c, i) => {
             if (i === index) {
                 return true;
@@ -90,19 +88,14 @@ function Users() {
     //prüft ob ein Pin benötigt wird
     const checkPinNeeded = (id, index) => {
         const fetchPath = env()['api-path'] + 'pinRequired/' + id;
-        console.log(fetchPath);
         fetch(fetchPath, { method: 'GET' })
             .then((response) => {
-                console.log(response); // HTTP-Response ausgeben
                 return response.json();
             })
             .then((data) => {
-                console.log(data['Required']);
                 if (data['Required']) {
-                    console.log('Pin wird benötigt: ' + id);
                     openPinModal(index);
                 } else {
-                    console.log('Pin wird nicht benötigt: ' + id);
                     sessionStorage.setItem(
                         'userAuthorized',
                         encryptString('true')

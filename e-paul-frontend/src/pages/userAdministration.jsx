@@ -84,7 +84,7 @@ function UserCol(props) {
     const [userRightModal, setUserRightModal] = useState(false);
 
     const toast = useToast();
-    
+
     //Funktion zum Löschen eines Benutzers
     function deleteUser() {
         if (
@@ -114,7 +114,6 @@ function UserCol(props) {
 
         fetch(deletePath, requestOptions)
             .then((response) => {
-                console.log(response.status);
                 if (response.status >= 400) {
                     toast({
                         title: 'Löschen fehlgeschlagen',
@@ -353,7 +352,7 @@ function UserCol(props) {
     );
 }
 
-//Benutzerverwaltung 
+//Benutzerverwaltung
 function UserAdministration() {
     const accountID = decryptString(sessionStorage.getItem('accountID'));
     const [addUserModal, setAddUserModal] = useState(false);
@@ -514,9 +513,7 @@ function UserAdministration() {
 
                 {/* Main*/}
 
-                <GridItem
-                    area={'main'}
-                >
+                <GridItem area={'main'}>
                     <VStack
                         align='stretch'
                         divider={<StackDivider borderColor='gray.200' />}
@@ -525,9 +522,9 @@ function UserAdministration() {
                         {users && users[0] && (
                             <>
                                 {Object.keys(users).map((key, index) => (
-                                    <Center 
+                                    <Center
                                         key={index}
-                                        w={'100%'} 
+                                        w={'100%'}
                                     >
                                         <Box
                                             w={'95%'}
@@ -538,8 +535,16 @@ function UserAdministration() {
                                             borderRadius={'xl'}
                                         >
                                             <UserCol
-                                                openValidateModal={(a, b, c) => {
-                                                    openValidationModal(a, b, c);
+                                                openValidateModal={(
+                                                    a,
+                                                    b,
+                                                    c
+                                                ) => {
+                                                    openValidationModal(
+                                                        a,
+                                                        b,
+                                                        c
+                                                    );
                                                 }}
                                                 user={users[key]}
                                                 editRights={editRights}

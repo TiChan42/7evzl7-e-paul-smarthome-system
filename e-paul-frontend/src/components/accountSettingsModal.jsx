@@ -35,7 +35,7 @@ const AccountSettingsModal = (props) => {
     const toast = useToast();
 
     const initialRef = React.useRef();
-    
+
     //Funktion zum Ändern der E-Mail-Adresse
     const updateEmail = async () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -89,7 +89,6 @@ const AccountSettingsModal = (props) => {
                 }),
             }
         );
-        console.log(res);
         //Löschen der Session
         sessionStorage.clear();
         //Neuladen der Seite
