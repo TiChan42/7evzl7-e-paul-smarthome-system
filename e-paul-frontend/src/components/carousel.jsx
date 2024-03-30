@@ -130,9 +130,10 @@ export default function SlideShow(props) {
     const settings = {
         dots: true,
         infinite: true,
-        slidesToShow: 4,
+        slidesToShow: 3,
         slidesToScroll: 1,
         speed: 1500,
+        lazyLoad: true,
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
         autoplay: true,
