@@ -14,15 +14,11 @@ class TestDeviceView(TestCase):
         self.factory = RequestFactory()
 
     def test_get_device_info(self):
-        # Create a test account
         account = Account.objects.create(email="test@example.com", password="123")
-
-        # Create a request to test the POST method
         request_data = {"accountId": account.id}
         request = self.factory.post('/device-info/', data=request_data)
         response = DeviceView.as_view()(request)
 
-        # Check if the response is successful (status code 200)
         self.assertEqual(response.status_code, 200)
 
 class TestAddPort(TestCase):
@@ -30,21 +26,15 @@ class TestAddPort(TestCase):
         self.factory = RequestFactory()
 
     def test_get_microcontrollers(self):
-        # Create some test microcontrollers
         account = Account.objects.create(email="test@example.com", password="123")
 
-        # Create a test microcontroller associated with the test account
         microcontroller1 = Microcontroller.objects.create(name="Test Microcontroller", account=account, type="type")
         microcontroller2 = Microcontroller.objects.create(name="Microcontroller 2", account=account, type="type")
 
-        # Create a request to test the GET method
         request = self.factory.get('/microcontrollers/')
         response = AddPort.as_view()(request)
 
-        # Check if the response is successful (status code 200)
         self.assertEqual(response.status_code, 200)
-
-        # Check if the data returned contains all microcontrollers
         expected_data = MicrocontrollerSerializer([microcontroller1, microcontroller2], many=True).data
         self.assertEqual(response.data, expected_data)
 
@@ -103,7 +93,6 @@ class UpdateCurrentStateTest(TestCase):
             "state": "ON"
         }
 
-        
         request = self.factory.put('/updateState/', data=data, content_type='application/json')
         response = UpdateCurrentState.as_view()(request)
         self.assertEqual(response.status_code, 204)
@@ -184,7 +173,6 @@ class TestExecuteCommand(TestCase):
 
         request = self.factory.post('/executeCommand/', data=data, content_type='application/json')
         response = ExecuteCommand.as_view()(request)
-
         self.assertEqual(response.status_code, 420)
 
     def test_execute_command_missing_data(self):
@@ -193,10 +181,9 @@ class TestExecuteCommand(TestCase):
         }
         request = self.factory.post('/executeCommand/', data=request_data, content_type='application/json')
         response = ExecuteCommand.as_view()(request)
-
-        # Check if the response status code is 400 (Bad Request)
         self.assertEqual(response.status_code, 400)
     
+   
     
 
     

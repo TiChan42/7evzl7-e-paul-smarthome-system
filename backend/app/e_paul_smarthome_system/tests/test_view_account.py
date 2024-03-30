@@ -27,7 +27,6 @@ class DeleteAccountTestCase(TestCase):
     def setUp(self):
         self.account = Account.objects.create(email='test@example.com', password="123")
         self.user = User.objects.create(username='test_user', account=self.account, role=User.Role.superuser)
-
         self.factory = APIRequestFactory()
 
     def test_delete_account_with_permission(self):

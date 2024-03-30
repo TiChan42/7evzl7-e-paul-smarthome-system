@@ -10,7 +10,7 @@ class AboutUsViewTestCase(TestCase):
         self.factory = RequestFactory()
 
     def test_about_us_view(self):
-        request = self.factory.get('/about-us/')
+        request = self.factory.get('/aboutUs/')
 
         view = AboutUsView.as_view()
         response = view(request)

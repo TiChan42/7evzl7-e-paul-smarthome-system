@@ -6,7 +6,6 @@ from ..model.account import Account
 
 class UserModelTestCase(TestCase):
     def setUp(self):
-        # Create a sample account for testing
         self.account = Account.objects.create(
             password='test_password',
             email='test@example.com',
@@ -16,8 +15,6 @@ class UserModelTestCase(TestCase):
         )
 
     def test_user_creation(self):
-        """Test if user is created properly"""
-        # Create a user instance
         user = User.objects.create(
             username='test_user',
             account=self.account,
@@ -28,10 +25,8 @@ class UserModelTestCase(TestCase):
             birthdate='2000-01-01',
         )
 
-        # Retrieve the created user from the database
         created_user = User.objects.get(username='test_user')
 
-        # Assert that the user attributes are set correctly
         self.assertEqual(created_user.username, 'test_user')
         self.assertEqual(created_user.account, self.account)
         self.assertEqual(created_user.pin, '1234')
@@ -41,7 +36,6 @@ class UserModelTestCase(TestCase):
         self.assertEqual(str(created_user.birthdate), '2000-01-01')
 
     def test_change_rights_method(self):
-        """Test the changeRights method"""
         user = User.objects.create(
             username='test_user',
             account=self.account,
@@ -49,7 +43,6 @@ class UserModelTestCase(TestCase):
             role=User.Role.admin,
         )
 
-        # Define sample rights
         sample_rights = {
             "mayChangeUserSettings": 1,
             "mayDeleteUser": 0,
@@ -64,11 +57,6 @@ class UserModelTestCase(TestCase):
             "mayDeleteControllers": 0
         }
 
-        # Call the changeRights method
         user.changeRights(sample_rights)
-
-        # Retrieve the updated user from the database
         updated_user = User.objects.get(username='test_user')
-
-        # Assert that the rights have been updated correctly
         self.assertEqual(updated_user.rights, sample_rights)
