@@ -438,29 +438,6 @@ class Settings extends Component {
                     </Card>
                 </>
             );
-        } else if (activeTab === 'modus') {
-            return (
-                <Card
-                    w='100%'
-                    h='100%'
-                    backgroundColor='#218395'
-                >
-                    <CardHeader>
-                        <Heading
-                            color={'white'}
-                            size='lg'
-                        >
-                            Modus
-                        </Heading>
-                    </CardHeader>
-                    <Box
-                        align='end'
-                        m={4}
-                    >
-                        Inhalt für Modus
-                    </Box>
-                </Card>
-            );
         } else if (activeTab === 'pin') {
             return (
                 <>
@@ -576,18 +553,7 @@ class Settings extends Component {
                             >
                                 PIN
                             </Button>
-                            <Button
-                                w={'80%'}
-                                color={'lightgray'}
-                                colorScheme={
-                                    activeTab === 'modus' ? 'blue' : 'gray'
-                                }
-                                onClick={() =>
-                                    this.setState({ isDisabled: 'modus' })
-                                }
-                            >
-                                Modus
-                            </Button>
+                            
                         </VStack>
                     </Box>
                     <Box
