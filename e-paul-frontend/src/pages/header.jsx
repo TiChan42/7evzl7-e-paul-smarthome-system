@@ -1,3 +1,16 @@
+
+/**
+ * Komponente für den Header der Seite.
+ * 
+ * @returns {JSX.Element} Das JSX-Element des Headers.
+ * 
+ * @requires react
+ * @requires @chakra-ui/react
+ * @requires react-router-dom
+ * @requires ../components/signUpAndInModal
+ * @requires ../utils/env
+ * @requires ../utils/encryptionUtils
+ */
 import React, { useState, useEffect } from 'react';
 import {
     Box,

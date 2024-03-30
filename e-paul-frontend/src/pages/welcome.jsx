@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import { Box, Heading, Text, Center } from '@chakra-ui/react';
 import SlideShow from '../components/carousel';
@@ -10,6 +11,7 @@ const slides = [
         button: {
             text: 'zum Shop',
             onClick: () => {
+                console.log('zum Shop');
                 alert('Der Shop ist leider noch nicht verfügbar.');
             },
         },
@@ -34,6 +36,11 @@ const slides = [
 //Zeigt die Willkommensseite an
 class Welcome extends Component {
     state = {};
+
+    /**
+     * Render-Methode der Willkommensseite.
+     * @returns {JSX.Element} Willkommensseite
+     */
     render() {
         return (
             <Center>

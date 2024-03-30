@@ -1,9 +1,20 @@
+
+
+/**
+ * Zeigt die Über uns Seite an.
+ * @returns {JSX.Element} Die gerenderte Über uns Seite.
+ * @requires react
+ * @requires chakra-ui/react
+ * @requires ../components/carousel
+ * @requires ../styles/style.css
+ * 
+ */
 import React, { Component } from 'react';
 import '../styles/style.css';
 import { Center, Box, Heading } from '@chakra-ui/react';
 import SlideShow from '../components/carousel';
 
-//cleate slide data
+//Daten für die Slideshow
 const slides = [
     {
         title: 'Motivation',

@@ -1,3 +1,20 @@
+
+/**
+ * Komponente für das Modal zur Registrierung und Anmeldung.
+ *
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {boolean} props.openModal - Gibt an, ob das Modal geöffnet ist oder nicht.
+ * @param {function} props.closeModal - Funktion zum Schließen des Modals.
+ * @param {number} props.entrySite - Der Standardindex für die Registerkarte (0 für Registrieren, 1 für Anmelden).
+ * @param {function} props.onSignUp - Funktion, die aufgerufen wird, wenn die Registrierung erfolgreich abgeschlossen wurde.
+ * @param {function} props.onSignIn - Funktion, die aufgerufen wird, wenn die Anmeldung erfolgreich abgeschlossen wurde.
+ * @returns {JSX.Element} Das JSX-Element der SignUpAndInModal-Komponente.
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires SignUpForm
+ * @requires SignInForm
+ * 
+ */
 import {
     Modal,
     ModalOverlay,

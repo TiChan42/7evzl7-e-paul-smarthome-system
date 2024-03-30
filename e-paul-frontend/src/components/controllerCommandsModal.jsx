@@ -1,3 +1,17 @@
+/**
+ * Komponente für das Anzeigen und Ausführen von Controller-Befehlen.
+ * @component
+ * @param {Object} props - Die Eigenschaften für die Komponente.
+ * @param {boolean} props.openModal - Gibt an, ob das Modal geöffnet ist oder nicht.
+ * @param {function} props.closeModal - Funktion zum Schließen des Modals.
+ * @param {Object} props.client - Das Client-Objekt.
+ * @returns {JSX.Element} Das ControllerCommandsModal-Komponente.
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/env
+ * 
+ */
 import {
     Modal,
     ModalOverlay,

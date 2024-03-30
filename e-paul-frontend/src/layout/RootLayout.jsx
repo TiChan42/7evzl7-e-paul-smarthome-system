@@ -1,3 +1,17 @@
+
+/**
+ * Layout für die gesamte Seite.
+ *
+ * @returns {JSX.Element} Das gerenderte RootLayout.
+ * @requires react
+ * @requires react-router-dom
+ * @requires Header
+ * @requires Footer
+ * @requires Box
+ * @requires ChakraProvider
+ * @requires theme
+ 
+ */
 import { Outlet } from 'react-router-dom';
 import Header from '../pages/header';
 import Footer from '../pages/footer';

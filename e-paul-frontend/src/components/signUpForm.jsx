@@ -1,3 +1,13 @@
+
+/**
+ * Komponente für das Registrierungsformular.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {Function} props.executeSuccessfulSignUp - Eine Funktion, die aufgerufen wird, wenn die Registrierung erfolgreich war.
+ * @returns {JSX.Element} Das Registrierungsformular.
+ * @requires chakra-ui/react, react, @chakra-ui/icons, ../utils/env
+ */
 import {
     Button,
     FormControl,
@@ -128,7 +138,7 @@ const SignUpForm = (props) => {
             .then((response) => {
                 // Status 201 = Created
                 if (response.status === 201) {
-                    console.log('Registed successfully');
+console.log('Registed successfully');
                     toast({
                         title: 'Konto erfolgreich erstellt',
                         description: 'Sie Können sich nun anmelden',

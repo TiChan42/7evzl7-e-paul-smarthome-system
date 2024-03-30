@@ -1,3 +1,17 @@
+
+/**
+ * Komponente für die Abfrage des Pins und (wenn nötig) des Benutzers.
+ * 
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {boolean} props.openModal - Gibt an, ob das Modal geöffnet ist oder nicht.
+ * @param {Array} props.users - Die Liste der Benutzer.
+ * @param {Function} props.closeModal - Die Funktion zum Schließen des Modals.
+ * @param {Function} props.executeIfValid - Die Funktion, die ausgeführt wird, wenn der Pin gültig ist.
+ * 
+ * @returns {JSX.Element} Das UserPinRequestModal-Komponente.
+ * 
+ * @requires chakra-ui/react, react, ../utils/encryptionUtils, @chakra-ui/icons, ../utils/env
+ */
 import {
     Modal,
     ModalOverlay,

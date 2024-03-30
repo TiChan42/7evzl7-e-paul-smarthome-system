@@ -1,3 +1,23 @@
+/**
+ * Komponente für das Modal zur Änderung der Account-Einstellungen.
+ *
+ * @component
+ * @example
+ * return (
+ *   <AccountSettingsModal
+ *     openModal={true}
+ *     closeModal={() => {}}
+ *   />
+ * )
+ * @param {boolean} openModal - Gibt an, ob das Modal geöffnet ist.
+ * @param {Function} closeModal - Funktion zum Schließen des Modals.
+ * @returns {JSX.Element} AccountSettingsModal
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/encryptionUtils
+ * @requires components/validateActionModal
+ */
 import {
     Modal,
     ModalOverlay,

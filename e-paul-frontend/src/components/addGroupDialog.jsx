@@ -1,3 +1,23 @@
+/**
+ * Dialog zum Hinzufügen einer Gruppe.
+ *
+ * @component
+ * @example
+ * return (
+ *   <AddGroupDialog
+ *     updateGroup={updateGroup}
+ *   />
+ * );
+ * @param {Function} props.updateGroup - Funktion zum Aktualisieren der Gruppen.
+ * @returns {JSX.Element} Der Dialog zum Hinzufügen einer Gruppe.
+ * @requires react
+ * @requires @chakra-ui/react
+ * @requires @chakra-ui/icons
+ * @requires ../utils/encryptionUtils
+ * @requires ../utils/env
+ * @requires ./multiselect
+ * 
+ */
 import {
     Modal,
     ModalOverlay,

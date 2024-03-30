@@ -1,3 +1,10 @@
+
+/**
+    * Render-Methode für die Impressum-Seite.
+    * @returns {JSX.Element} Das gerenderte Impressum-Element.
+    * @requires chakra-ui/react
+    * @requires react
+    */
 import React, { Component } from 'react';
 import {
     Card,

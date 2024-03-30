@@ -1,3 +1,25 @@
+
+/**
+ * Dialog zum Bearbeiten einer Szene.
+ * @param {Object} props - Die Eigenschaften des Dialogs.
+ * @param {boolean} props.isOpen - Gibt an, ob der Dialog geöffnet ist.
+ * @param {Function} props.onOpen - Funktion zum Öffnen des Dialogs.
+ * @param {Function} props.onClose - Funktion zum Schließen des Dialogs.
+ * @param {Object} props.scene - Die Szene, die bearbeitet werden soll.
+ * @param {Object} props.groupId - Die ID der Gruppe, zu der die Szene gehört.
+ * @param {Function} props.reloadScenes - Funktion zum Neuladen der Szenen.
+ * 
+ * @returns {JSX.Element} - Das JSX-Element des Dialogs.
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/encryptionUtils
+ * @requires utils/env
+ * @requires components/controllerCommandsModal
+ * @requires chakra-ui/icons
+ * 
+ * 
+ */
 import {
     Modal,
     ModalOverlay,
