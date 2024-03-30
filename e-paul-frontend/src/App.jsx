@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -8,16 +8,19 @@ import {
 } from 'react-router-dom';
 
 //import pages
-import About from './pages/about';
 import RootLayout from './layout/RootLayout';
-import Welcome from './pages/welcome';
-import ChooseUser from './pages/chooseUser';
+import About from './pages/about';
 import Imprint from './pages/imprint';
-import Devices from './pages/devices';
-import UserAdministration from './pages/userAdministration';
-import ModalTest from './pages/modalTest';
-import Settings from './pages/settings';
-import FAQ from './pages/faq';
+import Welcome from './pages/welcome';
+
+// lazy loading of pages not needed for initial load
+const ChooseUser = React.lazy(() => import('./pages/chooseUser'));
+const Devices = React.lazy(() => import('./pages/devices'));
+const UserAdministration = React.lazy(() => import('./pages/userAdministration'));
+const ModalTest = React.lazy(() => import('./pages/modalTest'));
+const Settings = React.lazy(() => import('./pages/settings'));
+const FAQ = React.lazy(() => import('./pages/faq'));
+
 
 /**
  * Hauptkomponente der Anwendung.
@@ -76,7 +79,6 @@ function App() {
                 </Route>
             )
         );
-
         return <RouterProvider router={router} />;
     };
 
