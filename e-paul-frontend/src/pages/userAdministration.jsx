@@ -340,6 +340,7 @@ function UserCol(props) {
                         variant='solid'
                     ></IconButton>
                     <IconButton
+                        id='deleteUserButton'
                         colorScheme='teal'
                         icon={<DeleteIcon />}
                         isDisabled={
@@ -678,5 +679,5 @@ function UserAdministration() {
         </>
     );
 }
-
+export { UserCol, Header, UserAdministration };
 export default UserAdministration;
