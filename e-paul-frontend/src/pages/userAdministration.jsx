@@ -14,6 +14,7 @@ import {
     IconButton,
     Flex,
     Spacer,
+    Center,
 } from '@chakra-ui/react';
 import { env } from '../utils/env';
 import { encryptString, decryptString } from '../utils/encryptionUtils';
@@ -515,7 +516,6 @@ function UserAdministration() {
 
                 <GridItem
                     area={'main'}
-                    pl='2'
                 >
                     <VStack
                         align='stretch'
@@ -525,26 +525,30 @@ function UserAdministration() {
                         {users && users[0] && (
                             <>
                                 {Object.keys(users).map((key, index) => (
-                                    <Box
+                                    <Center 
                                         key={index}
-                                        w={'100%'}
-                                        m={1}
-                                        mb={2}
-                                        p={2}
-                                        bg={'teal.50'}
-                                        borderRadius={'xl'}
+                                        w={'100%'} 
                                     >
-                                        <UserCol
-                                            openValidateModal={(a, b, c) => {
-                                                openValidationModal(a, b, c);
-                                            }}
-                                            user={users[key]}
-                                            editRights={editRights}
-                                            refresh={() => {
-                                                triggerRefresh();
-                                            }}
-                                        />
-                                    </Box>
+                                        <Box
+                                            w={'95%'}
+                                            mt={1}
+                                            mb={2}
+                                            p={2}
+                                            bg={'teal.50'}
+                                            borderRadius={'xl'}
+                                        >
+                                            <UserCol
+                                                openValidateModal={(a, b, c) => {
+                                                    openValidationModal(a, b, c);
+                                                }}
+                                                user={users[key]}
+                                                editRights={editRights}
+                                                refresh={() => {
+                                                    triggerRefresh();
+                                                }}
+                                            />
+                                        </Box>
+                                    </Center>
                                 ))}
                             </>
                         )}
