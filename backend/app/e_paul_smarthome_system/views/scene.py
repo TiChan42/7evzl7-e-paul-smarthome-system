@@ -238,7 +238,7 @@ class ExecuteScene(APIView):
         data = request.data
         
         try:
-            exectuingUserId = data["executingUserId"]
+            executingUserId = data["executingUserId"]
             sceneId = data["sceneId"]
             groupId = data["groupId"]
         except KeyError:
