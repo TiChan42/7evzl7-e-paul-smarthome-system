@@ -1,3 +1,9 @@
+
+/**
+ * Diese Datei enthält den Code für die Benutzerverwaltung-Seite.
+ * @module pages/userAdministration
+ */
+
 import React, { useState, useEffect } from 'react';
 import {
     Heading,
@@ -28,6 +34,10 @@ import { ImSection } from 'react-icons/im';
 import UserRightSettingsModal from '../components/userRightSettingsModal';
 import AccountSettingsModal from '../components/accountSettingsModal';
 
+/**
+ * Testdaten für Benutzerrechte.
+ * @type {Array}
+ */
 var userRightsTest = [
     {
         mayChangeUserSettings: 0,
@@ -47,9 +57,17 @@ var userRightsTest = [
     },
 ];
 
-//Header
+/**
+ * Header-Komponente für die Benutzerverwaltung-Seite.
+ * @component
+ */
 function Header() {
+    /**
+     * Gibt die Anzahl der vorherigen Seiten im Verlauf zurück.
+     * @type {number}
+     */
     const siteBefore = window.history.length - 1;
+
     return (
         <header>
             <Box
@@ -74,7 +92,16 @@ function Header() {
     );
 }
 
-//Eizelne Einstellungszeile für einen Benutzer
+/**
+ * Komponente für eine einzelne Einstellungszeile eines Benutzers.
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {boolean} props.editRights - Gibt an, ob der Benutzer Berechtigungen bearbeiten darf.
+ * @param {Object} props.user - Die Benutzerdaten.
+ * @param {Function} props.refresh - Funktion zum Aktualisieren der Benutzerdaten.
+ * @param {Function} props.openValidateModal - Funktion zum Öffnen des Validierungsmodals.
+ * @returns {JSX.Element} - Die Benutzereinstellungszeile.
+ */
 function UserCol(props) {
     const editRights = props.editRights;
     const [isAdmin, setIsAdmin] = useState(
@@ -84,24 +111,25 @@ function UserCol(props) {
     const [userRightModal, setUserRightModal] = useState(false);
 
     const toast = useToast();
-    
-    //Funktion zum Löschen eines Benutzers
-    function deleteUser() {
+
+    /**
+     * Funktion zum Löschen eines Benutzers.
+     * @param {number} userId - Die ID des zu löschenden Benutzers.
+     * @param {number} executingUserId - Die ID des ausführenden Benutzers.
+     * @param {number} accountId - Die ID des Kontos.
+     */
+    function deleteUser(userId, executingUserId, accountId) {
         if (
             decryptString(sessionStorage.getItem('userAuthorized')) === 'false'
         ) {
             return;
         }
-        let executingUser = decryptString(
-            sessionStorage.getItem('executingUserID')
-        );
-        let accountID = decryptString(sessionStorage.getItem('accountID'));
         let deletePath = env()['api-path'] + 'user/deleteUser';
 
         let data = {
-            userId: props.user.id,
-            executingUserId: executingUser,
-            accountId: accountID,
+            userId: userId,
+            executingUserId: executingUserId,
+            accountId: accountId,
         };
 
         let requestOptions = {
@@ -149,7 +177,9 @@ function UserCol(props) {
             });
     }
 
-    //Funktion zum Löschen eines Benutzers
+    /**
+     * Funktion zum Öffnen des Validierungsmodals für das Löschen eines Benutzers.
+     */
     const deleteUserModal = () => {
         props.openValidateModal(
             props.user.username + ' löschen?',
@@ -157,12 +187,16 @@ function UserCol(props) {
                 props.user.username +
                 ' löschen möchten? Diese Veränderung kann nicht mehr rückgängig gemacht werden!',
             () => {
-                deleteUser();
+                deleteUser(props.user.id, decryptString(sessionStorage.getItem('executingUserID')), decryptString(sessionStorage.getItem('accountID')));
             }
         );
     };
 
-    //Funktion zum Ändern des Adminstatus eines Benutzers
+    /**
+     * Funktion zum Ändern des Adminstatus eines Benutzers.
+     * @param {number} userID - Die ID des Benutzers.
+     * @param {boolean} admin - Gibt an, ob der Benutzer ein Administrator sein soll.
+     */
     const updateAdminStatus = (userID, admin) => {
         let url = env()['api-path'] + 'user/changeRole';
         let adminData = 'user';
@@ -221,7 +255,9 @@ function UserCol(props) {
             });
     };
 
-    //Funktion zum Ändern des Adminstatus eines Benutzers
+    /**
+     * Funktion zum Ändern des Adminstatus eines Benutzers.
+     */
     const handleAdminSwitch = () => {
         if (isAdmin) {
             props.openValidateModal(
@@ -246,7 +282,10 @@ function UserCol(props) {
         }
     };
 
-    //Funktion zum Öffnen der Benutzereinstellungen
+    /**
+     * Funktion zum Öffnen der Benutzereinstellungen.
+     * @param {number} id - Die ID des Benutzers.
+     */
     const handleUserSettingClick = (id) => {
         sessionStorage.setItem('userToEdit', encryptString(id.toString()));
         window.location.href = '/settings';
@@ -353,7 +392,24 @@ function UserCol(props) {
     );
 }
 
-//Benutzerverwaltung 
+/**
+ * Benutzerverwaltungsseite.
+ * @component
+ * 
+ * @returns {JSX.Element} - Die Benutzerverwaltungsseite.
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires components/header
+ * @requires components/userCol
+ * @requires components/addUserModal
+ * @requires components/accountSettingsModal
+ * @requires utils/env
+ * @requires utils/encryptionUtils
+ * @requires utils/validateActionModal
+ * @requires utils/userRightsTest
+ * @requires utils/fetchUsers
+ * 
+ */
 function UserAdministration() {
     const accountID = decryptString(sessionStorage.getItem('accountID'));
     const [addUserModal, setAddUserModal] = useState(false);

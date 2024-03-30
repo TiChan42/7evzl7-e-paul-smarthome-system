@@ -1,3 +1,4 @@
+
 import React, { Component, useState, useEffect } from 'react';
 import '../styles/style.css';
 import { Center, Box, Heading, Button } from '@chakra-ui/react';
@@ -7,8 +8,13 @@ import { encryptString, decryptString } from '../utils/encryptionUtils';
 import AccountSettingsModal from '../components/accountSettingsModal';
 import UserRightSettingsModal from '../components/userRightSettingsModal';
 
-// Testseite für die Modals
+/**
+ * Testseite für die Modals.
+ */
 function SignUpControllerButton() {
+    /**
+     * Funktion zum Hinzufügen eines Controllers zum Account.
+     */
     const signUpController = () => {
         console.log('Sign Up Controller');
         let url = 'signUp/microcontroller';
@@ -36,12 +42,14 @@ function SignUpControllerButton() {
     return (
         <Button onClick={() => signUpController()}>
             {' '}
-            Add Controller to account in Code
+            Controller zum Account hinzufügen
         </Button>
     );
 }
 
-// Modals für die Benutzer-Module, Account-Einstellungen und Benutzer-Rechte
+/**
+ * Modals für die Benutzer-Module, Account-Einstellungen und Benutzer-Rechte.
+ */
 function Modals() {
     const [userModuleModal, setUserModuleModal] = useState(false);
     const [userRightsModal, setUserRightsModal] = useState(false);
@@ -67,7 +75,7 @@ function Modals() {
                 onClick={() => setAccountSettingsModal(true)}
                 variant='outline'
             >
-                Account einstellungen
+                Account-Einstellungen
             </Button>
             <AccountSettingsModal
                 openModal={accountSettingsModal}
@@ -86,7 +94,9 @@ function Modals() {
     );
 }
 
-// form zum Editieren der AccountID und der Benutzerid für den Executing benutzer
+/**
+ * Formular zum Bearbeiten der AccountID und der Benutzerid für den ausführenden Benutzer.
+ */
 function AccountIDForm() {
     const [newAccountID, setNewAccountID] = useState(
         decryptString(sessionStorage.getItem('accountID'))
@@ -95,6 +105,10 @@ function AccountIDForm() {
         decryptString(sessionStorage.getItem('executingUserID'))
     );
 
+    /**
+     * Funktion zum Absenden des Formulars.
+     * @param {Event} e - Das Event-Objekt.
+     */
     const submitHandler = (e) => {
         e.preventDefault();
         sessionStorage.setItem('accountID', encryptString(newAccountID));
@@ -131,12 +145,15 @@ function AccountIDForm() {
                 type='submit'
                 value='Submit'
             >
-                Submit
+                Absenden
             </Button>
         </form>
     );
 }
 
+/**
+ * Komponente für den Modal-Test.
+ */
 class ModalTest extends Component {
     render() {
         return (

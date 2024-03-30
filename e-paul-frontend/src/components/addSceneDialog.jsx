@@ -1,3 +1,4 @@
+
 import {
     Modal,
     ModalOverlay,
@@ -29,7 +30,34 @@ import { decryptString } from '../utils/encryptionUtils';
 import { env } from '../utils/env';
 import ControllerCommandsModal from './controllerCommandsModal';
 
-//Dialog zum Hinzufügen einer Szene
+/**
+ * Dialog zum Hinzufügen einer Szene.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <AddSceneDialog
+ *     groupId={groupId}
+ *     groupName={groupName}
+ *     groupClients={groupClients}
+ *     reloadScenes={reloadScenes}
+ *   />
+ * );
+ * @param {Object} props Die Props des Komponenten.
+ * @param {number} props.groupId Die ID der Gruppe.
+ * @param {string} props.groupName Der Name der Gruppe.
+ * @param {Object[]} props.groupClients Die Clients der Gruppe.
+ * @param {Function} props.reloadScenes Die Funktion zum Neuladen der Szenen.
+ * @returns {JSX.Element} Der Dialog zum Hinzufügen einer Szene.
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/encryptionUtils
+ * @requires utils/env
+ * @requires components/controllerCommandsModal
+ * @requires chakra-ui/icons
+ * 
+ */
 function AddSceneDialog(props) {
     const toast = useToast();
 

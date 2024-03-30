@@ -1,3 +1,23 @@
+/**
+ * Komponente für das Modalfenster zur Zuweisung von Benutzern zu Clients.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <ClientUserAssignmentModal />
+ * )
+ * @param {Object} props - Die Props.
+ * @param {boolean} props.openModal - Der Status, ob das Modal geöffnet ist.
+ * @param {Function} props.closeModal - Die Funktion zum Schließen des Modals.
+ * @param {string} props.userID - Die ID des Benutzers.
+ * @param {string} props.userName - Der Name des Benutzers.
+ * @returns {JSX.Element} Das Modal zur Zuweisung von Benutzern zu Clients.
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/env
+ * @requires utils/clientIconPaths
+ */
 import {
     Modal,
     ModalOverlay,

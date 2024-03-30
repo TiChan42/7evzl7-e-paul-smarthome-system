@@ -1,3 +1,16 @@
+
+/**
+ * Komponente für die Auswahl des Benutzers.
+ * 
+ * @returns {JSX.Element} Die Benutzerkomponente.
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires encryptionUtils
+ * @requires userPinRequestModal
+ * @requires addUserModal
+ * @requires env
+ *  
+ */
 import React, { Component, useState, useEffect } from 'react';
 import { Box, Text, Center, Spinner, Wrap, WrapItem } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/avatar';

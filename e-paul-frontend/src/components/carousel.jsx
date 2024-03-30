@@ -1,3 +1,53 @@
+/**
+ * Komponente für eine Bildershow (Carousel).
+ * 
+ * @component
+ * @example
+ * // Beispiel Verwendung:
+ * const slides = [
+ *   {
+ *     title: 'Slide 1',
+ *     image: 'slide1.jpg',
+ *     text: 'Beschreibung des Slide 1',
+ *     button: {
+ *       text: 'Mehr erfahren',
+ *       onClick: () => {
+ *         // Aktion beim Klicken des Buttons
+ *       },
+ *     },
+ *   },
+ *   {
+ *     title: 'Slide 2',
+ *     image: 'slide2.jpg',
+ *     text: 'Beschreibung des Slide 2',
+ *     additionalHTML: <div>Zusätzlicher HTML-Inhalt</div>,
+ *   },
+ *   // Weitere Slides...
+ * ];
+ * 
+ * function App() {
+ *   return (
+ *     <SlideShow slides={slides} />
+ *   );
+ * }
+ * 
+ * @param {Object[]} props.slides - Die Slides für die Bildershow.
+ * @param {string} props.slides[].title - Der Titel des Slides.
+ * @param {string} props.slides[].image - Der Pfad zum Bild des Slides.
+ * @param {string} props.slides[].text - Der Text des Slides.
+ * @param {Object} [props.slides[].button] - Der Button des Slides.
+ * @param {string} props.slides[].button.text - Der Text des Buttons.
+ * @param {Function} props.slides[].button.onClick - Die Funktion, die beim Klicken des Buttons ausgeführt wird.
+ * @param {ReactNode} [props.slides[].additionalHTML] - Zusätzlicher HTML-Inhalt für den Slide.
+ * 
+ * @returns {JSX.Element} Die Carousel-Komponente.
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires react-slick
+ * @requires chakra-ui/icons
+ * 
+ */
 import React from 'react';
 import Slider from 'react-slick';
 

@@ -1,3 +1,29 @@
+/**
+ * Komponente für das Hinzufügen eines Benutzers (Modal)
+ *
+ * @component
+ * @example
+ * return (
+ *   <AddUserModal
+ *     openModal={true}
+ *     closeModal={handleCloseModal}
+ *     requireAdmin={true}
+ *     disableClose={false}
+ *   />
+ * )
+ * @param {boolean} openModal - Indikator ob das Modal geöffnet ist
+ * @param {function} closeModal - Funktion zum Schließen des Modals
+ * @param {boolean} requireAdmin - Indikator ob der Benutzer ein Admin sein muss
+ * @param {boolean} disableClose - Indikator ob das Schließen des Modals deaktiviert ist
+ * @returns {JSX.Element} Das AddUserModal
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/encryptionUtils
+ * @requires utils/randomUsernameGenerator
+ * @requires utils/env
+ * 
+ */
 import {
     Modal,
     ModalOverlay,

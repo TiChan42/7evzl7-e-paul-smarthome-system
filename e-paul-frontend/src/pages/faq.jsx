@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import {
     Box,
@@ -14,20 +15,34 @@ import {
     Flex,
 } from '@chakra-ui/react';
 
-//FAQ Seite
+/**
+ * Komponente für die FAQ-Seite.
+ */
 class FAQ extends Component {
-    state = { activeTab: 'faq' };
+    /**
+     * Erzeugt eine Instanz der FAQ-Komponente.
+     */
+    constructor(props) {
+        super(props);
 
+        /**
+         * Der aktive Tab.
+         * @type {string}
+         */
+        this.state = { activeTab: 'faq' };
+    }
+
+    /**
+     * Render-Methode der FAQ-Komponente.
+     * @returns {JSX.Element} Das gerenderte JSX-Element.
+     */
     render() {
         const { activeTab } = this.state;
 
         return (
             <Tabs>
                 <Flex>
-                    <Box
-                        w='20%'
-                        mr={4}
-                    >
+                    <Box w='20%' mr={4}>
                         <TabList>
                             <Tab
                                 onClick={() =>

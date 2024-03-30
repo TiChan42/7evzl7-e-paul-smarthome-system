@@ -1,3 +1,22 @@
+
+/**
+ * Übersichtsseite für Geräte.
+ * 
+ * @returns {JSX.Element} Die JSX-Elemente für die Geräteübersicht.
+ * 
+ * @requires react
+ * @requires react-icons/lu
+ * @requires react-icons/md
+ * @requires react-live-clock
+ * @requires @chakra-ui/react
+ * @requires @chakra-ui/icons
+ * @requires ../components/addGroupDialog
+ * @requires ../components/editGroupDialog
+ * @requires ../components/openhistoryDrawer
+ * @requires ../utils/encryptionUtils
+ * @requires ../utils/env
+ * @requires ../components/controllerCommandsModal
+ */
 import React, { Component, useEffect, useState } from 'react';
 import {
     Heading,

@@ -1,3 +1,28 @@
+/**
+ * Komponente für den Dialog zur Bearbeitung einer Gruppe.
+ *
+ * @component
+ * @example
+ * return (
+ *   <EditGroupDialog />
+ * )
+ * @param {Object} props
+ * @param {number} props.id - Die ID der Gruppe.
+ * @param {string} props.name - Der Name der Gruppe.
+ * @param {Function} props.updateGroup - Funktion zum Aktualisieren der Gruppen.
+ * @returns {JSX.Element} Die EditGroupDialog-Komponente.
+ * @exports EditGroupDialog
+ * 
+ * @requires chakra-ui/react
+ * @requires react
+ * @requires utils/encryptionUtils
+ * @requires utils/env
+ * @requires components/multiselect
+ * @requires components/validateActionModal
+ * @requires components/addSceneDialog
+ * @requires components/editSceneDialog
+ * 
+ */
 import {
     Modal,
     ModalOverlay,
@@ -29,6 +54,7 @@ import { env } from '../utils/env';
 import ValidateActionModal from './validateActionModal';
 import AddSceneDialog from './addSceneDialog';
 import EditSceneDialog from './editSceneDialog';
+
 
 function EditGroupDialog(props) {
     const toast = useToast();

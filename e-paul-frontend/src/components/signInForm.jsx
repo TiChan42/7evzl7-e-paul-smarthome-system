@@ -1,3 +1,13 @@
+
+/**
+ * Komponente für das Anmeldeformular.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {Function} props.executeSuccessfulSignIn - Eine Funktion, die aufgerufen wird, wenn die Anmeldung erfolgreich ist.
+ * @returns {JSX.Element} Das Anmeldeformular.
+ * @requires chakra-ui/react, react, ../utils/encryptionUtils, @chakra-ui/icons, ../utils/env
+ */
 import {
     Button,
     FormControl,

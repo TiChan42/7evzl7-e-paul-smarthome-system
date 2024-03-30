@@ -1,3 +1,20 @@
+
+
+/**
+ * Komponente für die Mehrfachauswahl.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {Array} props.items - Die Liste der Elemente zur Auswahl.
+ * @param {Array} props.preSelectValues - Die vorab ausgewählten Werte.
+ * @param {string} props.colorScheme - Das Farbschema der Komponente.
+ * @param {string} props.placeHolder - Der Platzhaltertext, der angezeigt wird, wenn keine Elemente ausgewählt sind.
+ * @param {function} props.onSelect - Die Callback-Funktion, die aufgerufen wird, wenn Elemente ausgewählt werden.
+ * @returns {JSX.Element} Die gerenderte Mehrfachauswahl-Komponente.
+ * @require chakra-ui/react
+ * @require react
+ * 
+ */
 import {
     Button,
     Menu,

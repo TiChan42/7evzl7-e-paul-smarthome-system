@@ -1,8 +1,15 @@
+
 import React, { Component } from 'react';
 import { Box, Flex, Link, SimpleGrid } from '@chakra-ui/react';
 
-//Footer der Seite
+/**
+ * Komponente für den Footer der Seite.
+ */
 class Footer extends Component {
+    /**
+     * Render-Methode für den Footer.
+     * @returns {JSX.Element} Das gerenderte Footer-Element.
+     */
     render() {
         return (
             <Flex
@@ -58,4 +65,5 @@ class Footer extends Component {
         );
     }
 }
+
 export default Footer;

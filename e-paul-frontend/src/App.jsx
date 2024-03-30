@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
     createBrowserRouter,
@@ -18,56 +19,68 @@ import ModalTest from './pages/modalTest';
 import Settings from './pages/settings';
 import FAQ from './pages/faq';
 
-//router
-const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route
-            exact
-            path='*'
-            element={<RootLayout />}
-        >
-            <Route
-                index
-                element={<Welcome />}
-            />
-            <Route
-                path='about'
-                element={<About />}
-            />
-            <Route
-                path='chooseUser'
-                element={<ChooseUser />}
-            />
-            <Route
-                path='imprint'
-                element={<Imprint />}
-            />
-            <Route
-                path='devices'
-                element={<Devices />}
-            />
-            <Route
-                path='faq'
-                element={<FAQ />}
-            />
-            <Route
-                path='settings'
-                element={<Settings />}
-            />
-            <Route
-                path='userAdministration'
-                element={<UserAdministration />}
-            />
-            <Route
-                path='modalTest'
-                element={<ModalTest />}
-            />
-        </Route>
-    )
-);
-
+/**
+ * Hauptkomponente der Anwendung.
+ * @returns {JSX.Element} Die gerenderte App-Komponente.
+ */
 function App() {
-    return <RouterProvider router={router} />;
+    /**
+     * Erstellt den Router und definiert die Routen der Anwendung.
+     * @param {Object} props - Die Eigenschaften des Routers.
+     * @returns {JSX.Element} Der gerenderte RouterProvider.
+     */
+    const createRouter = (props) => {
+        const router = createBrowserRouter(
+            createRoutesFromElements(
+                <Route
+                    exact
+                    path='*'
+                    element={<RootLayout />}
+                >
+                    <Route
+                        index
+                        element={<Welcome />}
+                    />
+                    <Route
+                        path='about'
+                        element={<About />}
+                    />
+                    <Route
+                        path='chooseUser'
+                        element={<ChooseUser />}
+                    />
+                    <Route
+                        path='imprint'
+                        element={<Imprint />}
+                    />
+                    <Route
+                        path='devices'
+                        element={<Devices />}
+                    />
+                    <Route
+                        path='faq'
+                        element={<FAQ />}
+                    />
+                    <Route
+                        path='settings'
+                        element={<Settings />}
+                    />
+                    <Route
+                        path='userAdministration'
+                        element={<UserAdministration />}
+                    />
+                    <Route
+                        path='modalTest'
+                        element={<ModalTest />}
+                    />
+                </Route>
+            )
+        );
+
+        return <RouterProvider router={router} />;
+    };
+
+    return createRouter();
 }
 
 export default App;

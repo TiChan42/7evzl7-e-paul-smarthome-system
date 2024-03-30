@@ -1,3 +1,13 @@
+
+/**
+ * Komponente für das Registrierungsformular.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {Function} props.executeSuccessfulSignUp - Eine Funktion, die aufgerufen wird, wenn die Registrierung erfolgreich war.
+ * @returns {JSX.Element} Das Registrierungsformular.
+ * @requires chakra-ui/react, react, @chakra-ui/icons, ../utils/env
+ */
 import {
     Button,
     FormControl,

@@ -1,3 +1,13 @@
+
+/**
+ * Komponente für den Verlauf-Drawer.
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {string} props.Text - Der Text, der auf dem Button angezeigt werden soll.
+ * @returns {JSX.Element} - Die gerenderte Komponente.
+ * @requires chakra-ui/react
+ * @requires chakra-ui/icons
+ * @requires react
+ */
 import {
     Button,
     Drawer,

@@ -1,3 +1,12 @@
+
+/**
+ * Komponente für die Einstellungen-Seite.
+ * @component
+ * @returns {JSX.Element} Die JSX-Elemente für die Einstellungen-Seite.
+ * @requires chakra-ui/react
+ * @requires ../utils/encryptionUtils
+ * @requires react
+ */
 import {
     CloseButton,
     Text,

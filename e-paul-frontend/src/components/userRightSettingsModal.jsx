@@ -1,3 +1,17 @@
+
+/**
+ * Komponente für das Benutzerrechte-Einstellungsmodal.
+ * 
+ * @component
+ * @param {Object} props - Die Eigenschaften der Komponente.
+ * @param {boolean} props.openModal - Gibt an, ob das Modal geöffnet ist oder nicht.
+ * @param {string} props.userID - Die ID des Benutzers, dessen Benutzerrechte bearbeitet werden sollen.
+ * @param {string} props.userName - Der Name des Benutzers, dessen Benutzerrechte bearbeitet werden sollen.
+ * @param {string} props.userRole - Die Rolle des Benutzers, dessen Benutzerrechte bearbeitet werden sollen.
+ * @param {function} props.closeModal - Eine Funktion zum Schließen des Modals.
+ * @returns {JSX.Element} Das Benutzerrechte-Einstellungsmodal.
+ * @requires chakra-ui/react, react, ../utils/encryptionUtils, ../utils/env
+ */
 import {
     Modal,
     ModalOverlay,
