@@ -148,9 +148,12 @@ class ChangePin(APIView):
         except User.DoesNotExist:
             return Response(status = 400)
 
-        if ((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or (executingUser.rights["mayChangeUserSettings"] == 1):
+        if (((userid == executingUserId) and (user.rights["mayChangeOwnUserSettings"] == 1)) or ((executingUser.rights["mayChangeUserSettings"] == 1) and (user.role != "superuser"))):
             if user.role == "superuser" or user.role == "admin":
                 check = re.match(r"\b\d{3,32}\b", pin)
+            else:
+                check = pin
+            
             if check:
                 pin = pin.encode("utf-8")
                 pinHash = hashpw(pin, salt=gensalt())
@@ -158,10 +161,13 @@ class ChangePin(APIView):
                 user.pin = pin
                 user.save()
                 return Response(status = 204)    
+            
             if not bool(pin):
                 user.pin = user.__class__._meta.get_field('pin').default
                 user.save()
-                return Response(status = 200)   
+                return Response(status = 200)  
+            else:
+                return Response(status = 400) 
         else:
             return Response(status = 400)  
 """

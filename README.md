@@ -2,7 +2,25 @@
 SE-University Project for Smarthome developing
 
 # Frontend
-'npm install react-responsive-carousel' for carousel in about us
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm install`
+Installs and uptdate all the React libraries
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+
 
 # Setup Backend
 - Create a virtual environment if you don't already have one
@@ -29,5 +47,12 @@ SE-University Project for Smarthome developing
 |               └──views
 |               └──...
 |       └──...
-|   └──...
+|   └── e-paul-frontend
+|       └──src
+|          ├─components
+|          ├─layout
+|          ├─pages
+|          ├─styles
+|          ├─utils
+|          └─test
 ```
