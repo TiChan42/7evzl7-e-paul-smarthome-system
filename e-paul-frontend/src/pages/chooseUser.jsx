@@ -59,7 +59,7 @@ function Users() {
             })
             .then((data) => {
                 setUsers(data['user']);
-                if (data['user'][0] == null) {
+                if (data && data['user'] && data['user'][0] == null) {
                     setCreateUserModal(true);
                 }
             })
