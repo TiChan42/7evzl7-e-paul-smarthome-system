@@ -24,7 +24,7 @@ bool tryToConnectToWifi(){
   Serial.println("Try to connect with WiFi: \nSSID: " + ssid + " \nPassword: " + password);
   delay(500);
   
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid.c_str(), password.c_str());
   Serial.print("Connecting");
   timeoutCounter = 0;
   while ((WiFi.status() != WL_CONNECTED) && (timeoutCounter <= maxRetries)) {

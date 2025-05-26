@@ -23,67 +23,67 @@ bool testLogIn(String user, String password){
     WiFiClient client;
     HTTPClient http;
     
-    if (http.begin(client, serverLoginApiUrl)) {
-      http.addHeader("Content-Type", "application/json");
+    http.begin(serverLoginApiUrl);
+    http.addHeader("Content-Type", "application/json");
       
-      // JSON-Daten, die an den Server geschickt werden
-      String postData = "{\"email\":\""+ user +"\", \"password\":\""+ password +"\", \"name\":\"" + controllerName + "\", \"type\":\""+ controllerType +"_1\"}";
-      Serial.println(postData);
+    // JSON-Daten, die an den Server geschickt werden
+    String postData = "{\"email\":\""+ user +"\", \"password\":\""+ password +"\", \"name\":\"" + controllerName + "\", \"type\":\""+ controllerType +"_1\"}";
+    Serial.println(postData);
 
-      // Senden der POST-Request und erfassen der Antwort
-      int httpResponseCode = http.POST(postData);
+    // Senden der POST-Request and erfassen der Antwort
+    int httpResponseCode = http.POST(postData);
 
-      // Interpretieren der Serverantwort
-      if (httpResponseCode > 0) {
-        Serial.print("HTTP Response code: ");
-        Serial.println(httpResponseCode);
-        
-        String response = http.getString();
-        Serial.println(response);
-        if (httpResponseCode == 201){
-          success = true;
+    // Interpretieren der Serverantwort
+    if (httpResponseCode > 0) {
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+      
+      String response = http.getString();
+      Serial.println(response);
+      if (httpResponseCode == 201){
+        success = true;
 
-          DynamicJsonDocument jsonDoc(1024);
-          deserializeJson(jsonDoc, response);
+        DynamicJsonDocument jsonDoc(1024);
+        deserializeJson(jsonDoc, response);
 
-          controllerId = jsonDoc["id"];
-          key = jsonDoc["key"];
+        controllerId = jsonDoc["id"];
+        key = jsonDoc["key"];
 
-          //nur für debugging um zu prüfen ob die id und der key richtig übermittelt wurden
+        //nur für debugging um zu prüfen ob die id und der key richtig übermittelt wurden
 
-          Serial.print("id:");
-          Serial.println(controllerId);
-          Serial.print("key:");
-          Serial.println(key);
+        Serial.print("id:");
+        Serial.println(controllerId);
+        Serial.print("key:");
+        Serial.println(key);
 
 
-          //die mail adresse des Benutzers ist auch das Topic des controllers auf das er published und listend
-          writeTopicToEEPROM(eepromStart, user);
+        //die mail adresse des Benutzers ist auch das Topic des controllers auf das er published und listend
+        writeTopicToEEPROM(eepromStart, user);
 
-          //die ID des kontrollers muss zum authentifizieren gespeichert werden
-          writeIDToEEPROM(eepromStart, String(controllerId));
-          //nur für debugging um zu überprüfen ob die ID richtig im EEPROM liegt
-          Serial.println(readIDFromEEPROM(eepromStart));
+        //die ID des kontrollers muss zum authentifizieren gespeichert werden
+        writeIDToEEPROM(eepromStart, String(controllerId));
+        //nur für debugging um zu überprüfen ob die ID richtig im EEPROM liegt
+        Serial.println(readIDFromEEPROM(eepromStart));
 
-          //das Passwort des kontrollers muss zum authentifizieren gespeichert werden
-          writeKeyToEEPROM(eepromStart, key);
-          //nur für debugging um zu überprüfen ob das passwort richtig im EEPROM liegt
-          Serial.println(readKeyFromEEPROM(eepromStart));
+        //das Passwort des kontrollers muss zum authentifizieren gespeichert werden
+        writeKeyToEEPROM(eepromStart, key);
+        //nur für debugging um zu überprüfen ob das passwort richtig im EEPROM liegt
+        Serial.println(readKeyFromEEPROM(eepromStart));
 
-          writeModeToEEPROM(eepromStart, controllerMode);
-          //nur für debugging um zu überprüfen ob der Mode richtig im EEPROM liegt
-          Serial.println(readModeFromEEPROM(eepromStart));
+        writeModeToEEPROM(eepromStart, controllerMode);
+        //nur für debugging um zu überprüfen ob der Mode richtig im EEPROM liegt
+        Serial.println(readModeFromEEPROM(eepromStart));
 
-          ESP.reset();          
-        }
-      } else {
-        //bei fehler im http request
-        Serial.print("Error in HTTP POST request: ");
-        Serial.println(httpResponseCode);
+        ESP.restart();       
       }
-      // Beende die Anfrage
-      http.end();
+    } else {
+      //bei fehler im http request
+      Serial.print("Error in HTTP POST request: ");
+      Serial.println(httpResponseCode);
     }
+    // Beende die Anfrage
+    http.end();
+    
     delay(5000);  // Warte 5 Sekunden
   }
   return success;

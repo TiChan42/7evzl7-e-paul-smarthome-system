@@ -1,8 +1,9 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266HTTPClient.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <HTTPClient.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "esp32-hal-ledc.h"
 
 const char* ownSSID = "E_Paul_Module_WiFi";
 const char* ownSSIDpassword = "";
@@ -46,7 +47,7 @@ bool showStateOnLED = 1; //back
 // Initialisiere Pins für LEDs
 #define LED_RED   4
 #define LED_GREEN 5
-#define LED_BLUE  0
+#define LED_BLUE  18
 #define LED_WHITE 2
 
 // Definiere Farbkonstanten
@@ -63,7 +64,7 @@ bool white_flag = true; //back
 
 // Erstelle eine Instanz des Servers auf Port 80
 WiFiServer server(80);
-ESP8266WebServer webServer(50000);
+WebServer webServer(50000);
 
 // Erstellen der Clients für WLAN und MQTT
 WiFiClient espClient;
@@ -75,6 +76,19 @@ unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];
 
 void clearEEPROM();
+
+// Forward declarations
+void setUpWiFiAccessPoint();
+void tryToSetupViaWebserver();
+void setupPWM();
+void checkButton();
+bool tryToConnectToWifi();
+void reconnect();
+void callback(char* topic, byte* payload, unsigned int length);
+bool mqttJsonInterpretation(String mqttJsonSignal);
+void controllerAnswer(String answer);
+void mqttChangeBrightness();
+void mqttChangeColor();
 
 void setup() { 
   // Initialisiere globale Variablen
@@ -99,7 +113,7 @@ void setup() {
     Serial.println("Clearen");
     clearEEPROM();
     writeResetCounterToEEPROM("0");
-    ESP.reset();
+    ESP.restart();
   }
   Serial.println(readResetCounterFromEEPROM());
 
@@ -150,6 +164,7 @@ void setup() {
 
   // Initialisieren der Variablen für die Module
   controllerMode = readModeFromEEPROM(eepromStart);
+  setupPWM();
 
   // Button modul
   if(controllerMode == "button"){

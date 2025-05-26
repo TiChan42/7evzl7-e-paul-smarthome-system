@@ -41,7 +41,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         if (command == "activateLamp"){
           writeModeToEEPROM(eepromStart, "lamp");
           controllerAnswer("Der Modus wurde geändert zu: lamp");
-          ESP.reset();
+          ESP.restart(); 
         }else if(command == "changeLampBrightness"){
           currentMode = readModeFromEEPROM(eepromStart);
           if(currentMode == "lamp"){
@@ -88,11 +88,11 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         }else if(command == "activateButton"){
           writeModeToEEPROM(eepromStart, "button");
           controllerAnswer("Der Modus wurde geändert zu: button");
-          ESP.reset();
+          ESP.restart();
         } else if (command == "clearMode"){
           writeModeToEEPROM(eepromStart, "noMode");
           controllerAnswer("Der Modus wurde geändert zu: noMode");
-          ESP.reset();
+          ESP.restart();
         } else{
           Serial.println("kein gültiger Befehl");
           controllerAnswer("Der empfangene Befehl ist nicht gültig");

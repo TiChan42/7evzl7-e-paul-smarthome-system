@@ -63,7 +63,7 @@ void handleGET() {
   if(state == 0){
     // Versuche eine Verbindung mit dem Wlan aufzubauen
     Serial.println("Try to connect with WiFi: SSID: " + ssid + " Password: " + password);
-    WiFi.begin(ssid, password);
+    WiFi.begin(ssid.c_str(), password.c_str());
     Serial.print("Connecting");
     int maxConnectionTrys = 20;
     int connectionTryCtr = 0;
