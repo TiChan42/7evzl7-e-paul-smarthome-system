@@ -13,9 +13,6 @@ namespace WiFiSetupConfig {
     constexpr int MIN_SIGNAL_STRENGTH = -120;
     constexpr int MAX_SIGNAL_STRENGTH = -40;
     constexpr size_t PROGMEM_CHUNK_SIZE = 512;
-    constexpr int ACCESS_POINT_LED_PIN = 23;  // Information-LED of hexagonz-I
-    constexpr int CUSTOM_BUTTON_PIN = 22;     // Custom button pin
-    constexpr int BUTTON_DEBOUNCE_DELAY = 50; // Button debounce delay in ms
 }
 
 // Function declarations for first connection setup
@@ -36,10 +33,6 @@ bool handleClientRequest(WiFiClient& client);
 String handleUserLogin(const String& user, const String& password, const String& deviceName); 
 String handleWiFiConnection(const String& ssid, const String& password);
 int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName);
-void initAccessPointLED();
-void setAccessPointLEDState(bool state);
-void initCustomButton();
-void handleCustomButton();
 
 // Response codes
 namespace ResponseCodes {

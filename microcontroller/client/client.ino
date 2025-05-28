@@ -50,8 +50,9 @@ bool testState = 1; // back
 bool mode = 0; // back
 bool showStateOnLED = 1; // back
 
-#define ONBOARD_LED 2          
-#define BUTTON      0
+#define ONBOARD_LED 23          
+#define BUTTON      22
+#define LIGHT_IO21  21
 
 // LED module preparation
 // Initialize LED pins
@@ -109,9 +110,6 @@ void setup() {
   // Start serial communication
   Serial.begin(9600);
 
-  initAccessPointLED();
-  initCustomButton();
-
   // Read and handle EEPROM reset variable
   char rst = readResetCounterFromEEPROM();
   Serial.print("Reset Counter: ");
@@ -152,7 +150,6 @@ void setup() {
     // Check if SSID in EEPROM can be used
     connected = tryToConnectToWifi();
     if (connected) {
-      setAccessPointLEDState(false);
       int startEEPROM = 0;
       delay(10000);
       Serial.println(readIDFromEEPROM(startEEPROM));
