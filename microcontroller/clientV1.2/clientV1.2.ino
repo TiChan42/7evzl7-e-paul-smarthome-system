@@ -48,7 +48,7 @@ bool showStateOnLED = 1; //back
 #define LED_RED   4
 #define LED_GREEN 5
 #define LED_BLUE  18
-#define LED_WHITE 2
+#define LED_WHITE 27
 
 // Definiere Farbkonstanten
 #define COLOR_RED 255,0,0
