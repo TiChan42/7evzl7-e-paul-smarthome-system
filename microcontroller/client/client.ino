@@ -52,14 +52,13 @@ bool showStateOnLED = 1; // back
 
 #define ONBOARD_LED 23          
 #define BUTTON      22
-#define LIGHT_IO21  21
 
 // LED module preparation
 // Initialize LED pins
 uint8_t LED_RED = 4;
 uint8_t LED_GREEN = 5;
 uint8_t LED_BLUE = 18;
-uint8_t LED_WHITE = 27;
+uint8_t LED_WHITE = 21;
 
 // Define color constants
 #define COLOR_RED 255,0,0
@@ -202,9 +201,6 @@ void loop() {
     reconnect();
   }
   client.loop();
-
-  // Handle custom button for LED control
-  handleCustomButton();
 
   // Check current controller mode
   controllerMode = readModeFromEEPROM(eepromStart);
