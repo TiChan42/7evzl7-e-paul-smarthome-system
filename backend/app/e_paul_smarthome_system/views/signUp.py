@@ -53,12 +53,14 @@ class SignUp(APIView):
             account.save()
             
             knownControllerTypeLamp = KnownControllerType(account = account, type = "lamp_1")
+            knownControllerTypeHexagonzLamp = KnownControllerType(account = account, type = "hexagonz_lamp_1")
             knownControllerTypeButton = KnownControllerType(account = account, type = "button_1") 
-            knownControllerTypeLamp.save(), knownControllerTypeButton.save()
+            knownControllerTypeLamp.save(), knownControllerTypeHexagonzLamp.save(), knownControllerTypeButton.save()
             
             portTemplateLamp = PortTemplate(knownControllerType = knownControllerTypeLamp, status_default = {"status" : "off"})
+            portTemplateHexagonzLamp = PortTemplate(knownControllerType = knownControllerTypeHexagonzLamp, status_default = {"status" : "off"})
             portTemplateButton = PortTemplate(knownControllerType = knownControllerTypeButton, status_default = {"status" : "off"})
-            portTemplateLamp.save(), portTemplateButton.save()
+            portTemplateLamp.save(), portTemplateHexagonzLamp.save(), portTemplateButton.save()
             
             commandLamp1 = Command(portTemplate = portTemplateLamp, description = "erhöht die Helligkeit der Lampe um den übergebenen Wert ")
             commandLamp1.save()
@@ -89,6 +91,45 @@ class SignUp(APIView):
             commandOptionLamp4_2 = CommandOption(command = commandLamp4, key = "target", static = False, value = None)
             commandOptionLamp4_3 = CommandOption(command = commandLamp4, key = "command", static = True, value = "switchOff")
             commandOptionLamp4_1.save(), commandOptionLamp4_2.save(), commandOptionLamp4_3.save()
+            
+            
+            commandHexagonzLamp1 = Command(portTemplate = portTemplateHexagonzLamp, description = "setzt die Helligkeit der Lampe auf den übergebenen Wert ")
+            commandHexagonzLamp1.save()
+            commandOptionHexagonzLamp1_1 = CommandOption(command = commandHexagonzLamp1, key = "type", static = True, value = 1)
+            commandOptionHexagonzLamp1_2 = CommandOption(command = commandHexagonzLamp1, key = "target", static = False, value = None)
+            commandOptionHexagonzLamp1_3 = CommandOption(command = commandHexagonzLamp1, key = "command", static = True, value = "changeLampBrightness")
+            commandOptionHexagonzLamp1_4 = CommandOption(command = commandHexagonzLamp1, key = "brightness", static = False, value = None)
+            commandOptionHexagonzLamp1_1.save(), commandOptionHexagonzLamp1_2.save(), commandOptionHexagonzLamp1_3.save(), commandOptionHexagonzLamp1_4.save()
+
+            commandHexagonzLamp2 = Command(portTemplate = portTemplateHexagonzLamp, description = "schaltet das Modul ein")
+            commandHexagonzLamp2.save()
+            commandOptionHexagonzLamp2_1 = CommandOption(command = commandHexagonzLamp2, key = "type", static = True, value = 1)
+            commandOptionHexagonzLamp2_2 = CommandOption(command = commandHexagonzLamp2, key = "target", static = False, value = None)
+            commandOptionHexagonzLamp2_3 = CommandOption(command = commandHexagonzLamp2, key = "command", static = True, value = "switchOn")
+            commandOptionHexagonzLamp2_1.save(), commandOptionHexagonzLamp2_2.save(), commandOptionHexagonzLamp2_3.save()
+
+            commandHexagonzLamp3 = Command(portTemplate = portTemplateHexagonzLamp, description = "schaltet das Modul aus")
+            commandHexagonzLamp3.save()
+            commandOptionHexagonzLamp3_1 = CommandOption(command = commandHexagonzLamp3, key = "type", static = True, value = 1)
+            commandOptionHexagonzLamp3_2 = CommandOption(command = commandHexagonzLamp3, key = "target", static = False, value = None)
+            commandOptionHexagonzLamp3_3 = CommandOption(command = commandHexagonzLamp3, key = "command", static = True, value = "switchOff")
+            commandOptionHexagonzLamp3_1.save(), commandOptionHexagonzLamp3_2.save(), commandOptionHexagonzLamp3_3.save()
+
+            commandHexagonzLamp4 = Command(portTemplate = portTemplateHexagonzLamp, description  = "blockiert die programmierung der Lampe durch das Unterbrechen der USB-Leitung bei eingabe eines im ESP hardgecodeten Passwortes")
+            commandHexagonzLamp4.save()
+            commandOptionHexagonzLamp4_1 = CommandOption(command = commandHexagonzLamp4, key = "type", static = True, value = 1)
+            commandOptionHexagonzLamp4_2 = CommandOption(command = commandHexagonzLamp4, key = "target", static = False, value = None)
+            commandOptionHexagonzLamp4_3 = CommandOption(command = commandHexagonzLamp4, key = "command", static = True, value = "blockProgramming")
+            commandOptionHexagonzLamp4_4 = CommandOption(command = commandHexagonzLamp4, key = "password", static = False, value = None)
+            commandOptionHexagonzLamp4_1.save(), commandOptionHexagonzLamp4_2.save(), commandOptionHexagonzLamp4_3.save(), commandOptionHexagonzLamp4_4.save()
+
+            commandHexagonzLamp5 = Command(portTemplate = portTemplateHexagonzLamp, description  = "öffnet die programmierung der Lampe durch das Verbinden der USB-Leitung bei eingabe eines im ESP hardgecodeten Passwortes")
+            commandHexagonzLamp5.save()
+            commandOptionHexagonzLamp5_1 = CommandOption(command = commandHexagonzLamp5, key = "type", static = True, value = 1)
+            commandOptionHexagonzLamp5_2 = CommandOption(command = commandHexagonzLamp5, key = "target", static = False, value = None)
+            commandOptionHexagonzLamp5_3 = CommandOption(command = commandHexagonzLamp5, key = "command", static = True, value = "openProgramming")
+            commandOptionHexagonzLamp5_4 = CommandOption(command = commandHexagonzLamp5, key = "password", static = False, value = None)
+            commandOptionHexagonzLamp5_1.save(), commandOptionHexagonzLamp5_2.save(), commandOptionHexagonzLamp5_3.save(), commandOptionHexagonzLamp5_4.save()
             
             
             commandButton1 = Command(portTemplate = portTemplateButton, description = "schaltet das Modul ein")
