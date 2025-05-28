@@ -10,92 +10,107 @@ extern const char* serverLoginApiUrl;
 extern String controllerMode;
 
 // Methode , um den Client am Server zu registrieren
-bool testLogIn(String user, String password){
+bool testLogIn(String user, String password) {
+  // Input validation
+  if (user.length() == 0 || password.length() == 0) {
+    Serial.println(F("Invalid login credentials - empty fields"));
+    return false;
+  }
+  
+  if (user.length() > 100 || password.length() > 100) {
+    Serial.println(F("Invalid login credentials - fields too long"));
+    return false;
+  }
+  
+  // Check WiFi connection
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println(F("WiFi not connected"));
+    return false;
+  }
 
   bool success = false;
-
-  // Aktueller Modus des Controllers (lamp oder button)
   String controllerType = controllerMode;
-
-  //aktuell noch ein default controller name, muss angepasst werden, damit das mitgegeben werden kann
-  String controllerName = "Testname";
-
-  //Startpunkt der EEPROM-Methoden
+  String controllerName = F("ESP32_Controller"); // Better default name
   int eepromStart = 0;
 
-  // Eindeutige ID des Conrollers, welche vom Server übergeben wird
-  int controllerId;
-
-  // Das zur ID passende Passwort, wird ebenfalls übergeben und vom Broker zur Authentifizierung benötigt
-  const char* key = "";
-
-  // Checkt, ob eine WLAN-Verbindung existiert
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    HTTPClient http;
+  HTTPClient http;
+  http.begin(serverLoginApiUrl);
+  http.addHeader(F("Content-Type"), F("application/json"));
+  http.setTimeout(10000); // 10 second timeout
+  
+  // Create JSON payload
+  String postData = "{\"email\":\"" + user + 
+                   "\",\"password\":\"" + password + 
+                   "\",\"name\":\"" + controllerName + 
+                   "\",\"type\":\"" + controllerType + "_1\"}";
+  
+  Serial.println(F("Sending registration request..."));
+  // Don't log the actual data for security
+  
+  int httpResponseCode = http.POST(postData);
+  
+  if (httpResponseCode > 0) {
+    Serial.print(F("HTTP Response code: "));
+    Serial.println(httpResponseCode);
     
-    http.begin(serverLoginApiUrl);
-    http.addHeader("Content-Type", "application/json");
-      
-    // JSON-Daten, die an den Server geschickt werden
-    String postData = "{\"email\":\""+ user +"\", \"password\":\""+ password +"\", \"name\":\"" + controllerName + "\", \"type\":\""+ controllerType +"_1\"}";
-    Serial.println(postData);
-
-    // Senden der POST-Request and erfassen der Antwort
-    int httpResponseCode = http.POST(postData);
-
-    // Interpretieren der Serverantwort
-    if (httpResponseCode > 0) {
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
-      
-      String response = http.getString();
-      Serial.println(response);
-      if (httpResponseCode == 201){
-        success = true;
-
-        DynamicJsonDocument jsonDoc(1024);
-        deserializeJson(jsonDoc, response);
-
-        controllerId = jsonDoc["id"];
-        key = jsonDoc["key"];
-
-        //nur für debugging um zu prüfen ob die id und der key richtig übermittelt wurden
-
-        Serial.print("id:");
-        Serial.println(controllerId);
-        Serial.print("key:");
-        Serial.println(key);
-
-
-        //die mail adresse des Benutzers ist auch das Topic des controllers auf das er published und listend
-        writeTopicToEEPROM(eepromStart, user);
-
-        //die ID des kontrollers muss zum authentifizieren gespeichert werden
-        writeIDToEEPROM(eepromStart, String(controllerId));
-        //nur für debugging um zu überprüfen ob die ID richtig im EEPROM liegt
-        Serial.println(readIDFromEEPROM(eepromStart));
-
-        //das Passwort des kontrollers muss zum authentifizieren gespeichert werden
-        writeKeyToEEPROM(eepromStart, key);
-        //nur für debugging um zu überprüfen ob das passwort richtig im EEPROM liegt
-        Serial.println(readKeyFromEEPROM(eepromStart));
-
-        writeModeToEEPROM(eepromStart, controllerMode);
-        //nur für debugging um zu überprüfen ob der Mode richtig im EEPROM liegt
-        Serial.println(readModeFromEEPROM(eepromStart));
-
-        ESP.restart();       
-      }
+    String response = http.getString();
+    
+    if (httpResponseCode == 201) {
+      success = handleSuccessfulRegistration(response, user, eepromStart);
     } else {
-      //bei fehler im http request
-      Serial.print("Error in HTTP POST request: ");
+      Serial.print(F("Registration failed with code: "));
       Serial.println(httpResponseCode);
     }
-    // Beende die Anfrage
-    http.end();
-    
-    delay(5000);  // Warte 5 Sekunden
+  } else {
+    Serial.print(F("HTTP POST error: "));
+    Serial.println(httpResponseCode);
   }
+  
+  http.end();
+  
+  if (success) {
+    Serial.println(F("Registration successful, restarting..."));
+    delay(1000);
+    ESP.restart();
+  }
+  
   return success;
+}
+
+bool handleSuccessfulRegistration(const String& response, const String& user, int eepromStart) {
+  DynamicJsonDocument jsonDoc(1024);
+  DeserializationError error = deserializeJson(jsonDoc, response);
+  
+  if (error) {
+    Serial.print(F("JSON parsing failed: "));
+    Serial.println(error.c_str());
+    return false;
+  }
+  
+  if (!jsonDoc.containsKey("id") || !jsonDoc.containsKey("key")) {
+    Serial.println(F("Missing required fields in response"));
+    return false;
+  }
+  
+  int controllerId = jsonDoc["id"];
+  const char* key = jsonDoc["key"];
+  
+  Serial.print(F("Controller ID: "));
+  Serial.println(controllerId);
+  Serial.println(F("Key received"));
+  
+  // Save data to EEPROM
+  writeTopicToEEPROM(eepromStart, user);
+  writeIDToEEPROM(eepromStart, String(controllerId));
+  writeKeyToEEPROM(eepromStart, String(key));
+  writeModeToEEPROM(eepromStart, controllerMode);
+  
+  // Verify EEPROM writes
+  if (readIDFromEEPROM(eepromStart) != String(controllerId)) {
+    Serial.println(F("EEPROM write verification failed for ID"));
+    return false;
+  }
+  
+  Serial.println(F("Data successfully saved to EEPROM"));
+  return true;
 }
