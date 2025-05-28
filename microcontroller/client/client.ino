@@ -42,7 +42,7 @@ unsigned long ulReqcount;
 unsigned long timeOutMillis;
 
 // Module variables
-String controllerMode = "lamp"; // lamp or button
+String controllerMode = "hexagonz_lamp"; // lamp or button
 
 // Button module preparation (default mode: switch)
 bool state = 0; // back
@@ -193,6 +193,12 @@ void setup() {
     digitalWrite(LED_GREEN, HIGH);  
     digitalWrite(LED_BLUE, HIGH);  
     digitalWrite(LED_WHITE, HIGH); 
+  } else if (controllerMode == "hexagonz_lamp") {
+    // Initialize digital pins as LED outputs
+    pinMode(LED_WHITE, OUTPUT);
+
+    // Turn off all LEDs
+    digitalWrite(LED_WHITE, LOW); 
   }
 }
 

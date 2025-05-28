@@ -231,11 +231,6 @@ const size_t HTML_SCRIPT1_SIZE = sizeof(HTML_SCRIPT1) - 1;
 const size_t HTML_SCRIPT2_SIZE = sizeof(HTML_SCRIPT2) - 1;
 const size_t STATIC_CONTENT_SIZE = HTML_HEAD_SIZE + HTML_FORM_SIZE + HTML_SCRIPT1_SIZE + HTML_SCRIPT2_SIZE;
 
-// Button state variables
-static bool lastButtonState = HIGH;  // Previous button state (assuming pull-up)
-static unsigned long lastDebounceTime = 0;  // Last time button state changed
-static bool accessPointLedOriginalState = false; // To restore LED state after button release
-
 void initAccessPoint(){
   // AP-Modus
   WiFi.mode(WIFI_AP);
