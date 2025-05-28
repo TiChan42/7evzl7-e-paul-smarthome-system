@@ -10,7 +10,7 @@ extern const char* serverLoginApiUrl;
 extern String controllerMode;
 
 // Methode , um den Client am Server zu registrieren
-bool testLogIn(String user, String password) {
+bool testLogIn(String user, String password, String deviceName) {
   // Input validation
   if (user.length() == 0 || password.length() == 0) {
     Serial.println(F("Invalid login credentials - empty fields"));
@@ -30,7 +30,7 @@ bool testLogIn(String user, String password) {
 
   bool success = false;
   String controllerType = controllerMode;
-  String controllerName = F("ESP32_Controller"); // Better default name
+  String controllerName = deviceName.length() > 0 ? deviceName : F("ESP32_Controller"); // Better default name
   int eepromStart = 0;
 
   HTTPClient http;

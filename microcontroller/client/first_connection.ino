@@ -46,6 +46,9 @@ h1 {margin-top: 5vh;font-size: 48px;color: rgb(var(--color));}
 .account-container {display: flex;margin-top: 20px;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: rgba(var(--color), 0.2);outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);}
 .account-container.hidden {display: none;}
 .account-container input {margin-left: 1em;font-size: 24px;width: 80%;outline: none;background: none;border: none;}
+.deviceName-container {display: flex;margin-top: 20px;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: rgba(var(--color), 0.2);outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);}
+.deviceName-container.hidden {display: none;}
+.deviceName-container input {margin-left: 1em;font-size: 24px;width: 80%;outline: none;background: none;border: none;}
 .dropdown-el {margin-top: 10vh;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: #444;outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);transition: var(--timing) all ease-in-out;}
 .dropdown-el.hidden {display: none !important;}
 .dropdown-el input:focus + label {background-color: #def;}
@@ -84,6 +87,10 @@ const char HTML_FORM[] PROGMEM = R"(
 <svg xmlns="http://www.w3.org/2000/svg"width="30px"height="30px"fill="currentColor"class="bi bi-eye"viewBox="0 0 16 16">
 <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
 </svg></div></div>
+<!--Device-Name-->
+<div class="deviceName-container hidden">
+  <input type="text" name="deviceName" id="deviceName" placeholder="Custom-Name" maxlength="40">
+</div>
 <!--Submit Button-->
 <button class="submit-button hidden" onclick="clickSubmitButton() ">Verbinden</button>
 <div class="error-message hidden"></div>
@@ -162,11 +169,13 @@ function clickSubmitButton(){
     sendLoadingMessage();
     let user = document.querySelector("#account").value;
     let password = document.querySelector("#password").value;
+    let deviceName = document.querySelector("#deviceName").value;
     var apiUrl = 'http://192.168.4.1:50000';
     var data = {
       state : 1,
       user : user,
-      password: password
+      password: password,
+      deviceName: deviceName
     };
     var fullUrl = apiUrl + '?' + objectToQueryString(data);
     console.log(fullUrl);
@@ -204,6 +213,7 @@ function init_state_1(){
   site_state = 1;
   document.querySelector(".dropdown-el").classList.add("hidden");
   document.querySelector(".account-container").classList.remove("hidden");
+  document.querySelector(".deviceName-container").classList.remove("hidden");
   document.querySelector("#password").placeholder = "Konto-Passwort";
   document.querySelector("#password").value = "";
   document.querySelector(".submit-button").innerHTML = "Anmelden";
@@ -241,12 +251,12 @@ void handleGET() {
   Serial.println(F("GET request received"));
   
   // Use const char* for better memory management
-  String ssid = "", password = "", user = "";
+  String ssid = "", password = "", user = "", deviceName = "";
   int ssidIndex = 0, state = 0;
   String answer = ResponseCodes::SUCCESS;
 
   // Validate request parameters
-  int status = validateRequestParameters(ssid, password, user, ssidIndex, state);
+  int status = validateRequestParameters(ssid, password, user, ssidIndex, state, deviceName);
   
   if (status < 3) {
     answer = ResponseCodes::BAD_REQUEST;
@@ -257,14 +267,14 @@ void handleGET() {
   if (state == 0) {
     answer = handleWiFiConnection(ssid, password);
   } else {
-    answer = handleUserLogin(user, password);
+    answer = handleUserLogin(user, password, deviceName);
   }
 
   answerWebClientRequest(answer);
 }
 
 // Helper function to validate request parameters
-int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state) {
+int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName) {
   int status = 0;
   
   if (webServer.args() == 0) {
@@ -295,13 +305,16 @@ int validateRequestParameters(String& ssid, String& password, String& user, int&
   } else if (state == 1) {
     // User login parameters
     status++; // for state parameter
-    for (int i = 1; i < webServer.args() && i <= 2; i++) {
+    for (int i = 1; i < webServer.args() && i <= 3; i++) {
       String argName = webServer.argName(i);
       if (argName.equals(F("user"))) {
         user = webServer.arg(i);
         status++;
       } else if (argName.equals(F("password"))) {
         password = webServer.arg(i);
+        status++;
+      } else if (argName.equals(F("deviceName"))) {
+        deviceName = webServer.arg(i);
         status++;
       }
     }
@@ -347,12 +360,12 @@ String handleWiFiConnection(const String& ssid, const String& password) {
 }
 
 // Helper function to handle user login
-String handleUserLogin(const String& user, const String& password) {
+String handleUserLogin(const String& user, const String& password, const String& deviceName) {
   Serial.println(F("Attempting user login..."));
   Serial.print(F("User: ")); Serial.println(user);
   // Don't log password for security
   
-  if (testLogIn(user, password)) {
+  if (testLogIn(user, password, deviceName)) {
     Serial.println(F("User login successful"));
     return ResponseCodes::SUCCESS;
   } else {

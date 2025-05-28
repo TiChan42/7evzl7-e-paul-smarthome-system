@@ -30,9 +30,9 @@ void sendErrorPage(WiFiClient& client);
 String generateNetworkList(int* networkIndices, int networkCount);
 String parseRequestPath(const String& request);
 bool handleClientRequest(WiFiClient& client);
-String handleUserLogin(const String& user, const String& password); 
+String handleUserLogin(const String& user, const String& password, const String& deviceName); 
 String handleWiFiConnection(const String& ssid, const String& password);
-int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state);
+int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName);
 
 
 // Response codes
