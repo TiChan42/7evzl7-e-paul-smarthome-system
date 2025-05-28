@@ -231,6 +231,12 @@ const size_t HTML_SCRIPT1_SIZE = sizeof(HTML_SCRIPT1) - 1;
 const size_t HTML_SCRIPT2_SIZE = sizeof(HTML_SCRIPT2) - 1;
 const size_t STATIC_CONTENT_SIZE = HTML_HEAD_SIZE + HTML_FORM_SIZE + HTML_SCRIPT1_SIZE + HTML_SCRIPT2_SIZE;
 
+// Button state variables
+static bool lastButtonState = HIGH;  // Previous button state (assuming pull-up)
+static unsigned long lastDebounceTime = 0;  // Last time button state changed
+static bool accessPointLedOriginalState = false; // To restore LED state after button release
+
+// LED control functions for access point status
 void initAccessPointLED() {
   pinMode(WiFiSetupConfig::ACCESS_POINT_LED_PIN, OUTPUT);
   digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, LOW); // Start with LED off
@@ -238,11 +244,41 @@ void initAccessPointLED() {
 
 void setAccessPointLEDState(bool state) {
   digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, state ? HIGH : LOW);
+  accessPointLedOriginalState = state; // Keep track of the original state
   Serial.print(F("Access Point LED: "));
   Serial.println(state ? F("ON") : F("OFF"));
 }
 
-void setUpWiFiAccessPoint(){
+// Custom button functions
+void initCustomButton() {
+  pinMode(WiFiSetupConfig::CUSTOM_BUTTON_PIN, INPUT_PULLUP);
+  lastButtonState = digitalRead(WiFiSetupConfig::CUSTOM_BUTTON_PIN);
+}
+
+void handleCustomButton() {
+  bool currentButtonState = digitalRead(WiFiSetupConfig::CUSTOM_BUTTON_PIN);
+  
+  // Check if button state changed (with debouncing)
+  if (currentButtonState != lastButtonState) {
+    lastDebounceTime = millis();
+  }
+  
+  // If enough time has passed since last state change, process the button
+  if ((millis() - lastDebounceTime) > WiFiSetupConfig::BUTTON_DEBOUNCE_DELAY) {
+    // Button is pressed (LOW due to pull-up resistor)
+    if (currentButtonState == LOW) {
+      // Turn on info LED while button is pressed
+      digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, HIGH);
+    } else {
+      // Button is released, restore original LED state
+      digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, accessPointLedOriginalState ? HIGH : LOW);
+    }
+  }
+  
+  lastButtonState = currentButtonState;
+}
+
+void initAccessPoint(){
   // AP-Modus
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ownSSID, ownSSIDpassword);

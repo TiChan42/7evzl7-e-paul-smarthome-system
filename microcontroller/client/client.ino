@@ -109,8 +109,8 @@ void setup() {
   // Start serial communication
   Serial.begin(9600);
 
-  // Initialize access point status LED
   initAccessPointLED();
+  initCustomButton();
 
   // Read and handle EEPROM reset variable
   char rst = readResetCounterFromEEPROM();
@@ -163,7 +163,7 @@ void setup() {
   // Check if connection has been established
   if (!connected) {
     // If no connection, set up own WiFi
-    setUpWiFiAccessPoint();
+    initAccessPoint();
     // Start loop to get internet connection data
     tryToSetupViaWebserver();
   }
@@ -205,6 +205,9 @@ void loop() {
     reconnect();
   }
   client.loop();
+
+  // Handle custom button for LED control
+  handleCustomButton();
 
   // Check current controller mode
   controllerMode = readModeFromEEPROM(eepromStart);
