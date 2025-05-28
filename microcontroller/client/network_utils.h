@@ -1,9 +1,6 @@
 #ifndef NETWORK_UTILS_H
 #define NETWORK_UTILS_H
 
-#include <WiFi.h>
-#include <Arduino.h>
-
 struct NetworkInfo {
   int index;
   String ssid;
@@ -21,4 +18,4 @@ void filterDuplicateNetworks(NetworkInfo networks[], int count, int& validCount)
 void sortNetworksBySignalStrength(int validIndices[], int count, NetworkInfo networks[]);
 void validateNetworkData(NetworkInfo& network);
 
-#endif
+#endif // NETWORK_UTILS_H

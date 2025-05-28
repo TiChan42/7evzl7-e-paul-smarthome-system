@@ -1,3 +1,39 @@
+#include "mqtt_utils.h"
+
+void controllerAnswer(String answer){
+
+  int eepromStart = 0;
+  int messageType = 2;
+  String topic = ""; 
+  String ownID = "";
+  String key = "";
+  String answerJson = "";
+  String status = "";
+  String controllerMode = "";
+
+  topic = readTopicFromEEPROM(eepromStart);
+  ownID = readIDFromEEPROM(eepromStart);
+  key = readKeyFromEEPROM(eepromStart);
+  controllerMode = readModeFromEEPROM(eepromStart);
+
+  // Bauen des Status abhängig davon in welchem modus sich der Controller befindet
+  if(controllerMode == "lamp"){
+    status = "{\"whiteFlag\":\"" + String(int(white_flag)) + "\", \"red\":\"" + String(int(global_red)) + "\", \"green\":\"" + String(int(global_green)) + "\", \"blue\":\"" + String(int(global_blue)) + "\", \"brightness\":\"" + String(int(global_brightness)) + "\"}";
+  }else if (controllerMode == "button"){
+    status = "{\"state\":\"" + String(int(state)) + "\", \"testState\":\"" + String(int(testState)) + "\", \"mode\":\"" + String(int(mode)) + "\", \"showStateOnLED\":\"" + String(int(showStateOnLED)) + "\"}";
+  } else {
+    Serial.println("kein gültiger Modus");
+  }
+  
+  answerJson = "{\"type\":" + String(messageType) + ", \"microcontrollerId\":" + ownID + ",\"key\":\"" + key + "\", \"answerCode\":\"" + answer + "\", \"state\":" + status + "}";
+
+  snprintf (msg, MSG_BUFFER_SIZE, answerJson.c_str());
+  Serial.print("Publish message: ");
+  Serial.println(msg);
+  client.publish(topic.c_str(), msg);
+  
+}
+
 /*
 Aufbau der JSONs welche auf dem Broker gepostet werden:
 {type:1, target:"IDofTargetController", command:"commandToBeExecuted", brightness:"theBrightnessOffTheLamp", rgb:"RGBCode"}
@@ -130,4 +166,41 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       success = false;
   }
   return success;
+}
+
+
+void reconnect() {
+  // Loop bis wir verbunden sind
+  while (!client.connected()) {
+    Serial.println("Attempting MQTT connection...");
+    // erstelle eine zufällige Client ID, da diese nicht relevant ist für den Broker
+    String clientId = "ESP8266Client-";
+    clientId += String(random(0xffff), HEX);
+    // Credentials um sich beim Broker anzumelden, welche im EEPROM liegen sollten
+    mqttUsr = readIDFromEEPROM(eepromStart);
+    mqttPw = readKeyFromEEPROM(eepromStart);
+
+    Serial.print("ID: ");
+    Serial.println(mqttUsr.c_str());
+    Serial.print("key: ");
+    Serial.println(mqttPw.c_str());
+
+    topic = readTopicFromEEPROM(eepromStart);
+
+    //muss noch angepasst werden
+    if (client.connect(clientId.c_str(), mqttUsr.c_str(), mqttPw.c_str() )) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish(topic.c_str(), "hi");
+      // ... and resubscribe
+      client.subscribe(topic.c_str());
+    } else {
+      //gibt den Statuscode aus, falls die Verbindung fehlschlägt
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // warte 5 sekunden befor es erneut versucht wird
+      delay(5000);
+    }
+  }
 }

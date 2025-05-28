@@ -1,4 +1,5 @@
 #include <EEPROM.h>
+#include <eeprom_utils.h>
 
 /*
 Aufbau des EEPROM-Speichers:

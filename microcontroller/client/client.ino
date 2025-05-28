@@ -3,8 +3,11 @@
 #include <HTTPClient.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-#include "esp32-hal-ledc.h"
-#include "network_utils.h"
+#include <esp32-hal-ledc.h>
+
+#include <mqtt_utils.h>
+#include <network_utils.h>
+#include <eeprom_utils.h>
 
 const char* ownSSID = "E_Paul_Module_WiFi";
 const char* ownSSIDpassword = "";
@@ -76,16 +79,12 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(200)
 char msg[MSG_BUFFER_SIZE];
 
-void clearEEPROM();
-
 // Forward declarations
 void setUpWiFiAccessPoint();
 void tryToSetupViaWebserver();
 void setupPWM();
 void checkButton();
-void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
-bool mqttJsonInterpretation(String mqttJsonSignal);
 void controllerAnswer(String answer);
 
 void setup() { 
@@ -201,42 +200,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     executed = true;
   }
   
-}
-
-void reconnect() {
-  // Loop bis wir verbunden sind
-  while (!client.connected()) {
-    Serial.println("Attempting MQTT connection...");
-    // erstelle eine zufällige Client ID, da diese nicht relevant ist für den Broker
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
-    // Credentials um sich beim Broker anzumelden, welche im EEPROM liegen sollten
-    mqttUsr = readIDFromEEPROM(eepromStart);
-    mqttPw = readKeyFromEEPROM(eepromStart);
-
-    Serial.print("ID: ");
-    Serial.println(mqttUsr.c_str());
-    Serial.print("key: ");
-    Serial.println(mqttPw.c_str());
-
-    topic = readTopicFromEEPROM(eepromStart);
-
-    //muss noch angepasst werden
-    if (client.connect(clientId.c_str(), mqttUsr.c_str(), mqttPw.c_str() )) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish(topic.c_str(), "hi");
-      // ... and resubscribe
-      client.subscribe(topic.c_str());
-    } else {
-      //gibt den Statuscode aus, falls die Verbindung fehlschlägt
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // warte 5 sekunden befor es erneut versucht wird
-      delay(5000);
-    }
-  }
 }
 
 void loop() {
