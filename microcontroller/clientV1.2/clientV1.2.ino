@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "esp32-hal-ledc.h"
+#include "network_utils.h"
 
 const char* ownSSID = "E_Paul_Module_WiFi";
 const char* ownSSIDpassword = "";
@@ -82,13 +83,10 @@ void setUpWiFiAccessPoint();
 void tryToSetupViaWebserver();
 void setupPWM();
 void checkButton();
-bool tryToConnectToWifi();
 void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 bool mqttJsonInterpretation(String mqttJsonSignal);
 void controllerAnswer(String answer);
-void mqttChangeBrightness();
-void mqttChangeColor();
 
 void setup() { 
   // Initialisiere globale Variablen
@@ -185,14 +183,6 @@ void setup() {
     digitalWrite(LED_WHITE, HIGH); 
   }
 }
-
-bool mqttJsonInterpretation(String mqttJsonSignal);
-
-//löschen nach testen:
-void mqttChangeBrightness();
-
-//löschen nach testen:
-void mqttChangeColor();
 
 void callback(char* topic, byte* payload, unsigned int length) {
   bool executed = false;

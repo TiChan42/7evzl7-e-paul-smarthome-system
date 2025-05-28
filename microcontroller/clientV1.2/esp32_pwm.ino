@@ -1,6 +1,3 @@
-// ESP32 PWM configuration
-// ESP32 has dedicated PWM controller with 16 channels
-
 // PWM properties
 #define PWM_FREQ 5000
 #define PWM_RESOLUTION 8  // 8-bit resolution (0-255)

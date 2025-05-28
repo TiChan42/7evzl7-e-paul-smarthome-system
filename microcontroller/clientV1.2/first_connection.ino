@@ -208,47 +208,15 @@ void tryToSetupViaWebserver(){
       client.print(sResponse1);
     } else {
       ulReqcount++;
-      // WLAN-Netzwerke scannen und auf der Webseite anzeigen
-      // Sortiert und filtert SSIDs
-      int networkCount = WiFi.scanNetworks();
-      // Array initialisieren
-      int indices_v1[networkCount];
-      for(int i = 0 ; i < networkCount ; ++i) indices_v1[i] = i;
-
-      // Sortiere von stärkstem zu schwächstem signal (Bubblesort)
-      for (int i = 0; i < networkCount-1; ++i) {
-        for (int j = 0; j < networkCount-i-1; ++j) {
-          // Tausche die Indizes, wenn der Wert von WiFi.RSSI(j) kleiner als WiFi.RSSI(j+1) ist
-          if (WiFi.RSSI(indices_v1[j]) < WiFi.RSSI(indices_v1[j+1])) {
-            int temp = indices_v1[j];
-            indices_v1[j] = indices_v1[j+1];
-            indices_v1[j+1] = temp;
-          }
-        }
-      }
       
-      // Filtern
-      // Erstellt ein Array ohne Duplikate und zählt die nicht duplizierten Netzwerke
       int actualNetworkCount = 0;
-      int indices_v2[networkCount];
-
-      for (int i = 0; i < networkCount; ++i) {
-        bool duplicated = false;
-        for (int j = 0 ; j < i ; ++j) {
-            if(WiFi.SSID(indices_v1[i]).equals(WiFi.SSID(indices_v1[j]))){
-              duplicated = true;
-              break;
-            }
-        }
-        if(!duplicated){
-          indices_v2[actualNetworkCount] = indices_v1[i];
-          ++actualNetworkCount;
-        }
+      int* networkIndices = scanAndSortNetworks(actualNetworkCount);
+      
+      if (networkIndices == nullptr || actualNetworkCount == 0) {
+        // Behandle Fall ohne Netzwerke
+        Serial.println("Keine gültigen Netzwerke gefunden");
+        actualNetworkCount = 0;
       }
-
-      // Erstelle ein Array in der richtigen Größe und übertrage werte
-      int networkIndices[actualNetworkCount];
-      for(int i = 0 ; i < actualNetworkCount ; ++i) networkIndices[i] = indices_v2[i];
 
       // HTML String mit inhalt generieren
       // Oberer Website-Teil
@@ -313,16 +281,23 @@ void tryToSetupViaWebserver(){
 
 
       // Generieren der gescannten Netzwerke als Bausteine
-      for (int i = 0; i < actualNetworkCount; ++i) {
-        String SSIDCache = WiFi.SSID(networkIndices[i]);
-        int signalStrength = WiFi.RSSI(networkIndices[i]);
-        String cache = "\n<input type=\"radio\" name=\"sortType\" value=\"" + SSIDCache + "\" id=\"ssid-" + String(networkIndices[i]) + "\"><label for=\"ssid-" + String(networkIndices[i])+"\">\n";
-        sResponse2 += cache;
-        getConnectionStrengthNumber(sResponse2,signalStrength);
-        sResponse2 += "\n" + SSIDCache + "<span class=\"tooltip\">" + SSIDCache + "</span></label>";
-        Serial.println(cache);
+      if (networkIndices != nullptr) {
+        for (int i = 0; i < actualNetworkCount; ++i) {
+          String SSIDCache = WiFi.SSID(networkIndices[i]);
+          int signalStrength = WiFi.RSSI(networkIndices[i]);
+          String cache = "\n<input type=\"radio\" name=\"sortType\" value=\"" + SSIDCache + "\" id=\"ssid-" + String(networkIndices[i]) + "\"><label for=\"ssid-" + String(networkIndices[i])+"\">\n";
+          sResponse2 += cache;
+          getConnectionStrengthNumber(sResponse2,signalStrength);
+          sResponse2 += "\n" + SSIDCache + "<span class=\"tooltip\">" + SSIDCache + "</span></label>";
+          Serial.println(cache);
+        }
       }
       delay(1);
+
+      // Aufräumen
+      if (networkIndices != nullptr) {
+        delete[] networkIndices;
+      }
 
       sResponseLength2 = sResponse2.length();
 
