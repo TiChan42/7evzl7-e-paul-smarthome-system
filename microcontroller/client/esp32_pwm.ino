@@ -1,3 +1,9 @@
+#include <Arduino.h>
+#include "esp32_pwm.h"
+
+// External LED pin variables declared in client.ino
+extern uint8_t LED_RED, LED_GREEN, LED_BLUE, LED_WHITE;
+
 // PWM properties
 #define PWM_FREQ 5000
 #define PWM_RESOLUTION 8  // 8-bit resolution (0-255)

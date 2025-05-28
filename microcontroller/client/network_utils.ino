@@ -1,4 +1,6 @@
-#include <network_utils.h>
+#include <WiFi.h>
+#include "network_utils.h"
+#include "eeprom_utils.h"
 
 int performNetworkScan() {
   Serial.println("Starte WiFi-Scan...");

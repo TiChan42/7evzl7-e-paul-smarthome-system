@@ -1,3 +1,7 @@
+#include <Arduino.h>
+#include "lamp_module.h"
+#include "mqtt_utils.h"
+
 // Methode zur Ansteuerung der RGB-LEDs basierend auf Farb- und Helligkeitsinformationen
 void writeColor(char r, char g, char b, char brightness){
   digitalWrite(LED_WHITE, HIGH);  

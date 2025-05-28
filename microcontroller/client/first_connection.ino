@@ -1,3 +1,18 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include "first_connection.h"
+#include "network_utils.h"
+#include "eeprom_utils.h"
+
+// External variables declared in client.ino
+extern const char* ownSSID;
+extern const char* ownSSIDpassword;
+extern WiFiServer server;
+extern WebServer webServer;
+extern unsigned long ulReqcount;
+extern unsigned long timeOutMillis;
+
 // Funktion zum Einrichten des eigenen WLAN-Zugangspunkts
 void setUpWiFiAccessPoint(){
   // AP-Modus
@@ -104,7 +119,7 @@ void answerWebClientRequest(String answer){
 }
 
 // Generiert eine Anzeige für die Empfangsstärke
-void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize = 5, int min = -120, int max = -40 ) {
+void getConnectionStrengthNumber(String &htmlString, int strength, int viewSize, int min, int max) {
   // Fange Extremwerte/Fehler ab
   if(strength < min) strength = min;
   if(strength > max) strength = max;

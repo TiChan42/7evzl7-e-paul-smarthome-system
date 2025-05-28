@@ -1,4 +1,21 @@
+#include <Arduino.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
 #include "mqtt_utils.h"
+#include "lamp_module.h"
+#include "button_module.h"
+#include "eeprom_utils.h"
+
+// External variables declared in client.ino
+extern PubSubClient client;
+extern char msg[MSG_BUFFER_SIZE];
+extern String topic;
+extern String mqttUsr;
+extern String mqttPw;
+extern int eepromStart;
+extern bool white_flag;
+extern char global_red, global_green, global_blue, global_brightness;
+extern bool state, testState, mode, showStateOnLED;
 
 void controllerAnswer(String answer){
 

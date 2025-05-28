@@ -1,3 +1,14 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
+#include "account_registration.h"
+#include "eeprom_utils.h"
+
+// External variables declared in client.ino
+extern const char* serverLoginApiUrl;
+extern String controllerMode;
+
 // Methode , um den Client am Server zu registrieren
 bool testLogIn(String user, String password){
 

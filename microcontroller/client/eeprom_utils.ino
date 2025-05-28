@@ -1,5 +1,6 @@
+#include <Arduino.h>
 #include <EEPROM.h>
-#include <eeprom_utils.h>
+#include "eeprom_utils.h"
 
 /*
 Aufbau des EEPROM-Speichers:
