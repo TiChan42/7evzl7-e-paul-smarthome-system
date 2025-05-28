@@ -33,6 +33,7 @@ bool handleClientRequest(WiFiClient& client);
 String handleUserLogin(const String& user, const String& password, const String& deviceName); 
 String handleWiFiConnection(const String& ssid, const String& password);
 int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName);
+void scheduleRestart();
 
 // Response codes
 namespace ResponseCodes {

@@ -69,9 +69,7 @@ bool testLogIn(String user, String password, String deviceName) {
   http.end();
   
   if (success) {
-    Serial.println(F("Registration successful, restarting..."));
-    delay(1000);
-    ESP.restart();
+    Serial.println(F("Registration successful, will restart after response is sent"));
   }
   
   return success;

@@ -271,11 +271,17 @@ void handleGET() {
 
   if (state == 0) {
     answer = handleWiFiConnection(ssid, password);
+    answerWebClientRequest(answer);
   } else {
     answer = handleUserLogin(user, password, deviceName);
+    if (answer == ResponseCodes::SUCCESS) {
+      // Use the scheduler instead of normal response for successful login
+      scheduleRestart();
+    } else {
+      answerWebClientRequest(answer);
+    }
+    return;
   }
-
-  answerWebClientRequest(answer);
 }
 
 // Helper function to validate request parameters
@@ -372,6 +378,7 @@ String handleUserLogin(const String& user, const String& password, const String&
   
   if (testLogIn(user, password, deviceName)) {
     Serial.println(F("User login successful"));
+    // Don't restart here - let scheduleRestart() handle it
     return ResponseCodes::SUCCESS;
   } else {
     Serial.println(F("User login failed"));
@@ -585,4 +592,16 @@ String generateNetworkList(int* networkIndices, int networkCount) {
   }
   
   return networkList;
+}
+
+void scheduleRestart() {
+  // Send success response first
+  answerWebClientRequest(ResponseCodes::SUCCESS);
+  
+  // Wait to ensure the response has time to be transmitted
+  Serial.println(F("Response sent, restarting in 2 seconds..."));
+  delay(2000);
+  
+  // Now restart
+  ESP.restart();
 }
