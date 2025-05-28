@@ -109,6 +109,9 @@ void setup() {
   // Start serial communication
   Serial.begin(9600);
 
+  // Initialize access point status LED
+  initAccessPointLED();
+
   // Read and handle EEPROM reset variable
   char rst = readResetCounterFromEEPROM();
   Serial.print("Reset Counter: ");
@@ -149,6 +152,7 @@ void setup() {
     // Check if SSID in EEPROM can be used
     connected = tryToConnectToWifi();
     if (connected) {
+      setAccessPointLEDState(false);
       int startEEPROM = 0;
       delay(10000);
       Serial.println(readIDFromEEPROM(startEEPROM));

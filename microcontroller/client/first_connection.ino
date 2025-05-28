@@ -231,10 +231,23 @@ const size_t HTML_SCRIPT1_SIZE = sizeof(HTML_SCRIPT1) - 1;
 const size_t HTML_SCRIPT2_SIZE = sizeof(HTML_SCRIPT2) - 1;
 const size_t STATIC_CONTENT_SIZE = HTML_HEAD_SIZE + HTML_FORM_SIZE + HTML_SCRIPT1_SIZE + HTML_SCRIPT2_SIZE;
 
+void initAccessPointLED() {
+  pinMode(WiFiSetupConfig::ACCESS_POINT_LED_PIN, OUTPUT);
+  digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, LOW); // Start with LED off
+}
+
+void setAccessPointLEDState(bool state) {
+  digitalWrite(WiFiSetupConfig::ACCESS_POINT_LED_PIN, state ? HIGH : LOW);
+  Serial.print(F("Access Point LED: "));
+  Serial.println(state ? F("ON") : F("OFF"));
+}
+
 void setUpWiFiAccessPoint(){
   // AP-Modus
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ownSSID, ownSSIDpassword);
+
+  setAccessPointLEDState(true);
 
   // Routen für den Webserver einrichten
   webServer.on("/", HTTP_GET, handleGET);
@@ -351,6 +364,8 @@ String handleWiFiConnection(const String& ssid, const String& password) {
   
   Serial.println(F("WiFi connected successfully"));
   Serial.print(F("IP address: ")); Serial.println(WiFi.localIP());
+  
+  setAccessPointLEDState(false);
   
   // Save credentials to EEPROM
   writeSSIDToEEPROM(0, ssid);
