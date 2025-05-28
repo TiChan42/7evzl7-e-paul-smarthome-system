@@ -1,5 +1,6 @@
 
 import React, { Suspense } from 'react';
+import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -50,7 +51,13 @@ function App() {
                     />
                     <Route
                         path='chooseUser'
-                        element={<ChooseUser />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <ChooseUser />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                     <Route
                         path='imprint'
@@ -58,23 +65,53 @@ function App() {
                     />
                     <Route
                         path='devices'
-                        element={<Devices />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <Devices />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                     <Route
                         path='faq'
-                        element={<FAQ />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <FAQ />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                     <Route
                         path='settings'
-                        element={<Settings />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <Settings />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                     <Route
                         path='userAdministration'
-                        element={<UserAdministration />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <UserAdministration />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                     <Route
                         path='modalTest'
-                        element={<ModalTest />}
+                        element={
+                            <ChunkErrorBoundary>
+                                <Suspense fallback={<div>Laden...</div>}>
+                                    <ModalTest />
+                                </Suspense>
+                            </ChunkErrorBoundary>
+                        }
                     />
                 </Route>
             )
