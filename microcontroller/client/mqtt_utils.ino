@@ -98,7 +98,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
   switch(type){
     //Die Nachricht ist ein Befehl
     case 1:
-      // Überprüfen des Ziels des befehls
+   // Überprüfen des Ziels des befehls
       targetID = String(String(jsonDoc["target"]).toInt() + 1); 
       ownID = readIDFromEEPROM(eepromStart);
       
@@ -179,7 +179,10 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         }else if (command == "blockProgramming"){
           currentMode = readModeFromEEPROM(eepromStart);
           if (currentMode == "hexagonz_lamp"){
-            password = String(jsonDoc["password"]);
+            // Check if password field exists in the JSON
+            if (jsonDoc.containsKey("password")) {
+              password = String(jsonDoc["password"]);
+            } 
             Serial.print("Received blockProgramming command with password: ");
             Serial.println(password);
             blockProgramming(password);
@@ -189,7 +192,10 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
         }else if (command == "openProgramming"){
           currentMode = readModeFromEEPROM(eepromStart);
           if (currentMode == "hexagonz_lamp"){
-            password = String(jsonDoc["password"]);
+            // Check if password field exists in the JSON
+            if (jsonDoc.containsKey("password")) {
+              password = String(jsonDoc["password"]);
+            } 
             openProgramming(password);
           } else {
             Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
@@ -217,122 +223,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       break;
     // Die nachricht war eine Statusmeldung, daher braucht dieser Controller sie nicht zu verarbeiten
     case 2:
-      // Überprüfen des Ziels des befehls
-      targetID = String(String(jsonDoc["target"]).toInt() + 1); 
-      ownID = readIDFromEEPROM(eepromStart);
-      
-      // Debug output to identify ID mismatch
-      Serial.print("Target ID: ");
-      Serial.println(targetID);
-      Serial.print("Own ID: ");
-      Serial.println(ownID);
-      
-      if(targetID == ownID){
-        command = String(jsonDoc["command"]);
-        if (command == "activateLamp"){
-          writeModeToEEPROM(eepromStart, "lamp");
-          controllerAnswer("Der Modus wurde geändert zu: lamp");
-          ESP.restart(); 
-        }else if(command == "changeLampBrightness"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if(currentMode == "lamp"){
-            brightness = jsonDoc["brightness"];
-            setBrightness(brightness);
-          } else if(currentMode == "hexagonz_lamp"){
-            brightness = jsonDoc["brightness"];
-            setHexagonzLampBrightness(brightness);
-          } else {
-            controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp oder hexagonz_lamp");
-            Serial.println("der Modus des Controllers ist aktuell nicht: lamp oder hexagonz_lamp");
-          }
-        }else if(command == "changeRGBValue"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if(currentMode == "lamp"){
-            rgb = String(jsonDoc["rgb"]);
-            setHexColor(rgb);
-          }else {
-            controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp");
-            Serial.println("der Modus des Controllers ist aktuell nicht: lamp");
-          }
-        }else if (command == "switchOn"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          Serial.print("Received switchOn command, current mode: ");
-          Serial.println(currentMode);
-          
-          if (currentMode == "button"){
-            switchButtonOn(); //bei button
-          } else if (currentMode == "lamp"){
-            switchLampOn();
-          } else if (currentMode == "hexagonz_lamp"){
-            Serial.println("Executing switchHexagonzLampOn...");
-            switchHexagonzLampOn();
-          } else {
-            Serial.println("The controller mode does not match this command");
-          }
-        }else if (command == "switchOff"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "button"){
-            switchButtonOff(); //bei button
-          } else if (currentMode == "lamp"){
-            switchLampOff();
-          } else if (currentMode == "hexagonz_lamp"){
-            switchHexagonzLampOff();
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        }else if (command == "changeMode"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "button"){
-            switchButtonMode();
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        }else if(command == "activateButton"){
-          writeModeToEEPROM(eepromStart, "button");
-          controllerAnswer("Der Modus wurde geändert zu: button");
-          ESP.restart();
-        }else if(command == "activateHexagonzLamp"){
-          writeModeToEEPROM(eepromStart, "hexagonz_lamp");
-          controllerAnswer("Der Modus wurde geändert zu: hexagonz_lamp");
-          ESP.restart();
-        }else if (command == "blockProgramming"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "hexagonz_lamp"){
-            password = String(jsonDoc["password"]);
-            Serial.print("Received blockProgramming command with password: ");
-            Serial.println(password);
-            blockProgramming(password);
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        }else if (command == "openProgramming"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "hexagonz_lamp"){
-            password = String(jsonDoc["password"]);
-            openProgramming(password);
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        }else if (command == "setBlinking"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "hexagonz_lamp"){
-            bool shouldBlink = (jsonDoc["blinking"] == true || String(jsonDoc["blinking"]) == "1");
-            int blinkRate = jsonDoc["blinkRate"] | 500; // Default to 500ms if not specified
-            setHexagonzLampBlinking(shouldBlink, blinkRate);
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        } else if (command == "clearMode"){
-          writeModeToEEPROM(eepromStart, "noMode");
-          controllerAnswer("Der Modus wurde geändert zu: noMode");
-          ESP.restart();
-        } else{
-          Serial.println("kein gültiger Befehl");
-          controllerAnswer("Der empfangene Befehl ist nicht gültig");
-        }
-      } else {
-        Serial.println("message received but not for this controller");
-      }
+      Serial.println("message received but not a command");
       break;
     // Die Nachricht war der Befehl, eine Szene wieder herzustellen
     case 3:
