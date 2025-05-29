@@ -170,6 +170,7 @@ bool blockProgramming(String password) {
     // Implement code to block USB programming
     // This is a placeholder and would need hardware-specific implementation
     setInfoLedOn(); // Indicate programming is blocked
+    switchHexagonzLampOn(); // Ensure lamp is off when programming is blocked
     Serial.println("Programming blocked");
     controllerAnswer("Programming blocked");
     return true;
@@ -185,6 +186,7 @@ bool openProgramming(String password) {
     // Implement code to allow USB programming
     // This is a placeholder and would need hardware-specific implementation
     setInfoLedOff(); // Indicate programming is open
+    switchHexagonzLampOff(); // Ensure lamp is off when programming is open
     Serial.println("Programming opened");
     controllerAnswer("Programming opened");
     return true;

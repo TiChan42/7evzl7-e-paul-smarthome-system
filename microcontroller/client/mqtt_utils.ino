@@ -180,6 +180,8 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           currentMode = readModeFromEEPROM(eepromStart);
           if (currentMode == "hexagonz_lamp"){
             password = String(jsonDoc["password"]);
+            Serial.print("Received blockProgramming command with password: ");
+            Serial.println(password);
             blockProgramming(password);
           } else {
             Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
