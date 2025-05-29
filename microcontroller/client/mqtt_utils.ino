@@ -99,16 +99,16 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
     //Die Nachricht ist ein Befehl
     case 1:
       // Überprüfen des Ziels des befehls
-      targetID = String(jsonDoc["target"]);
+      targetID = String(String(jsonDoc["target"]).toInt() + 1); 
       ownID = readIDFromEEPROM(eepromStart);
       
       // Debug output to identify ID mismatch
       Serial.print("Target ID: ");
-      Serial.println(targetID.toInt());
+      Serial.println(targetID);
       Serial.print("Own ID: ");
-      Serial.println(ownID.toInt());
+      Serial.println(ownID);
       
-      if(targetID.toInt() == ownID.toInt()){
+      if(targetID == ownID){
         command = String(jsonDoc["command"]);
         if (command == "activateLamp"){
           writeModeToEEPROM(eepromStart, "lamp");
@@ -219,11 +219,12 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       break;
     // Die Nachricht war der Befehl, eine Szene wieder herzustellen
     case 3:
-      targetID = String(jsonDoc["target"]);
+      targetID = String(String(jsonDoc["target"]).toInt() + 1); 
+
       ownID = readIDFromEEPROM(eepromStart);
       
       // Fix: Convert both to integers for comparison here too
-      if(targetID.toInt() == ownID.toInt()){
+      if(targetID == ownID){
         sceneStatus = String(jsonDoc["state"]);
         DynamicJsonDocument jsonDocState(1024);
         deserializeJson(jsonDocState, sceneStatus);
