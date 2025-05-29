@@ -14,6 +14,7 @@
 #include "esp32_pwm.h"
 #include "first_connection.h"
 #include "account_registration.h"
+#include "hexagonz_module.h"
 
 // Constants and configuration variables
 const char* ownSSID = "E_Paul_Module_WiFi";
@@ -42,7 +43,7 @@ unsigned long ulReqcount;
 unsigned long timeOutMillis;
 
 // Module variables
-String controllerMode = "hexagonz_lamp"; // lamp or button
+String controllerMode = "hexagonz_lamp"; // lamp or hexagonz or button
 
 // Button module preparation (default mode: switch)
 bool state = 0; // back
@@ -194,12 +195,18 @@ void setup() {
     digitalWrite(LED_BLUE, HIGH);  
     digitalWrite(LED_WHITE, HIGH); 
   } else if (controllerMode == "hexagonz_lamp") {
-    // Initialize digital pins as LED outputs
-    pinMode(LED_WHITE, OUTPUT);
-
-    // Turn off all LEDs
-    digitalWrite(LED_WHITE, LOW); 
+    // Initialize the hexagonz module
+    initHexagonzModule();
   }
+
+  // Print controller identification info
+  Serial.println("Controller Information:");
+  Serial.print("ID: ");
+  Serial.println(readIDFromEEPROM(eepromStart));
+  Serial.print("Mode: ");
+  Serial.println(readModeFromEEPROM(eepromStart));
+  Serial.print("Topic: ");
+  Serial.println(readTopicFromEEPROM(eepromStart));
 }
 
 void loop() {
@@ -214,5 +221,8 @@ void loop() {
   // If in button mode, constantly check button
   if (controllerMode == "button") {
     checkButton();
+  } else if (controllerMode == "hexagonz_lamp") {
+    // Check hexagonz button and handle blinking
+    checkHexagonzButton();
   }
 }

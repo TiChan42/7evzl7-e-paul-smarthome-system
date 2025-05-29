@@ -5,6 +5,7 @@
 #include "lamp_module.h"
 #include "button_module.h"
 #include "eeprom_utils.h"
+#include "hexagonz_module.h"
 
 // External variables declared in client.ino
 extern PubSubClient client;
@@ -38,6 +39,16 @@ void controllerAnswer(String answer){
     status = "{\"whiteFlag\":\"" + String(int(white_flag)) + "\", \"red\":\"" + String(int(global_red)) + "\", \"green\":\"" + String(int(global_green)) + "\", \"blue\":\"" + String(int(global_blue)) + "\", \"brightness\":\"" + String(int(global_brightness)) + "\"}";
   }else if (controllerMode == "button"){
     status = "{\"state\":\"" + String(int(state)) + "\", \"testState\":\"" + String(int(testState)) + "\", \"mode\":\"" + String(int(mode)) + "\", \"showStateOnLED\":\"" + String(int(showStateOnLED)) + "\"}";
+  } else if (controllerMode == "hexagonz_lamp") {
+    extern bool hexagonzLampState;
+    extern int hexagonzLampBrightness;
+    extern bool hexagonzBlinkingEnabled;
+    extern int hexagonzBlinkRate;
+    
+    status = "{\"lampState\":\"" + String(int(hexagonzLampState)) + 
+             "\", \"brightness\":\"" + String(hexagonzLampBrightness) + 
+             "\", \"blinking\":\"" + String(int(hexagonzBlinkingEnabled)) + 
+             "\", \"blinkRate\":\"" + String(hexagonzBlinkRate) + "\"}";
   } else {
     Serial.println("kein gültiger Modus");
   }
@@ -77,6 +88,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
   int brightness;
   String rgb="";
   String sceneStatus="";
+  String password="";
 
   // Die empfangene Nachricht wird als verarbeitbarer JSON gespeichert
   DynamicJsonDocument jsonDoc(1024);
@@ -89,7 +101,14 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       // Überprüfen des Ziels des befehls
       targetID = String(jsonDoc["target"]);
       ownID = readIDFromEEPROM(eepromStart);
-      if(targetID == ownID){
+      
+      // Debug output to identify ID mismatch
+      Serial.print("Target ID: ");
+      Serial.println(targetID.toInt());
+      Serial.print("Own ID: ");
+      Serial.println(ownID.toInt());
+      
+      if(targetID.toInt() == ownID.toInt()){
         command = String(jsonDoc["command"]);
         if (command == "activateLamp"){
           writeModeToEEPROM(eepromStart, "lamp");
@@ -100,9 +119,12 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           if(currentMode == "lamp"){
             brightness = jsonDoc["brightness"];
             setBrightness(brightness);
+          } else if(currentMode == "hexagonz_lamp"){
+            brightness = jsonDoc["brightness"];
+            setHexagonzLampBrightness(brightness);
           } else {
-            controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp");
-            Serial.println("der Modus des Controllers ist aktuell nicht: lamp");
+            controllerAnswer("der Modus des Controllers ist aktuell nicht: lamp oder hexagonz_lamp");
+            Serial.println("der Modus des Controllers ist aktuell nicht: lamp oder hexagonz_lamp");
           }
         }else if(command == "changeRGBValue"){
           currentMode = readModeFromEEPROM(eepromStart);
@@ -115,10 +137,16 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           }
         }else if (command == "switchOn"){
           currentMode = readModeFromEEPROM(eepromStart);
+          Serial.print("Received switchOn command, current mode: ");
+          Serial.println(currentMode);
+          
           if (currentMode == "button"){
             switchButtonOn(); //bei button
           } else if (currentMode == "lamp"){
             switchLampOn();
+          } else if (currentMode == "hexagonz_lamp"){
+            Serial.println("Executing switchHexagonzLampOn...");
+            switchHexagonzLampOn();
           } else {
             Serial.println("The controller mode does not match this command");
           }
@@ -128,6 +156,8 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
             switchButtonOff(); //bei button
           } else if (currentMode == "lamp"){
             switchLampOff();
+          } else if (currentMode == "hexagonz_lamp"){
+            switchHexagonzLampOff();
           } else {
             Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
           }
@@ -142,6 +172,35 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           writeModeToEEPROM(eepromStart, "button");
           controllerAnswer("Der Modus wurde geändert zu: button");
           ESP.restart();
+        }else if(command == "activateHexagonzLamp"){
+          writeModeToEEPROM(eepromStart, "hexagonz_lamp");
+          controllerAnswer("Der Modus wurde geändert zu: hexagonz_lamp");
+          ESP.restart();
+        }else if (command == "blockProgramming"){
+          currentMode = readModeFromEEPROM(eepromStart);
+          if (currentMode == "hexagonz_lamp"){
+            password = String(jsonDoc["password"]);
+            blockProgramming(password);
+          } else {
+            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
+          }
+        }else if (command == "openProgramming"){
+          currentMode = readModeFromEEPROM(eepromStart);
+          if (currentMode == "hexagonz_lamp"){
+            password = String(jsonDoc["password"]);
+            openProgramming(password);
+          } else {
+            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
+          }
+        }else if (command == "setBlinking"){
+          currentMode = readModeFromEEPROM(eepromStart);
+          if (currentMode == "hexagonz_lamp"){
+            bool shouldBlink = (jsonDoc["blinking"] == true || String(jsonDoc["blinking"]) == "1");
+            int blinkRate = jsonDoc["blinkRate"] | 500; // Default to 500ms if not specified
+            setHexagonzLampBlinking(shouldBlink, blinkRate);
+          } else {
+            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
+          }
         } else if (command == "clearMode"){
           writeModeToEEPROM(eepromStart, "noMode");
           controllerAnswer("Der Modus wurde geändert zu: noMode");
@@ -162,13 +221,20 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
     case 3:
       targetID = String(jsonDoc["target"]);
       ownID = readIDFromEEPROM(eepromStart);
-      if(targetID == ownID){
+      
+      // Fix: Convert both to integers for comparison here too
+      if(targetID.toInt() == ownID.toInt()){
         sceneStatus = String(jsonDoc["state"]);
         DynamicJsonDocument jsonDocState(1024);
         deserializeJson(jsonDocState, sceneStatus);
         if (jsonDocState.containsKey("whiteFlag")){
           // Lampe stellt status wieder her
           lampScene(String(jsonDocState["whiteFlag"]), String(jsonDocState["red"]), String(jsonDocState["green"]), String(jsonDocState["blue"]), String(jsonDocState["brightness"]));
+        } else if (jsonDocState.containsKey("lampState") && jsonDocState.containsKey("brightness")) {
+          // Hexagonz Lampe stellt status wieder her
+          String blinking = jsonDocState.containsKey("blinking") ? String(jsonDocState["blinking"]) : "0";
+          String blinkRate = jsonDocState.containsKey("blinkRate") ? String(jsonDocState["blinkRate"]) : "500";
+          hexagonzLampScene(String(jsonDocState["brightness"]), blinking, blinkRate);
         } else {
           // Button stellt status wieder her
           buttonScene(String(jsonDocState["state"]), String(jsonDocState["testState"]),String(jsonDocState["mode"]),String(jsonDocState["showStateOnLED"]));
