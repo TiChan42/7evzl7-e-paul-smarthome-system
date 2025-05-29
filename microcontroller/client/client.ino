@@ -103,6 +103,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void setup() { 
+  if (controllerMode == "hexagonz_lamp") {
+    initHexagonzModule();
+  }
+
+
   // Initialize global variables
   ulReqcount = 0;
   timeOutMillis = 500;
@@ -156,6 +161,7 @@ void setup() {
       Serial.println(readKeyFromEEPROM(startEEPROM));
     }
   }
+
   
   // Check if connection has been established
   if (!connected) {
@@ -163,6 +169,9 @@ void setup() {
     initAccessPoint();
     // Start loop to get internet connection data
     tryToSetupViaWebserver();
+  }
+  if(controllerMode == "hexagonz_lamp") {
+    setInfoLedOff();
   }
 
   client.setServer(mqtt_server, 1883);
@@ -194,10 +203,7 @@ void setup() {
     digitalWrite(LED_GREEN, HIGH);  
     digitalWrite(LED_BLUE, HIGH);  
     digitalWrite(LED_WHITE, HIGH); 
-  } else if (controllerMode == "hexagonz_lamp") {
-    // Initialize the hexagonz module
-    initHexagonzModule();
-  }
+  } 
 
   // Print controller identification info
   Serial.println("Controller Information:");

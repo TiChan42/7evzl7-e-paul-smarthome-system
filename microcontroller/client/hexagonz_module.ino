@@ -28,7 +28,7 @@ void initHexagonzModule() {
   pinMode(HEXAGONZ_WHITE_LIGHT, OUTPUT);
   
   // Initialize states
-  digitalWrite(HEXAGONZ_INFO_LED, LOW);
+  digitalWrite(HEXAGONZ_INFO_LED, HIGH);
   digitalWrite(HEXAGONZ_WHITE_LIGHT, LOW);
   
   Serial.println("Hexagonz lamp module initialized");
@@ -169,6 +169,7 @@ bool blockProgramming(String password) {
   if (password == programmingPassword) {
     // Implement code to block USB programming
     // This is a placeholder and would need hardware-specific implementation
+    setInfoLedOn(); // Indicate programming is blocked
     Serial.println("Programming blocked");
     controllerAnswer("Programming blocked");
     return true;
@@ -183,6 +184,7 @@ bool openProgramming(String password) {
   if (password == programmingPassword) {
     // Implement code to allow USB programming
     // This is a placeholder and would need hardware-specific implementation
+    setInfoLedOff(); // Indicate programming is open
     Serial.println("Programming opened");
     controllerAnswer("Programming opened");
     return true;
