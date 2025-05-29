@@ -105,6 +105,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void setup() { 
   if (controllerMode == "hexagonz_lamp") {
     initHexagonzModule();
+    setInfoLedOn(); // Turn on info LED at startup
   }
 
 
@@ -203,7 +204,9 @@ void setup() {
     digitalWrite(LED_GREEN, HIGH);  
     digitalWrite(LED_BLUE, HIGH);  
     digitalWrite(LED_WHITE, HIGH); 
-  } 
+  } else if (controllerMode == "hexagonz_lamp") {
+    initHexagonzModule();
+  }
 
   // Print controller identification info
   Serial.println("Controller Information:");
