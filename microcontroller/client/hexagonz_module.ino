@@ -28,7 +28,7 @@ void initHexagonzModule() {
   pinMode(HEXAGONZ_WHITE_LIGHT, OUTPUT);
   
   // Initialize states
-  digitalWrite(HEXAGONZ_INFO_LED, HIGH);
+  digitalWrite(HEXAGONZ_INFO_LED, LOQ);
   digitalWrite(HEXAGONZ_WHITE_LIGHT, LOW);
   
   Serial.println("Hexagonz lamp module initialized");
