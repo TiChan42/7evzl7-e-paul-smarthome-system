@@ -14,6 +14,7 @@ void writeTopicToEEPROM(int address, String data);
 void writeIDToEEPROM(int address, String data);
 void writeKeyToEEPROM(int address, String data);
 void writeModeToEEPROM(int address, String data);
+void writeProgrammingPasswordToEEPROM(int address, String data);
 
 // Read functions
 void readAll();
@@ -24,5 +25,6 @@ String readTopicFromEEPROM(int address);
 String readIDFromEEPROM(int address);
 String readKeyFromEEPROM(int address);
 String readModeFromEEPROM(int address);
+String readProgrammingPasswordFromEEPROM(int address);
 
 #endif // EEPROM_UTILS_H

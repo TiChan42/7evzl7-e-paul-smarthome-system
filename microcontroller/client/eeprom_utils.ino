@@ -5,7 +5,7 @@
 /*
 Aufbau des EEPROM-Speichers:
 ---------------------------------------------------------------------------------
-ResetCounter\1SSID\0Password\0Topic\0ID\0Key\0Mode\0
+ResetCounter\1SSID\0Password\0Topic\0ID\0Key\0Mode\0ProgrammingPassword\0
 ---------------------------------------------------------------------------------
 */
 
@@ -102,6 +102,17 @@ void writeModeToEEPROM(int address, String data) {
   EEPROM.end(); // Beenden der EEPROM-Verwendung
 }
 
+// Funktion zum Schreiben des Programming Passwords in den EEPROM
+void writeProgrammingPasswordToEEPROM(int address, String data) {
+  int progPwStart = readSSIDFromEEPROM(address).length() + readPasswordFromEEPROM(address).length() + readTopicFromEEPROM(address).length() + readIDFromEEPROM(address).length() + readKeyFromEEPROM(address).length() + readModeFromEEPROM(address).length() + 8;
+  EEPROM.begin(EEPROM_SIZE); 
+  for (int i = 0; i < data.length(); i++) {
+    EEPROM.write(progPwStart + i, data[i]); // Schreibe jedes Zeichen des Strings in den EEPROM
+  }
+  EEPROM.write(progPwStart + data.length(), '\0'); // Nullterminierung hinzufügen
+  EEPROM.commit(); // Speichern der Daten im EEPROM
+  EEPROM.end(); // Beenden der EEPROM-Verwendung
+}
 
 //Read-Methoden
 // Methode, um den gesamten EEPROM auszulesen, hauptsächlich zum debuggen
@@ -215,6 +226,23 @@ String readModeFromEEPROM(int address) {
   EEPROM.begin(EEPROM_SIZE);
   for (int i = 0; i < 100; i++) { // Lesen von maximal 100 Zeichen aus dem EEPROM
     character = EEPROM.read(modeStart + i);
+    if (character == '\0') { // Abbruch bei Erreichen des Nullterminierungszeichens
+      break;
+    }
+    characters += character; // Hinzufügen des Zeichens zum String
+  }
+  EEPROM.end(); // Beenden der EEPROM-Verwendung
+  return characters;
+}
+
+// Funktion zum Lesen des Programming Passwords aus dem EEPROM
+String readProgrammingPasswordFromEEPROM(int address) {
+  String characters;
+  char character;
+  int progPwStart = readSSIDFromEEPROM(address).length() + readPasswordFromEEPROM(address).length() + readTopicFromEEPROM(address).length() + readIDFromEEPROM(address).length() + readKeyFromEEPROM(address).length() + readModeFromEEPROM(address).length() + 8;
+  EEPROM.begin(EEPROM_SIZE);
+  for (int i = 0; i < 100; i++) { // Lesen von maximal 100 Zeichen aus dem EEPROM
+    character = EEPROM.read(progPwStart + i);
     if (character == '\0') { // Abbruch bei Erreichen des Nullterminierungszeichens
       break;
     }

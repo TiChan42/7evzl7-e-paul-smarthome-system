@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "hexagonz_module.h"
 #include "mqtt_utils.h"
+#include "eeprom_utils.h"
 
 // Pin definitions (already defined in client.ino but redefined here for clarity)
 #define HEXAGONZ_INFO_LED 23
@@ -17,7 +18,7 @@ bool blinkState = false;
 bool buttonPressed = false;
 unsigned long lastButtonDebounceTime = 0;
 unsigned long debounceDelay = 50;
-const String programmingPassword = "hexagonz123"; // Password to control programming mode
+const String defaultProgrammingPassword = "hexagonz123"; // Default password
 bool previousInfoLedState = false; // Store previous LED state
 
 // Initialize the hexagonz module
@@ -169,7 +170,9 @@ void toggleLampState() {
 
 // Programming control
 bool blockProgramming(String password) {
-  if (password == programmingPassword) {
+  String storedPassword = readProgrammingPasswordFromEEPROM(0);
+  
+  if (storedPassword.length() == 0 || password == storedPassword) {
     // Implement code to block USB programming
     // This is a placeholder and would need hardware-specific implementation
     setInfoLedOn(); // Indicate programming is blocked
@@ -185,7 +188,9 @@ bool blockProgramming(String password) {
 }
 
 bool openProgramming(String password) {
-  if (password == programmingPassword) {
+  String storedPassword = readProgrammingPasswordFromEEPROM(0);
+  
+  if (storedPassword.length() == 0 || password == storedPassword) {
     // Implement code to allow USB programming
     // This is a placeholder and would need hardware-specific implementation
     setInfoLedOff(); // Indicate programming is open

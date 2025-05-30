@@ -4,7 +4,7 @@
 #include "first_connection.h"
 #include "network_utils.h"
 #include "eeprom_utils.h"
-#include "account_registration.h" // Add include for account registration
+#include "account_registration.h" 
 
 // External variables declared in client.ino
 extern const char* ownSSID;
@@ -49,6 +49,13 @@ h1 {margin-top: 5vh;font-size: 48px;color: rgb(var(--color));}
 .deviceName-container {display: flex;margin-top: 20px;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: rgba(var(--color), 0.2);outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);}
 .deviceName-container.hidden {display: none;}
 .deviceName-container input {margin-left: 1em;font-size: 24px;width: 80%;outline: none;background: none;border: none;}
+.programmingPassword-container {display: flex;margin-top: 20px;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: rgba(var(--color), 0.2);outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);}
+.programmingPassword-container.hidden {display: none;}
+.programmingPassword-container input {margin-left: 1em;font-size: 24px;width: 80%;outline: none;background: none;border: none;}
+.programmingPassword-container div {margin:auto;margin-right: 2vb;text-align: center;font-size: 40px;}
+.programmingPassword-container div:hover {color: rgb(var(--color));}
+.programmingPassword-container.show-password {cursor: pointer;color: rgb(var(--color));transition: var(--timing) color ease-in-out;}
+.programmingPassword-container.show-password:hover {color: rgba(var(--color), 0.2);}
 .dropdown-el {margin-top: 10vh;min-width: 15em;width: 40vw;position: relative;margin-right: 1em;min-height: 2em;max-height: 2em;overflow: hidden;top: 0.5em;cursor: pointer;text-align: left;white-space: nowrap;color: #444;outline: none;border: 0.06em solid transparent;border-radius: 1em;background-color: rgba(var(--color), 0.2);transition: var(--timing) all ease-in-out;}
 .dropdown-el.hidden {display: none !important;}
 .dropdown-el input:focus + label {background-color: #def;}
@@ -91,6 +98,12 @@ const char HTML_FORM[] PROGMEM = R"(
 <div class="deviceName-container hidden">
   <input type="text" name="deviceName" id="deviceName" placeholder="Custom-Name" maxlength="40">
 </div>
+<!--Programming-Password-->
+<div class="programmingPassword-container hidden">
+  <input type="password" name="programmingPassword" id="programmingPassword" placeholder="Programmier-Passwort" value="hexagonz123" maxlength="50"><div for="programmingPassword"class="show-password" >
+<svg xmlns="http://www.w3.org/2000/svg"width="30px"height="30px"fill="currentColor"class="bi bi-eye"viewBox="0 0 16 16">
+<path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+</svg></div></div>
 <!--Submit Button-->
 <button class="submit-button hidden" onclick="clickSubmitButton() ">Verbinden</button>
 <div class="error-message hidden"></div>
@@ -112,6 +125,18 @@ showPasswordLabel.addEventListener("click", function () {
     "<path d=\"M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z\"/>" +
     "<path d=\"M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829\"/><path d=\"M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z\"/></svg>";} 
   else {passwordInput.type = "password";showPasswordLabel.innerHTML=
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye\" viewBox=\"0 0 16 16\">" +
+    "<path d=\"M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z\"/>" +
+    "<path d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0\"/></svg>";}});
+var programmingPasswordInput = document.getElementById("programmingPassword");var showProgrammingPasswordLabel = document.querySelector(".programmingPassword-container .show-password");
+showProgrammingPasswordLabel.addEventListener("click", function () {
+  if (programmingPasswordInput.type === "password") {
+    programmingPasswordInput.type = "text";
+    showProgrammingPasswordLabel.innerHTML=
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye-slash\" viewBox=\"0 0 16 16\"> " +
+    "<path d=\"M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z\"/>" +
+    "<path d=\"M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829\"/><path d=\"M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z\"/></svg>";} 
+  else {programmingPasswordInput.type = "password";showProgrammingPasswordLabel.innerHTML=
     "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30px\" height=\"30px\" fill=\"currentColor\" class=\"bi bi-eye\" viewBox=\"0 0 16 16\">" +
     "<path d=\"M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z\"/>" +
     "<path d=\"M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0\"/></svg>";}});
@@ -170,12 +195,14 @@ function clickSubmitButton(){
     let user = document.querySelector("#account").value;
     let password = document.querySelector("#password").value;
     let deviceName = document.querySelector("#deviceName").value;
+    let programmingPassword = document.querySelector("#programmingPassword").value;
     var apiUrl = 'http://192.168.4.1:50000';
     var data = {
       state : 1,
       user : user,
       password: password,
-      deviceName: deviceName
+      deviceName: deviceName,
+      programmingPassword: programmingPassword
     };
     var fullUrl = apiUrl + '?' + objectToQueryString(data);
     console.log(fullUrl);
@@ -214,11 +241,16 @@ function init_state_1(){
   document.querySelector(".dropdown-el").classList.add("hidden");
   document.querySelector(".account-container").classList.remove("hidden");
   document.querySelector(".deviceName-container").classList.remove("hidden");
+  document.querySelector(".programmingPassword-container").classList.remove("hidden");
   document.querySelector("#password").placeholder = "Konto-Passwort";
   document.querySelector("#password").value = "";
   document.querySelector(".submit-button").innerHTML = "Anmelden";
   document.querySelector(".loading-message").innerHTML = "Anmeldeversuch ... bitte warten ...";
   document.querySelector(".error-message").innerHTML = "Anmeldung schiefgelaufen, erneut versuchen";
+  
+  // Set MAC address as default device name
+  var macAddress = "DEVICE_MAC_PLACEHOLDER";
+  document.querySelector("#deviceName").value = macAddress;
 }
 </script></body></html>
 )";
@@ -251,12 +283,12 @@ void handleGET() {
   Serial.println(F("GET request received"));
   
   // Use const char* for better memory management
-  String ssid = "", password = "", user = "", deviceName = "";
+  String ssid = "", password = "", user = "", deviceName = "", programmingPassword = "";
   int ssidIndex = 0, state = 0;
   String answer = ResponseCodes::SUCCESS;
 
   // Validate request parameters
-  int status = validateRequestParameters(ssid, password, user, ssidIndex, state, deviceName);
+  int status = validateRequestParameters(ssid, password, user, ssidIndex, state, deviceName, programmingPassword);
   
   if (status < 3) {
     answer = ResponseCodes::BAD_REQUEST;
@@ -268,9 +300,8 @@ void handleGET() {
     answer = handleWiFiConnection(ssid, password);
     answerWebClientRequest(answer);
   } else {
-    answer = handleUserLogin(user, password, deviceName);
+    answer = handleUserLogin(user, password, deviceName, programmingPassword);
     if (answer == ResponseCodes::SUCCESS) {
-      // Use the scheduler instead of normal response for successful login
       scheduleRestart();
     } else {
       answerWebClientRequest(answer);
@@ -280,7 +311,7 @@ void handleGET() {
 }
 
 // Helper function to validate request parameters
-int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName) {
+int validateRequestParameters(String& ssid, String& password, String& user, int& ssidIndex, int& state, String& deviceName, String& programmingPassword) {
   int status = 0;
   
   if (webServer.args() == 0) {
@@ -311,7 +342,7 @@ int validateRequestParameters(String& ssid, String& password, String& user, int&
   } else if (state == 1) {
     // User login parameters
     status++; // for state parameter
-    for (int i = 1; i < webServer.args() && i <= 3; i++) {
+    for (int i = 1; i < webServer.args() && i <= 4; i++) {
       String argName = webServer.argName(i);
       if (argName.equals(F("user"))) {
         user = webServer.arg(i);
@@ -321,6 +352,9 @@ int validateRequestParameters(String& ssid, String& password, String& user, int&
         status++;
       } else if (argName.equals(F("deviceName"))) {
         deviceName = webServer.arg(i);
+        status++;
+      } else if (argName.equals(F("programmingPassword"))) {
+        programmingPassword = webServer.arg(i);
         status++;
       }
     }
@@ -366,14 +400,18 @@ String handleWiFiConnection(const String& ssid, const String& password) {
 }
 
 // Helper function to handle user login
-String handleUserLogin(const String& user, const String& password, const String& deviceName) {
+String handleUserLogin(const String& user, const String& password, const String& deviceName, const String& programmingPassword) {
   Serial.println(F("Attempting user login..."));
   Serial.print(F("User: ")); Serial.println(user);
   // Don't log password for security
   
   if (testLogIn(user, password, deviceName)) {
+    // Save programming password to EEPROM
+    if (programmingPassword.length() > 0) {
+      // Save custom programming password to a designated EEPROM location
+      writeProgrammingPasswordToEEPROM(0, programmingPassword);
+    }
     Serial.println(F("User login successful"));
-    // Don't restart here - let scheduleRestart() handle it
     return ResponseCodes::SUCCESS;
   } else {
     Serial.println(F("User login failed"));
@@ -534,6 +572,19 @@ void sendMainPage(WiFiClient& client) {
   
   String networkList = generateNetworkList(networkIndices, networkCount);
   
+  // Get MAC address for device name default
+  String macAddress = WiFi.macAddress();
+  macAddress.replace(":", "");
+  
+  // Build complete HTML content with MAC address replacement
+  String htmlContent = String(HTML_HEAD);
+  htmlContent += networkList;
+  htmlContent += String(HTML_FORM);
+  htmlContent += String(HTML_SCRIPT1);
+  String finalScript = String(HTML_SCRIPT2);
+  finalScript.replace("DEVICE_MAC_PLACEHOLDER", macAddress);
+  htmlContent += finalScript;
+  
   // Clean up
   if (networkIndices) {
     delete[] networkIndices;
@@ -542,19 +593,13 @@ void sendMainPage(WiFiClient& client) {
   // Send response
   String header = F("HTTP/1.1 200 OK\r\n");
   header += F("Content-Length: ");
-  header += STATIC_CONTENT_SIZE + networkList.length();
+  header += htmlContent.length();
   header += F("\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n");
   
   client.print(header);
-  sendProgmemString(client, HTML_HEAD);
-  client.print(networkList);
-  sendProgmemString(client, HTML_FORM);
-  sendProgmemString(client, HTML_SCRIPT1);
-  sendProgmemString(client, HTML_SCRIPT2);
+  client.print(htmlContent);
   
-  // Debug output
-  Serial.print(F("Network list length: ")); Serial.println(networkList.length());
-  Serial.print(F("Static content size: ")); Serial.println(STATIC_CONTENT_SIZE);
+  Serial.print(F("Total content size: ")); Serial.println(htmlContent.length());
 }
 
 String generateNetworkList(int* networkIndices, int networkCount) {
@@ -575,14 +620,10 @@ String generateNetworkList(int* networkIndices, int networkCount) {
     networkList += String(networkIndices[i]);
     networkList += F("\"><label for=\"ssid-");
     networkList += String(networkIndices[i]);
-    networkList += F("\">\n");
-    
-    getConnectionStrengthNumber(networkList, rssi);
-    
-    networkList += F("\n");
+    networkList += F("\">");
     networkList += ssid;
     networkList += F("<span class=\"tooltip\">");
-    networkList += ssid;
+    getConnectionStrengthNumber(networkList, rssi);
     networkList += F("</span></label>");
   }
   
@@ -590,7 +631,6 @@ String generateNetworkList(int* networkIndices, int networkCount) {
 }
 
 void scheduleRestart() {
-  // Send success response first
   answerWebClientRequest(ResponseCodes::SUCCESS);
   
   // Wait to ensure the response has time to be transmitted
