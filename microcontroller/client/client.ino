@@ -104,7 +104,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void setup() { 
   if (controllerMode == "hexagonz_lamp") {
     initHexagonzModule();
-    setInfoLedOn(); // Turn on info LED at startup
+    delay(100);
+    setInfoLedOn();
   }
 
 
@@ -165,6 +166,11 @@ void setup() {
   
   // Check if connection has been established
   if (!connected) {
+    setInfoLedOff();
+    delay(500);
+    setInfoLedOn();
+    
+
     // If no connection, set up own WiFi
     initAccessPoint();
     // Start loop to get internet connection data
@@ -230,7 +236,6 @@ void loop() {
   if (controllerMode == "button") {
     checkButton();
   } else if (controllerMode == "hexagonz_lamp") {
-    // Check hexagonz button and handle blinking
     checkHexagonzButton();
   }
 }

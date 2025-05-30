@@ -42,13 +42,9 @@ void controllerAnswer(String answer){
   } else if (controllerMode == "hexagonz_lamp") {
     extern bool hexagonzLampState;
     extern int hexagonzLampBrightness;
-    extern bool hexagonzBlinkingEnabled;
-    extern int hexagonzBlinkRate;
     
     status = "{\"lampState\":\"" + String(int(hexagonzLampState)) + 
-             "\", \"brightness\":\"" + String(hexagonzLampBrightness) + 
-             "\", \"blinking\":\"" + String(int(hexagonzBlinkingEnabled)) + 
-             "\", \"blinkRate\":\"" + String(hexagonzBlinkRate) + "\"}";
+             "\", \"brightness\":\"" + String(hexagonzLampBrightness) +"\"}";
   } else {
     Serial.println("kein gültiger Modus");
   }
@@ -200,16 +196,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           } else {
             Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
           }
-        }else if (command == "setBlinking"){
-          currentMode = readModeFromEEPROM(eepromStart);
-          if (currentMode == "hexagonz_lamp"){
-            bool shouldBlink = (jsonDoc["blinking"] == true || String(jsonDoc["blinking"]) == "1");
-            int blinkRate = jsonDoc["blinkRate"] | 500; // Default to 500ms if not specified
-            setHexagonzLampBlinking(shouldBlink, blinkRate);
-          } else {
-            Serial.println("Der Modus des Controllers passt nicht zu dem Befehl");
-          }
-        } else if (command == "clearMode"){
+        }else if (command == "clearMode"){
           writeModeToEEPROM(eepromStart, "noMode");
           controllerAnswer("Der Modus wurde geändert zu: noMode");
           ESP.restart();
@@ -240,10 +227,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
           // Lampe stellt status wieder her
           lampScene(String(jsonDocState["whiteFlag"]), String(jsonDocState["red"]), String(jsonDocState["green"]), String(jsonDocState["blue"]), String(jsonDocState["brightness"]));
         } else if (jsonDocState.containsKey("lampState") && jsonDocState.containsKey("brightness")) {
-          // Hexagonz Lampe stellt status wieder her
-          String blinking = jsonDocState.containsKey("blinking") ? String(jsonDocState["blinking"]) : "0";
-          String blinkRate = jsonDocState.containsKey("blinkRate") ? String(jsonDocState["blinkRate"]) : "500";
-          hexagonzLampScene(String(jsonDocState["brightness"]), blinking, blinkRate);
+          hexagonzLampScene(String(jsonDocState["brightness"]));
         } else {
           // Button stellt status wieder her
           buttonScene(String(jsonDocState["state"]), String(jsonDocState["testState"]),String(jsonDocState["mode"]),String(jsonDocState["showStateOnLED"]));

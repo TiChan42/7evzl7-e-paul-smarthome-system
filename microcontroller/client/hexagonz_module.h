@@ -10,8 +10,6 @@ void initHexagonzModule();
 void switchHexagonzLampOn();
 void switchHexagonzLampOff();
 void setHexagonzLampBrightness(int brightness);
-void setHexagonzLampBlinking(bool shouldBlink, int blinkRate = 500);
-
 // Info LED control
 void setInfoLedOn();
 void setInfoLedOff();
@@ -27,6 +25,6 @@ bool blockProgramming(String password);
 bool openProgramming(String password);
 
 // Scene recreation
-void hexagonzLampScene(String brightness, String blinking, String blinkRate);
+void hexagonzLampScene(String brightness);
 
 #endif // HEXAGONZ_MODULE_H
