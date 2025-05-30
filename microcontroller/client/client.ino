@@ -127,7 +127,7 @@ void setup() {
   } else if (rst == '1') {
     rst = '2';
     writeResetCounterToEEPROM((String)rst);
-  } else { // if (rst == '2')
+  } else {
     Serial.println("Clearen");
     clearEEPROM();
     writeResetCounterToEEPROM("0");
@@ -166,15 +166,34 @@ void setup() {
   
   // Check if connection has been established
   if (!connected) {
-    setInfoLedOff();
-    delay(500);
-    setInfoLedOn();
+    if(controllerMode == "hexagonz_lamp") {
+      setInfoLedOff();
+      delay(500);
+      setInfoLedOn();
+    }
     
 
     // If no connection, set up own WiFi
     initAccessPoint();
-    // Start loop to get internet connection data
+
+    if(controllerMode == "hexagonz_lamp") {
+      setInfoLedOff();
+      delay(200);
+      setInfoLedOn();
+      delay(200);
+      setInfoLedOff();
+      delay(200);
+      setInfoLedOn();
+    }
+    
     tryToSetupViaWebserver();
+
+    if(controllerMode == "hexagonz_lamp") {
+      setInfoLedOff();
+      delay(200);
+      setInfoLedOn();
+      delay(200);
+    }
   }
   if(controllerMode == "hexagonz_lamp") {
     setInfoLedOff();
