@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "esp32_pwm.h"
 
 // External LED pin variables declared in client.ino
 extern uint8_t LED_RED, LED_GREEN, LED_BLUE, LED_WHITE;

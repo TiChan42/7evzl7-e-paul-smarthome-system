@@ -11,7 +11,6 @@
 #include "eeprom_utils.h"
 #include "button_module.h"
 #include "lamp_module.h"
-#include "esp32_pwm.h"
 #include "first_connection.h"
 #include "account_registration.h"
 #include "hexagonz_module.h"
@@ -43,7 +42,7 @@ unsigned long ulReqcount;
 unsigned long timeOutMillis;
 
 // Module variables
-String controllerMode = "hexagonz_lamp"; // lamp or hexagonz or button
+String controllerMode = "hexagonz_lamp"; // lamp or hexagonz_lamp or button
 
 // Button module preparation (default mode: switch)
 bool state = 0; // back

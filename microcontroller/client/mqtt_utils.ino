@@ -99,7 +99,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
     //Die Nachricht ist ein Befehl
     case 1:
    // Überprüfen des Ziels des befehls
-      targetID = String(String(jsonDoc["target"]).toInt() + 1); 
+      targetID = String(jsonDoc["target"]); 
       ownID = readIDFromEEPROM(eepromStart);
       
       // Debug output to identify ID mismatch
@@ -227,7 +227,7 @@ bool mqttJsonInterpretation(String mqttJsonSignal){
       break;
     // Die Nachricht war der Befehl, eine Szene wieder herzustellen
     case 3:
-      targetID = String(String(jsonDoc["target"]).toInt() + 1); 
+      targetID = String(jsonDoc["target"]).toInt(); 
 
       ownID = readIDFromEEPROM(eepromStart);
       

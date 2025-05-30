@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "hexagonz_module.h"
 #include "mqtt_utils.h"
-#include "esp32_pwm.h"
 
 // Pin definitions (already defined in client.ino but redefined here for clarity)
 #define HEXAGONZ_INFO_LED 23
@@ -39,6 +38,8 @@ void switchHexagonzLampOn() {
   hexagonzLampState = true;
   if (!hexagonzBlinkingEnabled) {
     digitalWrite(HEXAGONZ_WHITE_LIGHT, HIGH);
+    int pwmValue = map(hexagonzLampBrightness, 0, 100, 0, 255);
+    analogWrite(HEXAGONZ_WHITE_LIGHT, pwmValue);
     Serial.println("Hexagonz lamp turned ON");
   }
   controllerAnswer("Hexagonz lamp turned ON");
@@ -47,6 +48,7 @@ void switchHexagonzLampOn() {
 // Switch lamp off
 void switchHexagonzLampOff() {
   hexagonzLampState = false;
+  pinMode(HEXAGONZ_WHITE_LIGHT, OUTPUT); 
   digitalWrite(HEXAGONZ_WHITE_LIGHT, LOW);
   Serial.println("Hexagonz lamp turned OFF");
   controllerAnswer("Hexagonz lamp turned OFF");
@@ -59,6 +61,7 @@ void setHexagonzLampBrightness(int brightness) {
   
   hexagonzLampBrightness = brightness;
   
+  // Only apply brightness if lamp is on and not blinking
   if (hexagonzLampState && !hexagonzBlinkingEnabled) {
     // Convert percentage to PWM value (0-255)
     int pwmValue = map(brightness, 0, 100, 0, 255);
