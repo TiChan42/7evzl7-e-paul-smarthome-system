@@ -139,22 +139,19 @@ class ExecuteCommand(APIView):
             rgb = data["command"]["rgb"]
         except KeyError:
             rgb = None
+            
+        try:
+            password = data["command"]["password"]
+        except KeyError:
+            password = None
         
-        if rgb == None:
-            pass
-        else:
-            if re.match(r'^#(?:[0-9a-fA-F]{3}){1,2}$', rgb):
-                pass
-            else:
-                return Response(status = 420)
+        # RGB Format validieren
+        if rgb and not re.match(r'^#(?:[0-9a-fA-F]{3}){1,2}$', rgb):
+            return Response(status = 420)
         
-        if brightness == None:
-            pass
-        else:
-            if re.match(r'\b\d{1,3}\b', brightness):
-                pass
-            else:
-                return Response(status = 420)
+        # Brightness validieren
+        if brightness and not re.match(r'\b\d{1,3}\b', str(brightness)):
+            return Response(status = 420)
         
         try:
             microcontroller = Microcontroller.objects.get(pk = id)
@@ -165,12 +162,13 @@ class ExecuteCommand(APIView):
         
         try:
             commandOption = CommandOption.objects.filter(key = "command", value = command)
+            if not commandOption.exists():
+                return Response(status = 400)
         except CommandOption.DoesNotExist:
             return Response(status = 400)
         
         testcl = PythonClientPub()
-
-        testcl.publish_command(email, id, command, brightness, rgb)
+        testcl.publish_command(email, id, command, brightness, rgb, password)
         
         return Response(status = 204)
         

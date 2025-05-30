@@ -39,7 +39,7 @@ class PythonClientPub:
         client.connect(self.broker, self.port)
         return client
 
-    def publish_command(self,pubTopic, target, command, brightness = None, rgb = None):
+    def publish_command(self, pubTopic, target, command, brightness = None, rgb = None, password = None):
         if "#" in str(brightness):
             rgb = brightness
             brightness = None
@@ -54,13 +54,16 @@ class PythonClientPub:
             message["brightness"] = brightness
         if rgb:
             message["rgb"] = rgb
+        if password:
+            message["password"] = password
+            
         messageJson = json.dumps(message)
         result = self.client.publish(pubTopic, messageJson)
         status = result[0]
         if status == 0:
-            print(f"Send message to topic {pubTopic}")
+            print(f"Send message with password to topic {pubTopic}")
         else:
-            print(f"Failed to send message to topic {pubTopic}")
+            print(f"Failed to send message with password to topic {pubTopic}")
 
 
     def publishScene(self, pubTopic, message):
